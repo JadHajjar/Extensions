@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Extensions</RootNamespace>
+    <AssemblyName>Extensions</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\TVShowsCalendar\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\InterfaceContractResolver.cs" />
+    <Compile Include="Classes\DateRange.cs" />
+    <Compile Include="Classes\MachineInfo.cs" />
+    <Compile Include="Classes\SunManager.cs" />
+    <Compile Include="Classes\SunsetResponse.cs" />
+    <Compile Include="Extensions\Other Extensions.cs" />
+    <Compile Include="Extensions\Threading Extensions.cs" />
+    <Compile Include="Extensions\Time Extensions.cs" />
+    <Compile Include="Extensions\Number Extensions.cs" />
+    <Compile Include="Extensions\IO Extensions.cs" />
+    <Compile Include="Extensions\Form Extensions.cs" />
+    <Compile Include="Extensions\Dictionary Extensions.cs" />
+    <Compile Include="Extensions\Enumerable Extensions.cs" />
+    <Compile Include="Enums\ColorStyle.cs" />
+    <Compile Include="Handlers\GaussianBlur.cs" />
+    <Compile Include="Handlers\ConnectionHandler.cs" />
+    <Compile Include="FormDesign\DesignList.cs" />
+    <Compile Include="Handlers\FileOperationAPIWrapper.cs" />
+    <Compile Include="FormDesign\Presets.cs" />
+    <Compile Include="FormDesign\Properties.cs" />
+    <Compile Include="Handlers\ISave.cs" />
+    <Compile Include="Classes\HslColor.cs" />
+    <Compile Include="Identifiers\Dispenser.cs" />
+    <Compile Include="Identifiers\Factory.cs" />
+    <Compile Include="Interfaces\IFirstFocus.cs" />
+    <Compile Include="Enums\ImageSizeMode.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Identifiers\TicketBooth.cs" />
+    <Compile Include="Identifiers\WaitIdentifier.cs" />
+    <None Include="FormDesign\Borderless Move-Resize.cs" />
+    <Compile Include="Handlers\AnimationHandler.cs" />
+    <Compile Include="Identifiers\DisableIdentifier.cs" />
+    <Compile Include="Extensions\String Extensions.cs" />
+    <Compile Include="FormDesign\FormDesign.cs" />
+    <Compile Include="Enums\FormState.cs" />
+    <Compile Include="Handlers\GlobalKeyboardHook.cs" />
+    <Compile Include="Handlers\MouseDetector.cs" />
+    <Compile Include="Classes\OneWayTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_0.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_2.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_3.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_4.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Loader_5.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon_ErrorImage.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+  </Target>
+</Project>
