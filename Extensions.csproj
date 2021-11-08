@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\EventHandler.cs" />
     <Compile Include="Classes\InterfaceContractResolver.cs" />
     <Compile Include="Classes\DateRange.cs" />
     <Compile Include="Classes\MachineInfo.cs" />
