@@ -14,7 +14,9 @@ namespace Extensions
 
 		public event EventHandler ActionsFinished;
 
-		public event EventHandler<Out> Dispense;
+		public event EventHandlerOut Dispense;
+
+		public delegate void EventHandlerOut(object sender, Out e);
 
 		public int ProcessingPower { get => processingPower; set => processingPower = Math.Max(1, value); }
 
@@ -64,6 +66,16 @@ namespace Extensions
 				actions.AddRange(action);
 		}
 
+#if !NET47
+		public bool Wait()
+		{
+			var finished = false;
+
+			ActionsFinished += (s, e) => finished = true;
+
+			return this.WaitUntil(x => finished);
+		}
+#else
 		public bool Wait()
 		{
 			var finished = false;
@@ -72,6 +84,7 @@ namespace Extensions
 
 			return this.WaitUntil(x => finished).Result;
 		}
+#endif
 
 		public void Clear()
 		{

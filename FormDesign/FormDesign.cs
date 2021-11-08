@@ -28,23 +28,6 @@ namespace Extensions
 
 		private static FormDesign design = Modern;
 
-		public static Image Loader
-		{
-			get
-			{
-				switch (design.ID)
-				{
-					case 0: return Properties.Resources.Loader_0;
-					case 1: return Properties.Resources.Loader_1;
-					case 2: return Properties.Resources.Loader_2;
-					case 3: return Properties.Resources.Loader_3;
-					case 4: return Properties.Resources.Loader_4;
-					case 5: case 6: return Properties.Resources.Loader_5;
-					default: return Properties.Resources.Loader_0;
-				}
-			}
-		}
-
 		public static FormDesign Design
 		{
 			get

@@ -236,7 +236,7 @@ namespace Extensions
 			return valElse;
 		}
 
-#if !NET35 && !NET20 && !NET40
+#if NET47
 
 		public static T Switch<T, T2>(this T2 item, T valDefault, params (T2, T)[] values)
 		{

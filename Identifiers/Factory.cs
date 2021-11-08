@@ -60,6 +60,16 @@ namespace Extensions
 				actions.AddRange(action);
 		}
 
+#if !NET47
+		public bool Wait()
+		{
+			var finished = false;
+
+			ActionsFinished += (s, e) => finished = true;
+
+			return this.WaitUntil(x => finished);
+		}
+#else
 		public bool Wait()
 		{
 			var finished = false;
@@ -68,6 +78,7 @@ namespace Extensions
 
 			return this.WaitUntil(x => finished).Result;
 		}
+#endif
 
 		public void Clear()
 		{

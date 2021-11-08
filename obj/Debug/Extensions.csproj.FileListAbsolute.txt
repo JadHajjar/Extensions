@@ -95,3 +95,18 @@ C:\Users\Jad Hajjar\Desktop\Documents\Google Drive\Solutions\Extensions\Extensio
 C:\Users\Jad Hajjar\Desktop\Documents\Google Drive\Solutions\Extensions\Extensions\obj\Debug\Extensions.dll
 C:\Users\Jad Hajjar\Desktop\Documents\Google Drive\Solutions\Extensions\Extensions\obj\Debug\Extensions.pdb
 C:\Users\Jad\Desktop\Documents\Google Drive\Solutions\Extensions\Extensions\obj\Debug\Extensions.csproj.AssemblyReference.cache
+C:\Brains\Extensions\Extensions\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.csproj.ResolveComReference.cache
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.Properties.Resources.resources
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.csproj.GenerateResource.cache
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.csproj.CoreCompileInputs.cache
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.csproj.AssemblyReference.cache
+C:\Brains\Extensions\Extensions\bin\Debug\Extensions.dll
+C:\Brains\Extensions\Extensions\bin\Debug\Extensions.pdb
+C:\Brains\Extensions\Extensions\bin\Debug\Newtonsoft.Json.dll
+C:\Brains\Extensions\Extensions\bin\Debug\System.Net.Http.dll
+C:\Brains\Extensions\Extensions\bin\Debug\Newtonsoft.Json.xml
+C:\Brains\Extensions\Extensions\bin\Debug\System.Net.Http.xml
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.csproj.CopyComplete
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.dll
+C:\Brains\Extensions\Extensions\obj\Debug\Extensions.pdb
