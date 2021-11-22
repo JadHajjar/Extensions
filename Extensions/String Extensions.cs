@@ -195,7 +195,7 @@ namespace Extensions
 		/// Removes the first occurrence of the text in the <see cref="string"/>
 		/// </summary>
 		public static string Remove(this string S, string text)
-			=> S.IndexOf(text) >= 0 ? S.Remove(S.IndexOf(text), text.Length) : S;
+			=> S == null ? null : (S.IndexOf(text) >= 0 ? S.Remove(S.IndexOf(text), text.Length) : S);
 
 		/// <summary>
 		/// Removes the character at the specified index
