@@ -66,7 +66,7 @@ namespace Extensions
 
 			ActionsFinished += (s, e) => finished = true;
 
-			return this.WaitUntil(x => finished).Result;
+			return this.WaitUntil(x => finished);
 		}
 
 		public void Clear()
