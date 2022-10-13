@@ -138,28 +138,29 @@ namespace Extensions
 			{ return "0s"; }
 		}
 
-		public static string ToRelatedString(this DateTime dt)
+		public static string ToRelatedString(this DateTime dt, bool shorter = false, bool longWords = true, bool utc = false)
 		{
 			var ts = new TimeSpan(Math.Abs(dt.Ticks - DateTime.Now.Ticks));
-			var past = dt < DateTime.Now;
+			var past = dt < (utc ? DateTime.UtcNow : DateTime.Now);
+			var today = (utc ? DateTime.UtcNow : DateTime.Now).Date;
 
 			if (ts.TotalHours < 5)
 			{
 				if (past)
-					return ts.ToReadableString() + " ago";
-				return "in " + ts.ToReadableString();
+					return ts.ToReadableString(shorter, longWords) + " ago";
+				return "in " + ts.ToReadableString(shorter, longWords);
 			}
-			else if (dt.Date == DateTime.Today)
+			else if (dt.Date == today)
 			{
-				return $"Today at {dt.ToString("h:mm tt")}";
+				return $"Today at {dt:h:mm tt}";
 			}
-			else if (dt.Date.AnyOf(DateTime.Today.AddDays(1), DateTime.Today.AddDays(-1)))
+			else if (dt.Date.AnyOf(today.AddDays(1), today.AddDays(-1)))
 			{
 				return (past ? "Yesterday at " : "Tomorrow at ") + dt.ToString("h:mm tt");
 			}
 			else if (ts.TotalDays < 7)
 			{
-				return $"{(past ? "Last " : "Next ")}{dt.DayOfWeek.ToString()} at {dt.ToString("h:mm tt")}";
+				return $"{(past ? "Last " : "Next ")}{dt.DayOfWeek} at {dt:h:mm tt}";
 			}
 
 			var days = ts.Days;
