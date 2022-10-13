@@ -45,7 +45,7 @@ namespace Extensions
 				}
 			}
 
-			public event EventHandler<KeyPressedEventArgs> KeyPressed;
+			public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
 
 			#region IDisposable Members
 
@@ -82,7 +82,7 @@ namespace Extensions
 		/// <summary>
 		/// A hot key has been pressed.
 		/// </summary>
-		public event EventHandler<KeyPressedEventArgs> KeyPressed;
+		public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
 
 		#region IDisposable Members
 

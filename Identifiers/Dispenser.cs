@@ -14,7 +14,7 @@ namespace Extensions
 
 		public event EventHandler ActionsFinished;
 
-		public event EventHandler<Out> Dispense;
+		public event Extensions.EventHandler<Out> Dispense;
 
 		public int ProcessingPower { get => processingPower; set => processingPower = Math.Max(1, value); }
 
