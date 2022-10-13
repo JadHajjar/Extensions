@@ -859,21 +859,7 @@ namespace Extensions
 		}
 
 		public static Color GetAccentColor(this Color color)
-		{
-			var colorHSL = HslColor.FromColor(color);
-			if (colorHSL.L >= 0.78431372549019607)
-			{
-				if ((colorHSL.H < 0.072222222222222215) || (colorHSL.H > 0.55555555555555558))
-				{
-					if (colorHSL.S <= 0.27450980392156865)
-						return System.Drawing.Color.Black;
-				}
-				else
-					return System.Drawing.Color.Black;
-			}
-
-			return System.Drawing.Color.White;
-		}
+			=> color.R * 0.299 + color.G * 0.587 + color.B * 0.114 > 186 ? System.Drawing.Color.Black : System.Drawing.Color.White;
 
 		private static float HuetoRGB(float p, float q, float t)
 		{

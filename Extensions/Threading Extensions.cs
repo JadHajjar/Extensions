@@ -67,30 +67,6 @@ namespace Extensions
 			return T;
 		}
 
-#if !NET47
-		public static bool WaitUntil<T>(this T elem, Func<T, bool> predicate)
-		{
-			bool result;
-			try
-			{
-				while (true)
-				{
-					var flag = predicate(elem);
-					if (flag)
-					{
-						break;
-					}
-					Thread.Sleep(1);
-				}
-				result = true;
-			}
-			catch
-			{
-				result = true;
-			}
-			return result;
-		}
-#else
 		public static async Task<bool> WaitUntil<T>(this T elem, Func<T, bool> predicate)
 		{
 			while (true)
@@ -101,6 +77,5 @@ namespace Extensions
 				await Task.Delay(1);
 			}
 		}
-#endif
 	}
 }

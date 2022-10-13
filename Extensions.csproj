@@ -80,13 +80,13 @@
     <Compile Include="Identifiers\Factory.cs" />
     <Compile Include="Interfaces\IFirstFocus.cs" />
     <Compile Include="Enums\ImageSizeMode.cs" />
-    <Compile Include="Identifiers\TicketBooth.cs" />
-    <Compile Include="Identifiers\WaitIdentifier.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Identifiers\TicketBooth.cs" />
+    <Compile Include="Identifiers\WaitIdentifier.cs" />
     <None Include="FormDesign\Borderless Move-Resize.cs" />
     <Compile Include="Handlers\AnimationHandler.cs" />
     <Compile Include="Identifiers\DisableIdentifier.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="Handlers\MouseDetector.cs" />
     <Compile Include="Classes\OneWayTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -112,12 +113,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Resources\Loader_0.gif" />
   </ItemGroup>
   <ItemGroup>
