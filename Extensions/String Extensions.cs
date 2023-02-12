@@ -207,7 +207,7 @@ namespace Extensions
 		/// Removes any multiple spaces after each other and any starting or ending spaces
 		/// </summary>
 		public static string RemoveDoubleSpaces(this string S)
-			=> S.RegexReplace(@" {2,}", " ").Trim();
+			=> S.RegexReplace(@" {2,}", " ")?.Trim() ?? string.Empty;
 
 		/// <summary>
 		/// Parses the <see cref="string"/> into an <see cref="int"/> disregarding non-digit characters
@@ -217,10 +217,10 @@ namespace Extensions
 			=> !string.IsNullOrWhiteSpace(S) && (int.TryParse(S.Where(c => char.IsDigit(c)), out var i)) ? i : defaultValue;
 
 		public static double SmartParseD(this string S, double defaultValue = 0)
-			=> Regex.Match(S, @"[\d,]+(\.\d+)?").If(x => x.Success, x => double.Parse(x.Value), defaultValue);
+			=> Regex.Match(S, @"[-+]?[0-9]*[,\.]?[0-9]+([eE][-+]?[0-9]+)?").If(x => x.Success, x => double.TryParse(x.Value, out var d) ? d : defaultValue, defaultValue);
 
 		public static float SmartParseF(this string S, float defaultValue = 0)
-			=> Regex.Match(S, @"[\d,]+(\.\d+)?").If(x => x.Success, x => float.Parse(x.Value), defaultValue);
+			=> Regex.Match(S, @"[-+]?[0-9]*[,\.]?[0-9]+([eE][-+]?[0-9]+)?").If(x => x.Success, x => float.TryParse(x.Value, out var f) ? f : defaultValue, defaultValue);
 
 		/// <summary>
 		/// Parses the <see cref="string"/> into an <see cref="int"/> disregarding non-digit characters
@@ -257,9 +257,9 @@ namespace Extensions
 		/// <param name="caseCheck">Option to match the strings with Case Sensitivity</param>
 		/// <returns></returns>
 		public static bool SearchCheck(this string s1, string s2, bool caseCheck = false)
-			=> SpellCheck(s1, s2, caseCheck) <= (int)Math.Ceiling((s2.Length - 4) / 5M)
+			=> !string.IsNullOrWhiteSpace(s1) && !string.IsNullOrWhiteSpace(s2) && (SpellCheck(s1, s2, caseCheck) <= (int)Math.Ceiling((s2.Length - 4) / 5M)
 			|| (caseCheck ? s1 : s1.ToLower()).Contains((caseCheck ? s2 : s2.ToLower()))
-			|| (s1.AbbreviationCheck(s2) && s2.GetWords().Length > 2);
+			|| (s1.AbbreviationCheck(s2) && s2.GetWords().Length > 2));
 
 		/// <summary>
 		/// Returns the total amount of differences between the two strings

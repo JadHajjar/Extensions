@@ -8,63 +8,43 @@ namespace Extensions
 {
 	public static class SunManager
 	{
-		private static DateRange sunTime;
-		private static bool loadingSunTime;
+		public static DateRange SunTime => CalculateSunsetSunrise(DateTime.Now.Month);
 
-		public static DateRange SunTime
+		// Constants for the approximation formula
+		private const double DEG_TO_RAD = Math.PI / 180;
+		private const double RAD_TO_DEG = 180 / Math.PI;
+		private const double DAYS_PER_YEAR = 365.24;
+
+		public static DateRange CalculateSunsetSunrise(int month)
 		{
-			get
-			{
-				if (sunTime.Empty)
-				{
-					ISave.Load(out sunTime, "SunTime.tf", "Shared");
+			// Get the timezone of the user
+			var timezone = GetTimezone();
 
-					if (sunTime.Empty)
-					{
-						if (!loadingSunTime)
-						{
-							loadingSunTime = true;
-							new Action(LoadSunTime).RunInBackground();
-						}
+			// Approximate the number of days since the start of the year
+			var daysSinceStartOfYear = ((month - 1) * 30.5) + 15;
 
-						return sunTime = new DateRange(DateTime.Today.AddHours(7), DateTime.Today.AddHours(19));
-					}
-				}
-				else if (sunTime.Start.Date != DateTime.Today)
-				{
-					sunTime = new DateRange(DateTime.Today + (sunTime.Start - sunTime.Start.Date), DateTime.Today + (sunTime.End - sunTime.End.Date));
-					new Action(LoadSunTime).RunInBackground();
-				}
+			// Calculate the solar declination angle
+			var solarDeclination = 0.396372 - (22.91327 * Math.Cos(DEG_TO_RAD * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear))
+									  + (4.02543 * Math.Sin(DEG_TO_RAD * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear))
+									  - (0.387205 * Math.Cos(DEG_TO_RAD * (2 * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear)))
+									  + (0.051967 * Math.Sin(DEG_TO_RAD * (2 * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear)))
+									  - (0.154527 * Math.Cos(DEG_TO_RAD * (3 * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear)))
+									  + (0.084798 * Math.Sin(DEG_TO_RAD * (3 * (360 / DAYS_PER_YEAR) * daysSinceStartOfYear)));
 
-				return sunTime;
-			}
+			// Calculate the hour angle
+			var hourAngle = RAD_TO_DEG * Math.Acos(-Math.Tan(DEG_TO_RAD * 40) * Math.Tan(DEG_TO_RAD * solarDeclination));
+
+			// Calculate the sunset and sunrise times in hours
+			var sunsetHour = 12 - (hourAngle / 15) - timezone;
+			var sunriseHour = 12 + (hourAngle / 15) - timezone;
+
+			return new DateRange(DateTime.Today.AddHours(sunsetHour), DateTime.Today.AddHours(sunriseHour));
 		}
 
-		private static void LoadSunTime()
+		public static double GetTimezone()
 		{
-			MachineInfo location;
-			using (var client = new WebClient())
-			{
-				using (var stream = client.OpenRead($"http://api.ipstack.com/{ConnectionHandler.IpAddress}?access_key=c91ac331daae5aa3a9cf5e11aa0e8766"))
-				{
-					using (var reader = new StreamReader(stream))
-						location = JsonConvert.DeserializeObject<MachineInfo>(reader.ReadToEnd());
-				}
-
-				using (var stream = client.OpenRead($"https://api.sunrise-sunset.org/json?lat={location.latitude}&lng={location.longitude}"))
-				{
-					using (var reader = new StreamReader(stream))
-					{
-						var response = JsonConvert.DeserializeObject<SunsetResponse>(new StreamReader(stream).ReadToEnd());
-
-						sunTime = new DateRange(DateTime.Parse(response.results.sunrise).ToLocalTime(), DateTime.Parse(response.results.sunset).ToLocalTime());
-
-						ISave.Save(sunTime, "SunTime.tf", appName: "Shared");
-					}
-				}
-			}
-
-			loadingSunTime = false;
+			var localTimeZone = TimeZoneInfo.Local;
+			return localTimeZone.BaseUtcOffset.TotalHours;
 		}
 	}
 }

@@ -1026,6 +1026,9 @@ namespace Extensions
 		public static Brush Gradient(this Rectangle rect, Color color, float caliber = 1F)
 		{
 			var hue = color.GetHue();
+
+			if (rect.Width <= 0 || rect.Height <= 0)
+				return new SolidBrush(color);
 			
 			return new LinearGradientBrush(rect,
 				color.Tint(hue + caliber* 4F, +caliber* 3.5F, +caliber* 3.5F),
