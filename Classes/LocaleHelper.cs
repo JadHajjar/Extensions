@@ -12,6 +12,8 @@ namespace Extensions
 {
 	public class LocaleHelper
 	{
+		private static readonly List<LocaleHelper> _locales = new List<LocaleHelper>();
+
 		private Dictionary<string, Dictionary<string, string>> _locale;
 
 		protected LocaleHelper(string dictionaryResourceName)
@@ -42,6 +44,8 @@ namespace Extensions
 
 					ConstructDictionary(lines);
 				}
+
+				_locales.Add(this);
 			}
 		}
 
@@ -89,6 +93,22 @@ namespace Extensions
 
 			if (dic.ContainsKey(key))
 				return dic[key];
+
+			return key.FormatWords();
+		}
+
+		public static string GetGlobalText(string key)
+		{
+			foreach (var item in _locales)
+			{
+				var locale = item._locale;
+				var dic = locale.ContainsKey(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+					? locale[CultureInfo.CurrentCulture.TwoLetterISOLanguageName]
+					: locale[string.Empty];
+
+				if (dic.ContainsKey(key))
+					return dic[key];
+			}
 
 			return key.FormatWords();
 		}
