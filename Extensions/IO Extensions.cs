@@ -116,6 +116,45 @@ namespace Extensions
 		/// <summary>
 		/// Returns all Files in the path within the selected <paramref name="layers"/>
 		/// </summary>
+		public static IEnumerable<FileInfo> EnumerateFiles(this DirectoryInfo path, string pattern, int layers)
+		{
+			if (layers != 0)
+			{
+				foreach (var item in path.EnumerateFiles(pattern, SearchOption.TopDirectoryOnly))
+					yield return item;
+
+				foreach (var dir in path.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
+				{
+					foreach (var item in EnumerateFiles(dir, pattern, layers - 1))
+						yield return item;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all Files in the path within the selected <paramref name="layers"/>
+		/// </summary>
+		public static IEnumerable<string> EnumerateFiles(this string path, string pattern, int layers)
+		{
+			if (layers != 0)
+			{
+				foreach (var item in Directory.EnumerateFiles(path, pattern, SearchOption.TopDirectoryOnly))
+					yield return item;
+
+				if (layers > 1)
+				{
+					foreach (var dir in Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly))
+					{
+						foreach (var item in EnumerateFiles(dir, pattern, layers - 1))
+							yield return item;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all Files in the path within the selected <paramref name="layers"/>
+		/// </summary>
 		public static IEnumerable<string> GetFiles(this string path, string pattern, int layers)
 		{
 			if (layers != 0)
