@@ -1,0 +1,15 @@
+C:\Brains\Extensions\Extensions\bin\net4.7.2\Debug\net4.7.2\Extensions.dll
+C:\Brains\Extensions\Extensions\bin\net4.7.2\Debug\net4.7.2\Extensions.pdb
+C:\Brains\Extensions\Extensions\bin\net4.7.2\Debug\net4.7.2\Newtonsoft.Json.dll
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.csproj.AssemblyReference.cache
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Interop.IWshRuntimeLibrary.dll
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.csproj.ResolveComReference.cache
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.Properties.Resources.resources
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.csproj.GenerateResource.cache
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.GeneratedMSBuildEditorConfig.editorconfig
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.AssemblyInfoInputs.cache
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.AssemblyInfo.cs
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.csproj.CoreCompileInputs.cache
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.csproj.CopyComplete
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.dll
+C:\Brains\Extensions\Extensions\obj\net4.7.2\Debug\net4.7.2\Extensions.pdb
