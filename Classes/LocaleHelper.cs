@@ -110,7 +110,7 @@ namespace Extensions
 					return dic[key];
 			}
 
-			return key.FormatWords();
+			return key;
 		}
 	}
 }

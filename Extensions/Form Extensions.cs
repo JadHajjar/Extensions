@@ -684,27 +684,27 @@ namespace Extensions
 			return path;
 		}
 
-		public static void DrawRoundedRectangle(this Graphics graphics, Pen pen, Rectangle bounds, int cornerRadius)
+		public static void DrawRoundedRectangle(this Graphics graphics, Pen pen, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 		{
 			if (graphics == null)
 				throw new ArgumentNullException("graphics");
 			if (pen == null)
 				throw new ArgumentNullException("pen");
 
-			using (var path = RoundedRect(bounds, cornerRadius))
+			using (var path = RoundedRect(bounds, cornerRadius, topLeft, topRight, botRight, botLeft))
 			{
 				graphics.DrawPath(pen, path);
 			}
 		}
 
-		public static void FillRoundedRectangle(this Graphics graphics, Brush brush, Rectangle bounds, int cornerRadius)
+		public static void FillRoundedRectangle(this Graphics graphics, Brush brush, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 		{
 			if (graphics == null)
 				throw new ArgumentNullException("graphics");
 			if (brush == null)
 				throw new ArgumentNullException("brush");
 
-			using (var path = RoundedRect(bounds, cornerRadius))
+			using (var path = RoundedRect(bounds, cornerRadius, topLeft, topRight, botRight, botLeft))
 			{
 				graphics.FillPath(brush, path);
 			}

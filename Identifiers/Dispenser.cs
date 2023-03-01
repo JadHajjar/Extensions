@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Extensions
 {
@@ -81,7 +82,11 @@ namespace Extensions
 			}
 		}
 
+#if NET471_OR_GREATER
+		public async Task<bool> Wait()
+#else
 		public bool Wait()
+#endif
 		{
 			object obj = lockObj;
 			lock (obj)
@@ -97,7 +102,11 @@ namespace Extensions
 			{
 				finished = true;
 			};
+#if NET471_OR_GREATER
+			return await this.WaitUntil((Dispenser<In, Out> x) => finished);
+#else
 			return this.WaitUntil((Dispenser<In, Out> x) => finished);
+#endif
 		}
 
 		public void Clear()
