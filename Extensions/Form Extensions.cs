@@ -33,6 +33,33 @@ namespace Extensions
 				AdvancedSetTooltip(toolTip, child, tip);
 		}
 
+		public static Rectangle Align(this Rectangle rect, Size size, ContentAlignment alignment)
+		{
+			switch (alignment)
+			{
+				case ContentAlignment.TopLeft:
+					return new Rectangle(rect.X, rect.Y, size.Width, size.Height);
+				case ContentAlignment.TopCenter:
+					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y, size.Width, size.Height);
+				case ContentAlignment.TopRight:
+					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y, size.Width, size.Height);
+				case ContentAlignment.MiddleLeft:
+					return new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+				case ContentAlignment.MiddleCenter:
+					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+				case ContentAlignment.MiddleRight:
+					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+				case ContentAlignment.BottomLeft:
+					return new Rectangle(rect.X, rect.Y + rect.Height - size.Height, size.Width, size.Height);
+				case ContentAlignment.BottomCenter:
+					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + rect.Height - size.Height, size.Width, size.Height);
+				case ContentAlignment.BottomRight:
+					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y + rect.Height - size.Height, size.Width, size.Height);
+				default:
+					return rect;
+			}
+		}
+
 		public static Rectangle Pad(this Rectangle rect, Padding padding) => Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
 
 		public static Rectangle Pad(this Rectangle rect, int all) => Pad(rect, all, all, all, all);

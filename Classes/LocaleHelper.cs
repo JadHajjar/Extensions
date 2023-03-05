@@ -16,6 +16,15 @@ namespace Extensions
 
 		private Dictionary<string, Dictionary<string, string>> _locale;
 
+		static LocaleHelper()
+		{
+			ISave.Load<string>(out var culture, "Language.tf", "Shared");
+
+			try
+			{ CultureInfo.CurrentUICulture = new CultureInfo(culture); }
+			catch { }
+		}
+
 		protected LocaleHelper(string dictionaryResourceName)
 		{
 			var assembly = Assembly.GetCallingAssembly();
@@ -87,8 +96,8 @@ namespace Extensions
 
 		public string GetText(string key)
 		{
-			var dic = _locale.ContainsKey(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
-				? _locale[CultureInfo.CurrentCulture.TwoLetterISOLanguageName]
+			var dic = _locale.ContainsKey(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
+				? _locale[CultureInfo.CurrentUICulture.TwoLetterISOLanguageName]
 				: _locale[string.Empty];
 
 			if (dic.ContainsKey(key))
@@ -102,8 +111,8 @@ namespace Extensions
 			foreach (var item in _locales)
 			{
 				var locale = item._locale;
-				var dic = locale.ContainsKey(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
-					? locale[CultureInfo.CurrentCulture.TwoLetterISOLanguageName]
+				var dic = locale.ContainsKey(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
+					? locale[CultureInfo.CurrentUICulture.TwoLetterISOLanguageName]
 					: locale[string.Empty];
 
 				if (dic.ContainsKey(key))
