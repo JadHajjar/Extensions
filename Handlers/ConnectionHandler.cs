@@ -44,7 +44,7 @@ namespace Extensions
 
 			checkTimer.Elapsed += (s, e) => getConnectionState();
 
-			new Action(() => getConnectionState()).RunInBackground();
+			new BackgroundAction("Checking Internet connection", getConnectionState) { CanNotBeStopped = true }.Run();
 		}
 
 		private static void getConnectionState()

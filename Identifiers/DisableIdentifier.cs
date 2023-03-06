@@ -25,7 +25,7 @@ namespace Extensions
 				return true;
 			Disabled = true;
 
-			new Action(Enable).RunInBackground(milliseconds);
+			new BackgroundAction(Enable).RunIn(milliseconds);
 			return false;
 		}
 

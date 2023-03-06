@@ -10,13 +10,14 @@ namespace Extensions
 		/// Runs an <see cref="Action"/> in the background
 		/// </summary>
 		/// <param name="Priority">The <see cref="ThreadPriority"/> of the background <see cref="Thread"/></param>
-		[Obsolete]
+		[Obsolete("Use BackgroundAction instead", true)]
 		public static void RunInBackground(this Action action, ThreadPriority Priority = ThreadPriority.Normal)
 			=> RunInBackground(action);
 
 		/// <summary>
 		/// Runs an <see cref="Action"/> in the background
 		/// </summary>
+		[Obsolete("Use BackgroundAction instead", true)]
 		public static void RunInBackground(this Action action)
 		{
 			ThreadPool.QueueUserWorkItem(w => { try { action(); } catch { } });
@@ -27,6 +28,7 @@ namespace Extensions
 		/// </summary>
 		/// <param name="delay"><see cref="Action"/> delay in milliseconds</param>
 		/// <param name="runOnce">Option to run the <see cref="Action"/> once or repeating after each <paramref name="delay"/></param>
+		[Obsolete("Use BackgroundAction instead", true)]
 		public static void RunInBackground(this Action action, int delay, bool runOnce = true)
 		{
 			var timer = new System.Timers.Timer(Math.Max(1, delay)) { AutoReset = !runOnce, Enabled = true };

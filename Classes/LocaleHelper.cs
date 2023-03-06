@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Extensions
@@ -21,7 +22,12 @@ namespace Extensions
 			ISave.Load<string>(out var culture, "Language.tf", "Shared");
 
 			try
-			{ CultureInfo.CurrentUICulture = new CultureInfo(culture); }
+			{
+				var cultureInfo = new CultureInfo(culture);
+
+				Thread.CurrentThread.CurrentCulture = cultureInfo;
+				Thread.CurrentThread.CurrentUICulture = cultureInfo;
+			}
 			catch { }
 		}
 
