@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
+    <Compile Include="Classes\Cloning.cs" />
     <Compile Include="Classes\EventHandler.cs" />
     <Compile Include="Classes\InterfaceContractResolver.cs" />
     <Compile Include="Classes\DateRange.cs" />
