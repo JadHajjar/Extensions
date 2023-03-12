@@ -11,6 +11,12 @@ namespace Extensions
 
 		public delegate void DynamicAction<T>(T t);
 
+		public static void AddIfNotNull<T>(this IList<T> list, T item) where T : class
+		{
+			if (item != null)
+				list.Add(item);
+		}
+
 		/// <summary>
 		/// Adds items from an <see cref="IEnumerable{T2}"/> into the List after a set Conversion
 		/// </summary>

@@ -737,6 +737,22 @@ namespace Extensions
 			}
 		}
 
+		public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
+		{
+			if (image == null)
+			{
+				return;
+			}
+
+			using (var newImage = new Bitmap(image, bounds.Size))
+			using (var textureBrush = new TextureBrush(newImage))
+			{
+				graphics.TranslateTransform(bounds.X, bounds.Y);
+				graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
+				graphics.TranslateTransform(-bounds.X, -bounds.Y);
+			}
+		}
+
 		/// <summary>
 		/// Rotates the <see cref="Bitmap"/> using the <paramref name="flipType"/>
 		/// </summary>

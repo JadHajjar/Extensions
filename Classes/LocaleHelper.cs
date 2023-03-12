@@ -107,7 +107,7 @@ namespace Extensions
 				: _locale[string.Empty];
 
 			if (dic.ContainsKey(key))
-				return dic[key];
+				return dic[key].Replace("\\n", "\r\n");
 
 			return key.FormatWords();
 		}
@@ -122,7 +122,7 @@ namespace Extensions
 					: locale[string.Empty];
 
 				if (dic.ContainsKey(key))
-					return dic[key];
+					return dic[key].Replace("\\n", "\r\n");
 			}
 
 			return key;
