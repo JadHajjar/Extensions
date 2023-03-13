@@ -744,13 +744,59 @@ namespace Extensions
 				return;
 			}
 
-			using (var newImage = new Bitmap(image, bounds.Size))
-			using (var textureBrush = new TextureBrush(newImage))
+			using (var newImage = new Bitmap(bounds.Width, bounds.Height))
+			using (var imageGraphics = Graphics.FromImage(newImage))
 			{
-				graphics.TranslateTransform(bounds.X, bounds.Y);
-				graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
-				graphics.TranslateTransform(-bounds.X, -bounds.Y);
+				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
+
+				using (var textureBrush = new TextureBrush(newImage))
+				{
+					graphics.TranslateTransform(bounds.X, bounds.Y);
+					graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
+					graphics.TranslateTransform(-bounds.X, -bounds.Y);
+				}
 			}
+		}
+
+		public static void DrawRoundImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
+		{
+			if (image == null)
+			{
+				return;
+			}
+
+			using (var newImage = new Bitmap(bounds.Width, bounds.Height))
+			using (var imageGraphics = Graphics.FromImage(newImage))
+			{
+				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
+
+				using (var textureBrush = new TextureBrush(newImage))
+				{
+					graphics.TranslateTransform(bounds.X, bounds.Y);
+					graphics.FillEllipse(textureBrush, new Rectangle(Point.Empty, bounds.Size));
+					graphics.TranslateTransform(-bounds.X, -bounds.Y);
+				}
+			}
+		}
+
+		public static Size GetProportionalDownscaledSize(this Size originalSize, int sizeLimit)
+		{
+			// If the original size is already within the limit, return it
+			if (originalSize.Width <= sizeLimit && originalSize.Height <= sizeLimit)
+			{
+				return originalSize;
+			}
+
+			// Determine the scaling factor required to fit within the limit
+			var scaleFactor = Math.Min((float)sizeLimit / originalSize.Width, (float)sizeLimit / originalSize.Height);
+
+			// Calculate the new scaled size
+			var newWidth = (int)Math.Round(originalSize.Width * scaleFactor);
+			var newHeight = (int)Math.Round(originalSize.Height * scaleFactor);
+
+			return new Size(newWidth, newHeight);
 		}
 
 		/// <summary>
