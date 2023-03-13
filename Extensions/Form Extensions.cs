@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Windows.Forms;
 
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+
 namespace Extensions
 {
 	public static partial class ExtensionClass
@@ -737,7 +739,7 @@ namespace Extensions
 			}
 		}
 
-		public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
+		public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 		{
 			if (image == null)
 			{
@@ -747,6 +749,9 @@ namespace Extensions
 			using (var newImage = new Bitmap(bounds.Width, bounds.Height))
 			using (var imageGraphics = Graphics.FromImage(newImage))
 			{
+				if (background != null)
+					imageGraphics.Clear(background.Value);
+
 				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
 
@@ -759,7 +764,7 @@ namespace Extensions
 			}
 		}
 
-		public static void DrawRoundImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
+		public static void DrawRoundImage(this Graphics graphics, Image image, Rectangle bounds, Color? background = null)
 		{
 			if (image == null)
 			{
@@ -769,6 +774,9 @@ namespace Extensions
 			using (var newImage = new Bitmap(bounds.Width, bounds.Height))
 			using (var imageGraphics = Graphics.FromImage(newImage))
 			{
+				if (background != null)
+					imageGraphics.Clear(background.Value);
+
 				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
 

@@ -35,6 +35,14 @@ namespace Extensions
 			return true;
 		}
 
+		public static bool PathEquals(this string path1, string path2)
+		{
+			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+
+			return string.Equals(Path.GetFullPath(normalizedPath1), Path.GetFullPath(normalizedPath2), StringComparison.OrdinalIgnoreCase);
+		}
+
 		/// <summary>
 		/// Creates a windows Shortcut (.lnk)
 		/// </summary>
