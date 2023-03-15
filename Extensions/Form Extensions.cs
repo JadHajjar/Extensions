@@ -35,6 +35,16 @@ namespace Extensions
 				AdvancedSetTooltip(toolTip, child, tip);
 		}
 
+		public static void SetUp(this Graphics graphics, Color? backColor = null)
+		{
+			if (backColor != null)
+				graphics.Clear(backColor.Value);
+
+			graphics.SmoothingMode = SmoothingMode.HighQuality;
+			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+		}
+
 		public static Rectangle Align(this Rectangle rect, Size size, ContentAlignment alignment)
 		{
 			switch (alignment)

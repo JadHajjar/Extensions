@@ -322,18 +322,38 @@ namespace Extensions
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="string"/> matches <paramref name="s2"/> with a <paramref name="MaxErrors"/> margin
+		/// Checks if the <see cref="string"/> matches <paramref name="termToBeSearched"/> with a <paramref name="MaxErrors"/> margin
 		/// </summary>
-		/// <param name="s2"><see cref="string"/> to match against</param>
+		/// <param name="termToBeSearched"><see cref="string"/> to match against</param>
 		/// <param name="maxErrors">Maximum amount of differences between the two strings</param>
 		/// <param name="caseCheck">Option to match the strings with Case Sensitivity</param>
 		/// <returns></returns>
-		public static bool SearchCheck(this string s1, string s2, bool caseCheck = false)
+		public static bool SearchCheck(this string searchTerm, string termToBeSearched, bool caseCheck = false)
 		{
-			return !string.IsNullOrWhiteSpace(s1) && !string.IsNullOrWhiteSpace(s2)
-					&& (SpellCheck(s1, s2, caseCheck) <= (int)Math.Ceiling((s2.Length - 4) / 5M)
-					|| s1.IndexOf(s2, caseCheck ? StringComparison.CurrentCulture : StringComparison.InvariantCultureIgnoreCase) >= 0
-					|| s1.AbbreviationCheck(s2));
+			if (string.IsNullOrWhiteSpace(searchTerm) && string.IsNullOrWhiteSpace(termToBeSearched))
+				return true;
+
+			if (string.IsNullOrWhiteSpace(searchTerm) || string.IsNullOrWhiteSpace(termToBeSearched))
+				return false;
+
+			if (SpellCheck(searchTerm, termToBeSearched, caseCheck) <= (int)Math.Ceiling((termToBeSearched.Length - 4) / 4.5M))
+				return true;
+
+			if (termToBeSearched.IndexOf(searchTerm, caseCheck ? StringComparison.CurrentCulture : StringComparison.InvariantCultureIgnoreCase) >= 0)
+				return true;
+
+			if (searchTerm.AbbreviationCheck(termToBeSearched))
+				return true;
+
+			if (searchTerm.Contains(' '))
+			{
+				var terms = searchTerm.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+				if (terms.All(x => termToBeSearched.IndexOf(x, caseCheck ? StringComparison.CurrentCulture : StringComparison.InvariantCultureIgnoreCase) >= 0))
+					return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
