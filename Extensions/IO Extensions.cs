@@ -57,6 +57,7 @@ namespace Extensions
 				var lnk = shell.CreateShortcut(Shortcut);
 				try
 				{
+					lnk.WorkingDirectory = Directory.GetParent(TargetPath).FullName;
 					lnk.TargetPath = TargetPath;
 					lnk.Save();
 				}
