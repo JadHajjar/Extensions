@@ -95,7 +95,7 @@ namespace Extensions
 					if (value.StartsWith("\"") && value.EndsWith("\""))
 						value = value.Substring(1, value.Length - 2);
 
-					dics[j - 1][lines[i][0]] = value.Trim();
+					dics[j - 1][lines[i][0]] = value.Replace("\"\"", "\"").Trim();
 				}
 			}
 		}
