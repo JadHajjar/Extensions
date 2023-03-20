@@ -13,6 +13,8 @@ namespace Extensions
 {
 	public class LocaleHelper
 	{
+		public static event Action LanguageChanged;
+
 		private static readonly List<LocaleHelper> _locales = new List<LocaleHelper>();
 
 		private Dictionary<string, Dictionary<string, string>> _locale;
@@ -24,11 +26,19 @@ namespace Extensions
 			try
 			{
 				var cultureInfo = new CultureInfo(culture);
-
-				Thread.CurrentThread.CurrentCulture = cultureInfo;
+				
 				Thread.CurrentThread.CurrentUICulture = cultureInfo;
 			}
 			catch { }
+		}
+
+		public static void SetLanguage(CultureInfo cultureInfo)
+		{
+			Thread.CurrentThread.CurrentUICulture = cultureInfo;
+
+			ISave.Save(cultureInfo.TwoLetterISOLanguageName, "Language.tf", true, "Shared");
+
+			LanguageChanged?.Invoke();
 		}
 
 		protected LocaleHelper(string dictionaryResourceName)
@@ -126,6 +136,17 @@ namespace Extensions
 			}
 
 			return key;
+		}
+
+		public static IEnumerable<string> GetAvailableLanguages()
+		{
+			foreach (var item in _locales)
+			{
+				foreach (var lang in item._locale.Keys)
+				{
+					yield return lang.IfEmpty("en");
+				}
+			}
 		}
 	}
 }
