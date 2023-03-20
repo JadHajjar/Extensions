@@ -36,7 +36,7 @@ namespace Extensions
 		{
 			Thread.CurrentThread.CurrentUICulture = cultureInfo;
 
-			ISave.Save(cultureInfo.TwoLetterISOLanguageName, "Language.tf", true, "Shared");
+			ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "Shared");
 
 			LanguageChanged?.Invoke();
 		}
@@ -112,8 +112,8 @@ namespace Extensions
 
 		public string GetText(string key)
 		{
-			var dic = _locale.ContainsKey(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
-				? _locale[CultureInfo.CurrentUICulture.TwoLetterISOLanguageName]
+			var dic = _locale.ContainsKey(CultureInfo.CurrentUICulture.IetfLanguageTag)
+				? _locale[CultureInfo.CurrentUICulture.IetfLanguageTag]
 				: _locale[string.Empty];
 
 			if (dic.ContainsKey(key))
@@ -127,8 +127,8 @@ namespace Extensions
 			foreach (var item in _locales)
 			{
 				var locale = item._locale;
-				var dic = locale.ContainsKey(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
-					? locale[CultureInfo.CurrentUICulture.TwoLetterISOLanguageName]
+				var dic = locale.ContainsKey(CultureInfo.CurrentUICulture.IetfLanguageTag)
+					? locale[CultureInfo.CurrentUICulture.IetfLanguageTag]
 					: locale[string.Empty];
 
 				if (dic.ContainsKey(key))
