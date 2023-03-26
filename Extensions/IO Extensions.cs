@@ -17,10 +17,14 @@ namespace Extensions
 		public static string CharBlackListPattern = $"[{Regex.Escape(CharBlackList.ListStrings())}]";
 
 		public static string AbreviatedPath(this FileInfo file, bool folder = false)
-							=> AbreviatedPath(folder ? file.DirectoryName : file.FullName);
+		{
+			return AbreviatedPath(folder ? file.DirectoryName : file.FullName);
+		}
 
 		public static string AbreviatedPath(this DirectoryInfo folder)
-			=> AbreviatedPath(folder.FullName);
+		{
+			return AbreviatedPath(folder.FullName);
+		}
 
 		public static bool IsNetwork(this DirectoryInfo folder)
 		{
@@ -41,6 +45,14 @@ namespace Extensions
 			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
 			return string.Equals(Path.GetFullPath(normalizedPath1), Path.GetFullPath(normalizedPath2), StringComparison.OrdinalIgnoreCase);
+		}
+
+		public static bool PathContains(this string path1, string path2)
+		{
+			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+
+			return Path.GetFullPath(normalizedPath1).IndexOf(Path.GetFullPath(normalizedPath2), StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
 		/// <summary>
@@ -76,16 +88,22 @@ namespace Extensions
 		/// Creates a Shortcut for the file at the <paramref name="shortcutPath"/>
 		/// </summary>
 		public static void CreateShortcut(this FileInfo file, string shortcutPath)
-			=> CreateShortcut(shortcutPath, file.FullName);
+		{
+			CreateShortcut(shortcutPath, file.FullName);
+		}
 
 		public static string EscapeFileName(this string path)
-			=> path.RegexRemove(CharBlackListPattern).Replace('"', '\'').Replace("*", " ");
+		{
+			return path.RegexRemove(CharBlackListPattern).Replace('"', '\'').Replace("*", " ");
+		}
 
 		/// <summary>
 		/// Returns the Name of the file without its Extension
 		/// </summary>
 		public static string FileName(this FileInfo file)
-				=> file.Name.Substring(0, file.Name.LastIndexOf(file.Extension, StringComparison.InvariantCultureIgnoreCase));
+		{
+			return file.Name.Substring(0, file.Name.LastIndexOf(file.Extension, StringComparison.InvariantCultureIgnoreCase));
+		}
 
 		/// <summary>
 		/// Returns all Directories in the path within the selected <paramref name="layers"/>
@@ -93,13 +111,17 @@ namespace Extensions
 		public static string[] GetDirectories(string path, string pattern, int layers)
 		{
 			if (layers == 0)
+			{
 				return new string[0];
+			}
 
 			var Out = new List<string>();
 			Out.AddRange(Directory.GetDirectories(path, pattern, SearchOption.TopDirectoryOnly));
 
 			foreach (var item in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+			{
 				Out.AddRange(GetDirectories(item, pattern, layers - 1));
+			}
 
 			return Out.ToArray();
 		}
@@ -112,12 +134,16 @@ namespace Extensions
 			if (layers != 0)
 			{
 				foreach (var item in path.GetFiles(pattern, SearchOption.TopDirectoryOnly))
+				{
 					yield return item;
+				}
 
 				foreach (var dir in path.GetDirectories("*", SearchOption.TopDirectoryOnly))
 				{
 					foreach (var item in GetFiles(dir, pattern, layers - 1))
+					{
 						yield return item;
+					}
 				}
 			}
 		}
@@ -130,12 +156,16 @@ namespace Extensions
 			if (layers != 0)
 			{
 				foreach (var item in path.EnumerateFiles(pattern, SearchOption.TopDirectoryOnly))
+				{
 					yield return item;
+				}
 
 				foreach (var dir in path.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
 				{
 					foreach (var item in EnumerateFiles(dir, pattern, layers - 1))
+					{
 						yield return item;
+					}
 				}
 			}
 		}
@@ -148,14 +178,18 @@ namespace Extensions
 			if (layers != 0)
 			{
 				foreach (var item in Directory.EnumerateFiles(path, pattern, SearchOption.TopDirectoryOnly))
+				{
 					yield return item;
+				}
 
 				if (layers > 1)
 				{
 					foreach (var dir in Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly))
 					{
 						foreach (var item in EnumerateFiles(dir, pattern, layers - 1))
+						{
 							yield return item;
+						}
 					}
 				}
 			}
@@ -169,14 +203,18 @@ namespace Extensions
 			if (layers != 0)
 			{
 				foreach (var item in Directory.GetFiles(path, pattern, SearchOption.TopDirectoryOnly))
+				{
 					yield return item;
+				}
 
 				if (layers > 1)
 				{
 					foreach (var dir in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
 					{
 						foreach (var item in GetFiles(dir, pattern, layers - 1))
+						{
 							yield return item;
+						}
 					}
 				}
 			}
@@ -192,7 +230,9 @@ namespace Extensions
 				foreach (var f in dir.EnumerateFiles("*.*", searchOption))
 				{
 					if (extensions.Any(x => x.Equals(f.Extension, StringComparison.InvariantCultureIgnoreCase)))
+					{
 						yield return f;
+					}
 				}
 			}
 		}
@@ -207,7 +247,9 @@ namespace Extensions
 				foreach (var f in dir.EnumerateFiles("*.*", SearchOption.AllDirectories))
 				{
 					if (extensions.Any(x => x.Equals(f.Extension, StringComparison.InvariantCultureIgnoreCase)))
+					{
 						yield return f;
+					}
 				}
 			}
 		}
@@ -232,7 +274,9 @@ namespace Extensions
 		/// Returns the <see cref="FileInfo"/> of the Target Path of a shortcut
 		/// </summary>
 		public static FileInfo GetShortcutPath(this FileInfo file)
-			=> new FileInfo(GetShortcutPath(file.FullName));
+		{
+			return new FileInfo(GetShortcutPath(file.FullName));
+		}
 
 		public static bool IsFileLocked(this FileInfo file)
 		{
@@ -253,7 +297,9 @@ namespace Extensions
 			finally
 			{
 				if (stream != null)
+				{
 					stream.Close();
+				}
 			}
 
 			//file is not locked
@@ -267,8 +313,11 @@ namespace Extensions
 		public static bool IsFolder(this string S, bool CheckShortcuts = true)
 		{
 			if (CheckShortcuts && S.EndsWith(".lnk"))
+			{
 				S = S.GetShortcutPath();
-			return (Directory.Exists(S)) && File.GetAttributes(S).HasFlag(FileAttributes.Directory);
+			}
+
+			return Directory.Exists(S) && File.GetAttributes(S).HasFlag(FileAttributes.Directory);
 		}
 
 		/// <summary>
@@ -278,13 +327,17 @@ namespace Extensions
 		public static List<string> Parents(this string path, bool fullpath = false, int? depth = null)
 		{
 			if (!Directory.Exists(path) && !File.Exists(path))
+			{
 				return new List<string>();
+			}
 
 			var Out = new List<string>();
 			var P = new DirectoryInfo(path);
 
 			while ((P = P.Parent) != null && (depth == null || depth != Out.Count))
+			{
 				Out.Add(fullpath ? P.FullName : P.Name);
+			}
 
 			return Out;
 		}
@@ -292,7 +345,9 @@ namespace Extensions
 		private static string AbreviatedPath(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path))
+			{
 				return string.Empty;
+			}
 
 			var items = path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var selectedItems = new List<string>() { items[0] };
@@ -300,26 +355,57 @@ namespace Extensions
 			selectedItems.AddRange(items.TakeLast(Math.Min(3, items.Length - 1)));
 
 			if (items.Length != selectedItems.Count)
+			{
 				selectedItems.Insert(1, "..");
+			}
 
 			return selectedItems.ListStrings("\\");
 		}
 
-		public static void CopyAll(this DirectoryInfo directory, DirectoryInfo target)
+		public static void CopyAll(this DirectoryInfo directory, DirectoryInfo target, Func<string, bool> fileTest = null)
 		{
-			if (!directory.Exists) return;
+			if (!directory.Exists)
+			{
+				return;
+			}
 
 			target.Create();
 
 			//Now Create all of the directories
-			foreach (string dirPath in Directory.GetDirectories(directory.FullName, "*",
-				SearchOption.AllDirectories))
+			foreach (var dirPath in Directory.GetDirectories(directory.FullName, "*", SearchOption.AllDirectories))
+			{
 				Directory.CreateDirectory(dirPath.Replace(directory.FullName, target.FullName));
+			}
 
 			//Copy all the files & Replaces any files with the same name
-			foreach (string newPath in Directory.GetFiles(directory.FullName, "*.*",
-				SearchOption.AllDirectories))
-				File.Copy(newPath, newPath.Replace(directory.FullName, target.FullName), true);
+			foreach (var newPath in Directory.GetFiles(directory.FullName, "*.*", SearchOption.AllDirectories))
+			{
+				if (fileTest == null || fileTest(newPath))
+				{
+					File.Copy(newPath, newPath.Replace(directory.FullName, target.FullName), true);
+				}
+			}
+		}
+
+		public static void RemoveEmptyFolders(this DirectoryInfo folderPath)
+		{
+			// Check if the folder exists
+			if (!folderPath.Exists)
+			{
+				throw new DirectoryNotFoundException($"The folder {folderPath} does not exist.");
+			}
+
+			// Remove empty subfolders
+			foreach (var subdirectory in folderPath.GetDirectories())
+			{
+				RemoveEmptyFolders(subdirectory);
+			}
+
+			// Delete current folder if empty
+			if (!folderPath.EnumerateFiles().Any() && !folderPath.EnumerateDirectories().Any())
+			{
+				folderPath.Delete();
+			}
 		}
 	}
 }

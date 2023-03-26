@@ -681,9 +681,6 @@ namespace Extensions
 
 		public static GraphicsPath RoundedRect(this Rectangle bounds, int radius, bool topleft = true, bool topright = true, bool botright = true, bool botleft = true)
 		{
-			var diameter = radius * 2;
-			var size = new Size(diameter, diameter);
-			var arc = new Rectangle(bounds.Location, size);
 			var path = new GraphicsPath();
 
 			if (radius == 0)
@@ -691,6 +688,10 @@ namespace Extensions
 				path.AddRectangle(bounds);
 				return path;
 			}
+
+			var diameter = radius * 2;
+			var size = new Size(diameter, diameter);
+			var arc = new Rectangle(bounds.Location, size);
 
 			// top left arc
 			if (topleft)
