@@ -40,7 +40,7 @@ namespace Extensions
 
 		public static void Start()
 		{
-			checkTimer = new Timer(3000) { AutoReset = false };
+			checkTimer = new Timer(15000) { AutoReset = false };
 
 			checkTimer.Elapsed += (s, e) => getConnectionState();
 
@@ -54,7 +54,7 @@ namespace Extensions
 				if (State == ConnectionState.Disconnected)
 					State = ConnectionState.Connecting;
 
-				const string host = "google.com";
+				const string host = "8.8.8.8";
 				const int timeout = 4000;
 
 				if (new Ping().Send(host, timeout, new byte[32]).Status == IPStatus.Success)
@@ -72,7 +72,7 @@ namespace Extensions
 				State = ConnectionState.Disconnected;
 			}
 
-			checkTimer.Interval = IsConnected ? 5000 : 1000;
+			checkTimer.Interval = IsConnected ? 15000 : 2500;
 			checkTimer.Start();
 		}
 

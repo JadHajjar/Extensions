@@ -18,6 +18,8 @@ namespace Extensions
 
 		public static string CustomSaveDirectory { get; set; }
 
+		public static Platform CurrentPlatform { get; set; }
+
 		public virtual string Name { get; set; }
 
 		public virtual void OnLoad()

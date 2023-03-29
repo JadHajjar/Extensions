@@ -85,7 +85,7 @@ namespace Extensions
 			}
 		}
 
-#if NET471_OR_GREATER
+#if NET47
 		public async Task<bool> Wait()
 #else
 		public bool Wait()
@@ -105,7 +105,7 @@ namespace Extensions
 			{
 				finished = true;
 			};
-#if NET471_OR_GREATER
+#if NET47
 			return await this.WaitUntil((Factory x) => finished);
 #else
 			return this.WaitUntil((Factory x) => finished);

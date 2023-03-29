@@ -12,7 +12,9 @@ namespace Extensions
 		/// <param name="Priority">The <see cref="ThreadPriority"/> of the background <see cref="Thread"/></param>
 		[Obsolete("Use BackgroundAction instead", true)]
 		public static void RunInBackground(this Action action, ThreadPriority Priority = ThreadPriority.Normal)
-			=> RunInBackground(action);
+		{
+			RunInBackground(action);
+		}
 
 		/// <summary>
 		/// Runs an <see cref="Action"/> in the background
@@ -34,9 +36,14 @@ namespace Extensions
 			var timer = new System.Timers.Timer(Math.Max(1, delay)) { AutoReset = !runOnce, Enabled = true };
 			timer.Elapsed += (s, e) =>
 			{
-				try { action(); } catch { }
+				try
+				{ action(); }
+				catch { }
 
-				if (runOnce) timer.Dispose();
+				if (runOnce)
+				{
+					timer.Dispose();
+				}
 			};
 		}
 
@@ -47,14 +54,21 @@ namespace Extensions
 		public static Thread TimerLoop(this Action action, Func<bool> condition, Action onEnd = null, ThreadPriority priority = ThreadPriority.Normal)
 		{
 			if (action == null)
+			{
 				throw new ArgumentNullException(nameof(action));
+			}
+
 			if (condition == null)
+			{
 				throw new ArgumentNullException(nameof(condition));
+			}
 
 			var T = new Thread(() =>
 			{
 				while (condition())
+				{
 					action();
+				}
 
 				onEnd?.Invoke();
 			})
@@ -95,9 +109,12 @@ namespace Extensions
 #else
 		public static async Task<bool> WaitUntil<T>(this T elem, Func<T, bool> predicate)
 		{
-			while (true)
+			while (!predicate(elem))
+			{
 				await Task.Delay(1);
 			}
+
+			return true;
 		}
 #endif
 	}

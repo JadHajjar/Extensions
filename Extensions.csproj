@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET47</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET47</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
+    <Compile Include="Classes\Parallelism.cs" />
     <Compile Include="Classes\PathEqualityComparer.cs" />
     <Compile Include="Classes\Cloning.cs" />
     <Compile Include="Classes\EventHandler.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Classes\MachineInfo.cs" />
     <Compile Include="Classes\SunManager.cs" />
     <Compile Include="Classes\SunsetResponse.cs" />
+    <Compile Include="Enums\Platform.cs" />
     <Compile Include="Extensions\Other Extensions.cs" />
     <Compile Include="Extensions\Threading Extensions.cs" />
     <Compile Include="Extensions\Time Extensions.cs" />
