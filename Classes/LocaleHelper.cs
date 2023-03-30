@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -90,7 +93,12 @@ namespace Extensions
 			{
 				dics.Add(new Dictionary<string, string>());
 
-				_locale[lines[0][i]] = dics[i - 1];
+				var langKey = lines[0][i];
+
+				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+					langKey = langKey.Substring(1, langKey.Length - 2);
+
+				_locale[langKey] = dics[i - 1];
 			}
 
 			for (var i = 1; i < lines.Count; i++)
@@ -101,11 +109,15 @@ namespace Extensions
 				for (var j = 1; j < lines[i].Length; j++)
 				{
 					var value = lines[i][j];
+					var langKey = lines[i][0];
 
 					if (value.StartsWith("\"") && value.EndsWith("\""))
 						value = value.Substring(1, value.Length - 2);
 
-					dics[j - 1][lines[i][0]] = value.Replace("\"\"", "\"").Trim();
+					if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+						langKey = langKey.Substring(1, langKey.Length - 2);
+
+					dics[j - 1][langKey] = value.Replace("\"\"", "\"").Trim();
 				}
 			}
 		}
