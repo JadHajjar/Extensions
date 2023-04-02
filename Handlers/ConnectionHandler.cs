@@ -22,6 +22,8 @@ namespace Extensions
 
 		private static ConnectionState state = ConnectionState.Connecting;
 		private static string ipAddress;
+		private static string host;
+		private static double timer;
 
 		public static ConnectionState State
 		{
@@ -38,9 +40,13 @@ namespace Extensions
 
 		public static string IpAddress => ipAddress ?? (ipAddress = new WebClient().DownloadString("http://icanhazip.com").Trim());
 
-		public static void Start()
+		public static void Start() => Start("8.8.8.8", 15000);
+
+		public static void Start(string host, double timer)
 		{
-			checkTimer = new Timer(15000) { AutoReset = false };
+			ConnectionHandler.host = host;
+			ConnectionHandler.timer = timer;
+			checkTimer = new Timer(timer) { AutoReset = false };
 
 			checkTimer.Elapsed += (s, e) => getConnectionState();
 
@@ -54,7 +60,6 @@ namespace Extensions
 				if (State == ConnectionState.Disconnected)
 					State = ConnectionState.Connecting;
 
-				const string host = "8.8.8.8";
 				const int timeout = 4000;
 
 				if (new Ping().Send(host, timeout, new byte[32]).Status == IPStatus.Success)
@@ -72,7 +77,7 @@ namespace Extensions
 				State = ConnectionState.Disconnected;
 			}
 
-			checkTimer.Interval = IsConnected ? 15000 : 2500;
+			checkTimer.Interval = IsConnected ? timer : 2500;
 			checkTimer.Start();
 		}
 

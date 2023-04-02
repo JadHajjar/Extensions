@@ -144,7 +144,7 @@ namespace Extensions
 
 			var doc = GetPath(name.IfEmpty(Name), appName, local);
 
-			File.Delete(doc);
+			ExtensionClass.DeleteFile(doc);
 		}
 
 		private static string Read(string path)
@@ -182,6 +182,8 @@ namespace Extensions
 				var parent = Directory.GetParent(path);
 				var temp = Path.Combine(parent.FullName, $"{guid}.tmp");
 
+				noBackup |= CurrentPlatform == Platform.MacOSX;
+
 			retry: try
 				{
 					parent.Create();
@@ -211,8 +213,8 @@ namespace Extensions
 				}
 				finally
 				{
-					if (File.Exists(temp))
-						File.Delete(temp);
+					if (!noBackup && File.Exists(temp))
+						ExtensionClass.DeleteFile(temp);
 				}
 			}
 		}

@@ -40,22 +40,22 @@ namespace Extensions
 				if (darkMode == null)
 					darkMode = new FormDesign(Name, ID, FormDesignType.Dark, true)
 					{
-						BackColor = Dark.BackColor.Tint(ActiveColor, -3),
-						MenuColor = Dark.MenuColor.Tint(ActiveColor, -6),
+						BackColor = Dark.BackColor.Tint(ActiveColor, 0, -50),
+						MenuColor = Dark.MenuColor.Tint(ActiveColor, 0, -50),
 						ActiveColor = ActiveColor,
 						GreenColor = GreenColor,
 						YellowColor = YellowColor,
 						RedColor = RedColor,
 
-						ActiveForeColor = Dark.ActiveForeColor.Tint(ActiveColor),
-						ForeColor = Dark.ForeColor.Tint(ActiveColor),
-						ButtonColor = Dark.ButtonColor.Tint(ActiveColor),
-						ButtonForeColor = Dark.ButtonForeColor.Tint(ActiveColor),
-						AccentColor = Dark.AccentColor.Tint(ActiveColor),
-						MenuForeColor = Dark.MenuForeColor.Tint(ActiveColor),
-						LabelColor = Dark.LabelColor.Tint(ActiveColor),
-						InfoColor = Dark.InfoColor.Tint(ActiveColor),
-						IconColor = Dark.IconColor.Tint(ActiveColor)
+						ActiveForeColor = Dark.ActiveForeColor.Tint(Sat: -100),
+						ForeColor = Dark.ForeColor.Tint(Sat: -100),
+						ButtonColor = Dark.ButtonColor.Tint(ActiveColor, Sat: -20),
+						ButtonForeColor = Dark.ButtonForeColor.Tint(Sat: -100),
+						AccentColor = Dark.AccentColor.Tint(ActiveColor, Sat: -20),
+						MenuForeColor = Dark.MenuForeColor.Tint(Sat: -100),
+						LabelColor = Dark.LabelColor.Tint(ActiveColor, Sat: -20),
+						InfoColor = Dark.InfoColor.Tint(ActiveColor, Sat: -20),
+						IconColor = Dark.IconColor.Tint(ActiveColor, Sat: -20)
 					};
 
 				return darkMode;

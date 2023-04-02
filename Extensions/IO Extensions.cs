@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -39,12 +40,47 @@ namespace Extensions
 			return true;
 		}
 
+		public static void DeleteFile(string file)
+		{
+			if (ISave.CurrentPlatform is Platform.MacOSX)
+			{
+				try
+				{
+					File.Delete(file);
+				}
+				catch { }
+			}
+			else
+			{
+				File.Delete(file);
+			}
+		}
+
+		public static void CopyFile(string file, string fileTo, bool overwrite)
+		{
+			if (ISave.CurrentPlatform is Platform.MacOSX)
+			{
+				try
+				{
+					File.Copy(file, fileTo, overwrite);
+				}
+				catch { }
+			}
+			else
+			{
+				File.Copy(file, fileTo, overwrite);
+			}
+		}
+
 		public static bool PathEquals(this string path1, string path2)
 		{
+			if (path1 == path2)
+				return true;
+
 			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
-			return string.Equals(Path.GetFullPath(normalizedPath1), Path.GetFullPath(normalizedPath2), StringComparison.OrdinalIgnoreCase);
+			return string.Equals(normalizedPath1, normalizedPath2, StringComparison.OrdinalIgnoreCase);
 		}
 
 		public static bool PathContains(this string path1, string path2)
@@ -52,7 +88,20 @@ namespace Extensions
 			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
-			return Path.GetFullPath(normalizedPath1).IndexOf(Path.GetFullPath(normalizedPath2), StringComparison.OrdinalIgnoreCase) >= 0;
+			return normalizedPath1.IndexOf(normalizedPath2, StringComparison.OrdinalIgnoreCase) >= 0;
+		}
+
+		public static string PathReplace(this string path1, string path2, string path)
+		{
+			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+
+			var index = normalizedPath1.IndexOf(normalizedPath2, StringComparison.OrdinalIgnoreCase);
+
+			if (index != 0)
+				return path1;
+
+			return path1.Remove(index, normalizedPath2.Length).Insert(index, path);
 		}
 
 		/// <summary>

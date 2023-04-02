@@ -22,22 +22,31 @@ namespace Extensions
 
 		private Dictionary<string, Dictionary<string, string>> _locale;
 
+		public static CultureInfo CurrentCulture { get; set; }
+
 		static LocaleHelper()
 		{
 			ISave.Load<string>(out var culture, "Language.tf", "Shared");
 
-			try
+			if (!string.IsNullOrWhiteSpace(culture))
 			{
-				var cultureInfo = new CultureInfo(culture);
-				
-				Thread.CurrentThread.CurrentUICulture = cultureInfo;
+				try
+				{
+					var cultureInfo = new CultureInfo(culture);
+
+					CurrentCulture = cultureInfo;
+
+					return;
+				}
+				catch { }
 			}
-			catch { }
+
+			CurrentCulture = CultureInfo.CurrentCulture;
 		}
 
 		public static void SetLanguage(CultureInfo cultureInfo)
 		{
-			Thread.CurrentThread.CurrentUICulture = cultureInfo;
+			CurrentCulture = cultureInfo;
 
 			ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "Shared");
 
@@ -124,8 +133,8 @@ namespace Extensions
 
 		public string GetText(string key)
 		{
-			var dic = _locale.ContainsKey(CultureInfo.CurrentUICulture.IetfLanguageTag)
-				? _locale[CultureInfo.CurrentUICulture.IetfLanguageTag]
+			var dic = _locale.ContainsKey(CurrentCulture.IetfLanguageTag)
+				? _locale[CurrentCulture.IetfLanguageTag]
 				: _locale[string.Empty];
 
 			if (dic.ContainsKey(key))
@@ -139,8 +148,8 @@ namespace Extensions
 			foreach (var item in _locales)
 			{
 				var locale = item._locale;
-				var dic = locale.ContainsKey(CultureInfo.CurrentUICulture.IetfLanguageTag)
-					? locale[CultureInfo.CurrentUICulture.IetfLanguageTag]
+				var dic = locale.ContainsKey(CurrentCulture.IetfLanguageTag)
+					? locale[CurrentCulture.IetfLanguageTag]
 					: locale[string.Empty];
 
 				if (dic.ContainsKey(key))
