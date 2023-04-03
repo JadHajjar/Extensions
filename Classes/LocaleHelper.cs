@@ -145,6 +145,8 @@ namespace Extensions
 
 		public static string GetGlobalText(string key)
 		{
+			if (string.IsNullOrEmpty(key)) return string.Empty;
+
 			foreach (var item in _locales)
 			{
 				var locale = item._locale;
