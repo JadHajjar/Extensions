@@ -55,6 +55,12 @@ namespace Extensions
 
 		private static void getConnectionState()
 		{
+			if (ISave.CurrentPlatform == Platform.MacOSX)
+			{
+				State = ConnectionState.Connected;
+				return;
+			}
+
 			try
 			{
 				if (State == ConnectionState.Disconnected)

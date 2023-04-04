@@ -14,7 +14,24 @@ namespace Extensions
 		public static void AddIfNotNull<T>(this IList<T> list, T item) where T : class
 		{
 			if (item != null)
+			{
 				list.Add(item);
+			}
+		}
+
+		public static List<T> AllWhere<T>(this IEnumerable<T> values, Predicate<T> predicate)
+		{
+			var list = new List<T>();
+
+			foreach (var item in values)
+			{
+				if (predicate(item))
+				{
+					list.Add(item);
+				}
+			}
+
+			return list;
 		}
 
 		/// <summary>
@@ -27,7 +44,9 @@ namespace Extensions
 			if (Source != null)
 			{
 				foreach (var item in Source)
+				{
 					list.Add(Conversion(item));
+				}
 			}
 		}
 
@@ -35,13 +54,17 @@ namespace Extensions
 		/// Checks if any of the elements in the first <see cref="IEnumerable{T}"/> is equal to any element in the second
 		/// </summary>
 		public static bool Any<T>(this IEnumerable<T> l, IEnumerable<T> list)
-			=> l.Any(x => list.Any(y => x.Equals(y)));
+		{
+			return l.Any(x => list.Any(y => x.Equals(y)));
+		}
 
 		/// <summary>
 		/// Checks if any of the elements in the first <see cref="IEnumerable{T}"/> is equal to one element
 		/// </summary>
 		public static bool Any<T>(this IEnumerable<T> l, T item)
-			=> l.Any(x => x.Equals(item));
+		{
+			return l.Any(x => x.Equals(item));
+		}
 
 		/// <summary>
 		/// Checks if any of the elements in the first <see cref="IEnumerable{T}"/> is equal to one element
@@ -51,7 +74,9 @@ namespace Extensions
 			if (list.Length == 0)
 			{
 				foreach (var item in l)
+				{
 					return true;
+				}
 
 				return false;
 			}
@@ -63,7 +88,9 @@ namespace Extensions
 		/// Converts this <see cref="IEnumerable{T}"/> to an <see cref="IEnumerable{T2}"/> using the conversion <paramref name="func"/>
 		/// </summary>
 		public static IEnumerable<T2> Convert<T, T2>(this IEnumerable<T> list, Func<T, T2> func)
-			=> list.Select(func);
+		{
+			return list.Select(func);
+		}
 
 		/// <summary>
 		/// Converts this <see cref="MatchCollection"/> to an <see cref="IEnumerable{T}"/> using the conversion <paramref name="func"/>
@@ -71,7 +98,9 @@ namespace Extensions
 		public static IEnumerable<T> Convert<T>(this MatchCollection list, Func<Match, T> func)
 		{
 			foreach (var item in list)
+			{
 				yield return func(item as Match);
+			}
 		}
 
 		/// <summary>
@@ -84,7 +113,9 @@ namespace Extensions
 				foreach (var item in list)
 				{
 					foreach (var item2 in func(item))
+					{
 						yield return item2;
+					}
 				}
 			}
 		}
@@ -95,10 +126,14 @@ namespace Extensions
 		public static void Cut<T>(this List<T> list, int startIndex, int count)
 		{
 			for (var i = startIndex + count; i < list.Count; i++)
+			{
 				list.RemoveAt(i);
+			}
 
 			for (var i = 0; i < startIndex; i++)
+			{
 				list.RemoveAt(i);
+			}
 		}
 
 		public static IEnumerable<T> Distinct<T>(this IEnumerable<T> list, Func<T, T, bool> comparer)
@@ -134,7 +169,9 @@ namespace Extensions
 		/// Returns the first element in the <see cref="IEnumerable{T}"/> that satisfies the <paramref name="predictate"/>
 		/// </summary>
 		public static T FirstThat<T>(this IEnumerable<T> list, Func<T, bool> predictate)
-			=> list.FirstOrDefault(predictate);
+		{
+			return list.FirstOrDefault(predictate);
+		}
 
 		/// <summary>
 		/// Runs an <paramref name="action"/> for each item in the <see cref="IEnumerable{T}"/>
@@ -151,27 +188,38 @@ namespace Extensions
 		/// Checks if the <see cref="IEnumerable{T}"/> only contains one element being <paramref name="item"/>
 		/// </summary>
 		public static bool IsOnly<T>(this IEnumerable<T> list, T item)
-			=> list.Count() == 1 && list.First().Equals(item);
+		{
+			return list.Count() == 1 && list.First().Equals(item);
+		}
 
 		/// <summary>
 		/// Returns the last element in the <see cref="IEnumerable{T}"/> that satisfies the <paramref name="predictate"/>
 		/// </summary>
 		public static T LastThat<T>(this IEnumerable<T> list, Func<T, bool> predictate)
-			=> list.LastOrDefault(predictate);
+		{
+			return list.LastOrDefault(predictate);
+		}
 
 		public static T Next<T>(this IEnumerable<T> enumerable, T item, bool circleBack = false)
 		{
 			if (!enumerable?.Any() ?? true)
+			{
 				return item;
+			}
 
 			var found = false;
 
 			foreach (var it in enumerable)
 			{
 				if (found)
+				{
 					return it;
+				}
+
 				if (it.Equals(item))
+				{
 					found = true;
+				}
 			}
 
 			return circleBack ? enumerable.FirstOrDefault() : default;
@@ -180,16 +228,23 @@ namespace Extensions
 		public static T Previous<T>(this IEnumerable<T> enumerable, T item, bool circleBack = false)
 		{
 			if (!enumerable?.Any() ?? true)
+			{
 				return item;
+			}
 
 			var found = false;
 
 			foreach (var it in enumerable.Reverse())
 			{
 				if (found)
+				{
 					return it;
+				}
+
 				if (it.Equals(item))
+				{
 					found = true;
+				}
 			}
 
 			return circleBack ? enumerable.LastOrDefault() : default;
@@ -200,7 +255,9 @@ namespace Extensions
 			try
 			{
 				if (enumerable != null && enumerable.Count() > index)
+				{
 					return enumerable.ElementAtOrDefault(index);
+				}
 			}
 			catch { }
 
@@ -212,7 +269,9 @@ namespace Extensions
 			try
 			{
 				if (enumerable.ContainsKey(index))
+				{
 					return enumerable[index];
+				}
 			}
 			catch { }
 
@@ -225,24 +284,34 @@ namespace Extensions
 		public static void RemoveRange<T>(this List<T> list, IEnumerable<T> source)
 		{
 			foreach (var item in source)
+			{
 				list.Remove(item);
+			}
 		}
 
 		public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int count)
-			=> source.Skip(Math.Max(0, source.Count() - count));
+		{
+			return source.Skip(Math.Max(0, source.Count() - count));
+		}
 
 		public static IEnumerable<T> ThatAre<T>(this IEnumerable<object> source)
-			=> source.OfType<T>();
+		{
+			return source.OfType<T>();
+		}
 
 		public static IEnumerable<T> Trim<T>(this IEnumerable<T> list, Func<T, bool> comparer)
 		{
 			var items = new List<T>(list);
 
 			while (items.Any() && comparer(items[0]))
+			{
 				items.RemoveAt(0);
+			}
 
 			while (items.Any() && comparer(items[items.Count - 1]))
+			{
 				items.RemoveAt(items.Count - 1);
+			}
 
 			return items;
 		}
@@ -252,10 +321,14 @@ namespace Extensions
 			var items = new List<T>(list);
 
 			while (items.Any() && comparVal.Equals(items[0]))
+			{
 				items.RemoveAt(0);
+			}
 
 			while (items.Any() && comparVal.Equals(items[items.Count - 1]))
+			{
 				items.RemoveAt(items.Count - 1);
+			}
 
 			return items;
 		}
@@ -266,7 +339,9 @@ namespace Extensions
 		public static IEnumerable<T> Trim<T>(this IEnumerable<T> list, int startIndex, int count)
 		{
 			if (startIndex > list.Count())
+			{
 				throw new IndexOutOfRangeException();
+			}
 
 			foreach (var item in list)
 			{
@@ -274,7 +349,9 @@ namespace Extensions
 				{
 					yield return item;
 					if (--count <= 0)
+					{
 						break;
+					}
 				}
 			}
 		}
