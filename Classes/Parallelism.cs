@@ -11,9 +11,9 @@ namespace Extensions
 	{
 		public static void ForEach<TSource>(List<TSource> source, Action<TSource> body)
 		{
-			if (ISave.CurrentPlatform == Platform.Windows)
+			if (ISave.CurrentPlatform == Platform.Windows && source.Count > 10)
 			{
-				Parallel.ForEach(source, body);
+				Parallel.ForEach(source, new ParallelOptions() { MaxDegreeOfParallelism = (source.Count / 100).Between(1, 100) }, body);
 				return;
 			}
 
