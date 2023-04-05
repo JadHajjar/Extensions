@@ -19,6 +19,18 @@ namespace Extensions
 			}
 		}
 
+		public static List<T> ToList<T, TSource>(this IEnumerable<TSource> values, Func<TSource, T> conversion)
+		{
+			var list = new List<T>();
+
+			foreach (var item in values)
+			{
+				list.Add(conversion(item));
+			}
+
+			return list;
+		}
+
 		public static List<T> AllWhere<T>(this IEnumerable<T> values, Predicate<T> predicate)
 		{
 			var list = new List<T>();

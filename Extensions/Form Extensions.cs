@@ -315,6 +315,20 @@ namespace Extensions
 			return true;
 		}
 
+		public static bool TryBeginInvoke(this Control control, action action)
+		{
+			try
+			{
+				if (control?.IsHandleCreated ?? false)
+					control.BeginInvoke(new Action(() => { try { action(); } catch { } }));
+				else
+					action();
+			}
+			catch { return false; }
+
+			return true;
+		}
+
 		public static Control GetCurrentlyFocusedControl(this Control control)
 		{
 			if (control.Focused) return control;
