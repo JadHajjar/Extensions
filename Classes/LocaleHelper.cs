@@ -115,16 +115,17 @@ namespace Extensions
 				if (lines[i][0].Length == 0)
 					continue;
 
+				var langKey = lines[i][0];
+
+				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+					langKey = langKey.Substring(1, langKey.Length - 2);
+
 				for (var j = 1; j < lines[i].Length; j++)
 				{
 					var value = lines[i][j];
-					var langKey = lines[i][0];
 
 					if (value.StartsWith("\"") && value.EndsWith("\""))
 						value = value.Substring(1, value.Length - 2);
-
-					if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
-						langKey = langKey.Substring(1, langKey.Length - 2);
 
 					dics[j - 1][langKey] = value.Replace("\"\"", "\"").Trim();
 				}

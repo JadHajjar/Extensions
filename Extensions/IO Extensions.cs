@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -40,6 +39,38 @@ namespace Extensions
 			return true;
 		}
 
+		public static bool DeleteFolder(string folderPath)
+		{
+			var res = true;
+			// Delete all files inside the folder
+			foreach (var file in Directory.GetFiles(folderPath))
+			{
+				DeleteFile(file);
+			}
+
+			// Recursively delete all subdirectories inside the folder
+			foreach (var subDir in Directory.GetDirectories(folderPath))
+			{
+				res &= DeleteFolder(subDir);
+			}
+
+			// Finally, delete the main folder
+			if (ISave.CurrentPlatform is Platform.MacOSX)
+			{
+				try
+				{
+					Directory.Delete(folderPath);
+				}
+				catch { }
+			}
+			else
+			{
+				Directory.Delete(folderPath);
+			}
+
+			return res && !Directory.Exists(folderPath);
+		}
+
 		public static void DeleteFile(string file)
 		{
 			if (ISave.CurrentPlatform is Platform.MacOSX)
@@ -75,7 +106,9 @@ namespace Extensions
 		public static bool PathEquals(this string path1, string path2)
 		{
 			if (path1 == path2)
+			{
 				return true;
+			}
 
 			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
@@ -99,7 +132,9 @@ namespace Extensions
 			var index = normalizedPath1.IndexOf(normalizedPath2, StringComparison.OrdinalIgnoreCase);
 
 			if (index != 0)
+			{
 				return path1;
+			}
 
 			return path1.Remove(index, normalizedPath2.Length).Insert(index, path);
 		}

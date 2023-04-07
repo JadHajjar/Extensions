@@ -142,7 +142,7 @@ namespace Extensions
 		/// </summary>
 		public static string[] GetWords(this string S, bool includeNumbers = false)
 		{
-			return (S == string.Empty) ? new string[0] : Regex.Matches(S, @"\b" + (includeNumbers ? "" : "(?![0-9])") + @"(\w+)(?:'\w+)?\b")
+			return string.IsNullOrWhiteSpace(S) ? new string[0] : Regex.Matches(S, @"\b" + (includeNumbers ? "" : "(?![0-9])") + @"(\w+)(?:'\w+)?\b")
 						.Convert(x => x.Groups[1].Value).ToArray();
 		}
 
