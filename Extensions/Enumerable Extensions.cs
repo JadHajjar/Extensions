@@ -178,14 +178,6 @@ namespace Extensions
 		}
 
 		/// <summary>
-		/// Returns the first element in the <see cref="IEnumerable{T}"/> that satisfies the <paramref name="predictate"/>
-		/// </summary>
-		public static T FirstThat<T>(this IEnumerable<T> list, Func<T, bool> predictate)
-		{
-			return list.FirstOrDefault(predictate);
-		}
-
-		/// <summary>
 		/// Runs an <paramref name="action"/> for each item in the <see cref="IEnumerable{T}"/>
 		/// </summary>
 		public static void Foreach<T>(this IEnumerable<T> list, DynamicAction<T> action)

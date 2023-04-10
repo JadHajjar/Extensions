@@ -489,17 +489,6 @@ namespace Extensions
 			}
 		}
 
-		public static void DrawStringItem(this Graphics graphics, object item, Font font, Color foreColor, int maxWidth, double tab, ref int height, bool draw = true)
-		{
-			var x = (int)(tab * 12 + 5);
-			var bnds = graphics.MeasureString(item.ToString(), font, maxWidth - x);
-
-			if (draw)
-				graphics.DrawString(item.ToString(), font, new SolidBrush(foreColor), new Rectangle(x, height, maxWidth - x, (int)Math.Ceiling(bnds.Height)));
-
-			height += (int)(bnds.Height * 1.1F);
-		}
-
 		public static void RecursiveClick(this Control control, EventHandler handler)
 		{
 			control.Click += handler;

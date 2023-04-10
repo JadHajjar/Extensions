@@ -23,7 +23,7 @@ namespace Extensions
 		/// Forces the <see cref="int"/> to stay between two values
 		/// </summary>
 		public static int Between(this int obj, int Min, int Max)
-			=> Math.Min(Max, Math.Max(Min, obj));
+			=> Min<Max?Math.Min(Max, Math.Max(Min, obj)): Math.Max(Min, Math.Min(Max, obj));
 
 		/// <summary>
 		/// Forces the <see cref="double"/> to stay between two values
