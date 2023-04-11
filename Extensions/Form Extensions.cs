@@ -803,16 +803,17 @@ namespace Extensions
 			}
 		}
 
-		public static Size GetProportionalDownscaledSize(this Size originalSize, int sizeLimit)
+		public static Size GetProportionalDownscaledSize(this Size originalSize, int sizeLimit, bool widthOnly = false)
 		{
 			// If the original size is already within the limit, return it
-			if (originalSize.Width <= sizeLimit && originalSize.Height <= sizeLimit)
+			if (originalSize.Width <= sizeLimit && (widthOnly || originalSize.Height <= sizeLimit))
 			{
 				return originalSize;
 			}
 
 			// Determine the scaling factor required to fit within the limit
-			var scaleFactor = Math.Min((float)sizeLimit / originalSize.Width, (float)sizeLimit / originalSize.Height);
+			var scaleFactor = widthOnly ? (float)sizeLimit / originalSize.Width :
+				Math.Min((float)sizeLimit / originalSize.Width, (float)sizeLimit / originalSize.Height);
 
 			// Calculate the new scaled size
 			var newWidth = (int)Math.Round(originalSize.Width * scaleFactor);
