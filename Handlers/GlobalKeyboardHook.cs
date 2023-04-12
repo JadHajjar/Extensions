@@ -45,7 +45,11 @@ namespace Extensions
 				}
 			}
 
+#if NET47
+			public event EventHandler<KeyPressedEventArgs> KeyPressed;
+#else
 			public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
+#endif
 
 			#region IDisposable Members
 
@@ -82,7 +86,12 @@ namespace Extensions
 		/// <summary>
 		/// A hot key has been pressed.
 		/// </summary>
+
+#if NET47
+		public event EventHandler<KeyPressedEventArgs> KeyPressed;
+#else
 		public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
+#endif
 
 		#region IDisposable Members
 
