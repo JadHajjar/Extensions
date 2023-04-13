@@ -28,6 +28,11 @@ namespace Extensions
 				|| (abbreviation1.StartsWith(string2.Where(x => x != ' ')) && abbreviation1.Length > 2);
 		}
 
+		public static bool Contains(this string s, string text, StringComparison comparison)
+		{
+			return s.IndexOf(text, comparison) != -1;
+		}
+
 		public static IEnumerable<string> WhereNotEmpty(this IEnumerable<string> enumerable)
 		{
 			return enumerable.Where(x => !string.IsNullOrWhiteSpace(x));
