@@ -35,7 +35,7 @@ namespace Extensions
 
 		public event AnimationTick OnEnd;
 
-		public static bool NoAnimations { get; set; }
+		public static bool NoAnimations { get => _noAnimations && ISave.CurrentPlatform == Platform.Windows; set => _noAnimations = value; }
 
 		public Control AnimatedControl { get; }
 		public ReadOnlyCollection<IAnimatable> Animations { get; }
@@ -48,7 +48,7 @@ namespace Extensions
 		private Timer timer;
 		private Action endAction;
 		private bool disposedValue;
-
+		private static bool _noAnimations;
 		private static readonly List<AnimationHandler> runningHandlers = new List<AnimationHandler>();
 		private static readonly object lockObj = new object();
 
@@ -117,61 +117,61 @@ namespace Extensions
 
 		#region Static Animations
 
-		public static void Animate(Control animatedControl, IList<IAnimatable> animations, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, IList<IAnimatable> animations, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null)
 			=> new AnimationHandler(animatedControl, animations, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, IAnimatable animations, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, IAnimatable animations, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null)
 			=> new AnimationHandler(animatedControl, new[] { animations }, speed, options).StartAnimation(action);
 
-		public static void Animate<T>(T animatedControl, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null) where T : Control, IAnimatable
+		public static AnimationHandler Animate<T>(T animatedControl, double speed = 1, AnimationOption options = AnimationOption.None, Action action = null) where T : Control, IAnimatable
 			=> new AnimationHandler(animatedControl, new[] { animatedControl }, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Padding newPadding, double speed, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Padding newPadding, double speed, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newPadding, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Padding newPadding, double speed, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Padding newPadding, double speed, Action action = null)
 			=> new AnimationHandler(animatedControl, newPadding, speed, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Padding newPadding, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Padding newPadding, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newPadding, 1, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Padding newPadding, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Padding newPadding, Action action = null)
 			=> new AnimationHandler(animatedControl, newPadding, 1, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Rectangle newBounds, double speed, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Rectangle newBounds, double speed, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Rectangle newBounds, double speed, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Rectangle newBounds, double speed, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Rectangle newBounds, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Rectangle newBounds, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Rectangle newBounds, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Rectangle newBounds, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Point newBounds, double speed, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Point newBounds, double speed, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Point newBounds, double speed, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Point newBounds, double speed, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Point newBounds, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Point newBounds, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Point newBounds, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Point newBounds, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Size newBounds, double speed, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Size newBounds, double speed, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Size newBounds, double speed, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Size newBounds, double speed, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, speed, AnimationOption.None).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Size newBounds, AnimationOption options, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Size newBounds, AnimationOption options, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, options).StartAnimation(action);
 
-		public static void Animate(Control animatedControl, Size newBounds, Action action = null)
+		public static AnimationHandler Animate(Control animatedControl, Size newBounds, Action action = null)
 			=> new AnimationHandler(animatedControl, newBounds, AnimationOption.None).StartAnimation(action);
 
 		#endregion Static Animations
@@ -183,7 +183,8 @@ namespace Extensions
 			lock (lockObj)
 				toStop.AddRange(runningHandlers.Where(x => x.AnimatedControl == control && (options == null || x.Options == options)));
 
-			foreach (var item in toStop) item.Dispose();
+			foreach (var item in toStop)
+				item.Dispose();
 		}
 
 		public static bool IsAnimated(Control control, AnimationOption? options = null)
@@ -198,9 +199,10 @@ namespace Extensions
 				return runningHandlers.FirstOrDefault(x => x.Animating && x.AnimatedControl == control && (options == null || x.Options == options));
 		}
 
-		public void StartAnimation(Action action = null)
+		public AnimationHandler StartAnimation(Action action = null)
 		{
-			if (AnimatedControl?.IsDisposed ?? true) return;
+			if (AnimatedControl?.IsDisposed ?? true)
+				return this;
 
 			endAction = action;
 
@@ -211,7 +213,8 @@ namespace Extensions
 				lock (lockObj)
 					toStop.AddRange(runningHandlers.Where(x => x.AnimatedControl == AnimatedControl && x.Options == Options));
 
-				foreach (var item in toStop) item.Dispose();
+				foreach (var item in toStop)
+					item.Dispose();
 
 				lock (lockObj)
 					runningHandlers.Add(this);
@@ -233,6 +236,8 @@ namespace Extensions
 
 				Dispose();
 			}
+
+			return this;
 		}
 
 		public void StopAnimation()
@@ -374,7 +379,8 @@ namespace Extensions
 
 			int getStep(double diff)
 			{
-				if (diff == 0) return 0;
+				if (diff == 0)
+					return 0;
 
 				var sign = diff.Sign();
 				var x = Math.Abs(diff) + 500;

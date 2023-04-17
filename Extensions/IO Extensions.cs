@@ -142,19 +142,22 @@ namespace Extensions
 		/// <summary>
 		/// Creates a windows Shortcut (.lnk)
 		/// </summary>
-		/// <param name="Shortcut">Path of the Shortcut to create</param>
-		/// <param name="TargetPath">Reference Path of the Shortcut</param>
-		public static void CreateShortcut(string Shortcut, string TargetPath)
+		/// <param name="shortcut">Path of the Shortcut to create</param>
+		/// <param name="targetPath">Reference Path of the Shortcut</param>
+		public static void CreateShortcut(string shortcut, string targetPath, string arguments = "", string description = "")
 		{
-			var t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
-			dynamic shell = Activator.CreateInstance(t);
+			var shell = new IWshRuntimeLibrary.WshShell();
+
 			try
 			{
-				var lnk = shell.CreateShortcut(Shortcut);
+				var lnk = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcut);
+
 				try
 				{
-					lnk.WorkingDirectory = Directory.GetParent(TargetPath).FullName;
-					lnk.TargetPath = TargetPath;
+					lnk.WorkingDirectory = Directory.GetParent(targetPath).FullName;
+					lnk.TargetPath = targetPath;
+					lnk.Arguments = arguments;
+					lnk.Description = description;
 					lnk.Save();
 				}
 				finally
@@ -171,9 +174,9 @@ namespace Extensions
 		/// <summary>
 		/// Creates a Shortcut for the file at the <paramref name="shortcutPath"/>
 		/// </summary>
-		public static void CreateShortcut(this FileInfo file, string shortcutPath)
+		public static void CreateShortcut(this FileInfo file, string shortcutPath, string arguments = "", string description = "")
 		{
-			CreateShortcut(shortcutPath, file.FullName);
+			CreateShortcut(shortcutPath, file.FullName, arguments, description);
 		}
 
 		public static string EscapeFileName(this string path)
