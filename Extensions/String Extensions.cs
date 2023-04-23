@@ -341,7 +341,7 @@ namespace Extensions
 			if (string.IsNullOrWhiteSpace(searchTerm) || string.IsNullOrWhiteSpace(termToBeSearched))
 				return false;
 
-			if (SpellCheck(searchTerm, termToBeSearched, caseCheck) <= (int)Math.Ceiling((termToBeSearched.Length - 4) / 4.5M))
+			if (SpellCheck(searchTerm, termToBeSearched.Substring(0, Math.Min(termToBeSearched.Length, searchTerm.Length)), caseCheck) <= (int)Math.Ceiling((searchTerm.Length - 3) / 5M))
 				return true;
 
 			if (termToBeSearched.IndexOf(searchTerm, caseCheck ? StringComparison.CurrentCulture : StringComparison.InvariantCultureIgnoreCase) >= 0)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -33,16 +34,6 @@ namespace Extensions
 
 			foreach (Control child in control.Controls)
 				AdvancedSetTooltip(toolTip, child, tip);
-		}
-
-		public static void SetUp(this Graphics graphics, Color? backColor = null)
-		{
-			if (backColor != null)
-				graphics.Clear(backColor.Value);
-
-			graphics.SmoothingMode = SmoothingMode.HighQuality;
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-			graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 		}
 
 		public static Rectangle Align(this Rectangle rect, Size size, ContentAlignment alignment)

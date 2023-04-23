@@ -35,7 +35,7 @@ namespace Extensions
 
 		public event AnimationTick OnEnd;
 
-		public static bool NoAnimations { get => _noAnimations && ISave.CurrentPlatform == Platform.Windows; set => _noAnimations = value; }
+		public static bool NoAnimations { get => _noAnimations || ISave.CurrentPlatform != Platform.Windows; set => _noAnimations = value; }
 
 		public Control AnimatedControl { get; }
 		public ReadOnlyCollection<IAnimatable> Animations { get; }

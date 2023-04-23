@@ -86,7 +86,11 @@ namespace Extensions
 
 		public static float ClosestMultipleTo(this float f, float max)
 		{
+			if (f > max)
+				return f;
+
 			float current = 0;
+
 			while (current + f <= max)
 				current += f;
 
@@ -95,6 +99,9 @@ namespace Extensions
 
 		public static int ClosestMultipleTo(this int f, int max)
 		{
+			if (f > max)
+				return f;
+
 			int current = 0;
 			while (current + f <= max)
 				current += f;
@@ -104,6 +111,9 @@ namespace Extensions
 
 		public static double ClosestMultipleTo(this double f, double max)
 		{
+			if (f > max)
+				return f;
+
 			double current = 0;
 			while (current + f <= max)
 				current += f;

@@ -25,7 +25,7 @@ namespace Extensions
 			{
 				case FormState.NormalFocused:
 				case FormState.ForcedFocused:
-					return FormDesign.Design.BackColor.MergeColor(FormDesign.Design.ActiveColor, 70);
+					return FormDesign.Design.BackColor.MergeColor(FormDesign.Design.ActiveColor, 55);
 
 				case FormState.Busy:
 					return FormDesign.Design.RedColor;

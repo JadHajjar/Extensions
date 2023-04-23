@@ -22,5 +22,19 @@ namespace Extensions
 				body(source[i]);
 			}
 		}
+
+		public static void ForEach(List<ExtensionClass.action> source)
+		{
+			if (ISave.CurrentPlatform == Platform.Windows && source.Count > 10)
+			{
+				Parallel.ForEach(source, new ParallelOptions() { MaxDegreeOfParallelism = (source.Count / 100).Between(1, 100) }, x => x());
+				return;
+			}
+
+			for (var i = 0; i < source.Count; i++)
+			{
+				source[i]();
+			}
+		}
 	}
 }
