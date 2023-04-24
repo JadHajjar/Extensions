@@ -712,7 +712,7 @@ namespace Extensions
 			if (botleft)
 				path.AddArc(arc, 90, 90);
 			else
-				path.AddLine(bounds.X, bounds.Y + bounds.Height, bounds.X, bounds.Y);
+				path.AddLine(bounds.X, bounds.Y + bounds.Height, bounds.X, topleft ? bounds.Y + radius : bounds.Y);
 
 			path.CloseFigure();
 			return path;
