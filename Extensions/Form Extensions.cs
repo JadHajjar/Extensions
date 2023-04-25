@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Windows.Forms;
-
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace Extensions
 {
@@ -33,7 +30,9 @@ namespace Extensions
 			toolTip.SetToolTip(control, tip);
 
 			foreach (Control child in control.Controls)
+			{
 				AdvancedSetTooltip(toolTip, child, tip);
+			}
 		}
 
 		public static Rectangle Align(this Rectangle rect, Size size, ContentAlignment alignment)
@@ -43,19 +42,19 @@ namespace Extensions
 				case ContentAlignment.TopLeft:
 					return new Rectangle(rect.X, rect.Y, size.Width, size.Height);
 				case ContentAlignment.TopCenter:
-					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y, size.Width, size.Height);
+					return new Rectangle(rect.X + ((rect.Width - size.Width) / 2), rect.Y, size.Width, size.Height);
 				case ContentAlignment.TopRight:
 					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y, size.Width, size.Height);
 				case ContentAlignment.MiddleLeft:
-					return new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+					return new Rectangle(rect.X, rect.Y + ((rect.Height - size.Height) / 2), size.Width, size.Height);
 				case ContentAlignment.MiddleCenter:
-					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+					return new Rectangle(rect.X + ((rect.Width - size.Width) / 2), rect.Y + ((rect.Height - size.Height) / 2), size.Width, size.Height);
 				case ContentAlignment.MiddleRight:
-					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
+					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y + ((rect.Height - size.Height) / 2), size.Width, size.Height);
 				case ContentAlignment.BottomLeft:
 					return new Rectangle(rect.X, rect.Y + rect.Height - size.Height, size.Width, size.Height);
 				case ContentAlignment.BottomCenter:
-					return new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + rect.Height - size.Height, size.Width, size.Height);
+					return new Rectangle(rect.X + ((rect.Width - size.Width) / 2), rect.Y + rect.Height - size.Height, size.Width, size.Height);
 				case ContentAlignment.BottomRight:
 					return new Rectangle(rect.X + rect.Width - size.Width, rect.Y + rect.Height - size.Height, size.Width, size.Height);
 				default:
@@ -63,59 +62,115 @@ namespace Extensions
 			}
 		}
 
-		public static Rectangle Pad(this Rectangle rect, Padding padding) => Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		public static Rectangle Pad(this Rectangle rect, Padding padding)
+		{
+			return Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		}
 
-		public static Rectangle Pad(this Rectangle rect, int all) => Pad(rect, all, all, all, all);
+		public static Rectangle Pad(this Rectangle rect, int all)
+		{
+			return Pad(rect, all, all, all, all);
+		}
 
-		public static Rectangle Pad(this Rectangle rect, int left, int top, int right, int bottom) => new Rectangle(rect.X + left, rect.Y + top, rect.Width - left - right, rect.Height - top - bottom);
+		public static Rectangle Pad(this Rectangle rect, int left, int top, int right, int bottom)
+		{
+			return new Rectangle(rect.X + left, rect.Y + top, rect.Width - left - right, rect.Height - top - bottom);
+		}
 
-		public static RectangleF Pad(this RectangleF rect, Padding padding) => Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		public static RectangleF Pad(this RectangleF rect, Padding padding)
+		{
+			return Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		}
 
-		public static RectangleF Pad(this RectangleF rect, float all) => Pad(rect, all, all, all, all);
+		public static RectangleF Pad(this RectangleF rect, float all)
+		{
+			return Pad(rect, all, all, all, all);
+		}
 
-		public static RectangleF Pad(this RectangleF rect, float left, float top, float right, float bottom) => new RectangleF(rect.X + left, rect.Y + top, rect.Width - left - right, rect.Height - top - bottom);
+		public static RectangleF Pad(this RectangleF rect, float left, float top, float right, float bottom)
+		{
+			return new RectangleF(rect.X + left, rect.Y + top, rect.Width - left - right, rect.Height - top - bottom);
+		}
 
-		public static Rectangle Margin(this Rectangle rect, Padding padding) => Margin(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		public static Rectangle Margin(this Rectangle rect, Padding padding)
+		{
+			return Margin(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		}
 
-		public static Rectangle Margin(this Rectangle rect, int all) => Margin(rect, all, all, all, all);
+		public static Rectangle Margin(this Rectangle rect, int all)
+		{
+			return Margin(rect, all, all, all, all);
+		}
 
-		public static Rectangle Margin(this Rectangle rect, int left, int top, int right, int bottom) => new Rectangle(rect.X + left, rect.Y + top, rect.Width + left + right, rect.Height + top + bottom);
+		public static Rectangle Margin(this Rectangle rect, int left, int top, int right, int bottom)
+		{
+			return new Rectangle(rect.X + left, rect.Y + top, rect.Width + left + right, rect.Height + top + bottom);
+		}
 
-		public static RectangleF Margin(this RectangleF rect, Padding padding) => Margin(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		public static RectangleF Margin(this RectangleF rect, Padding padding)
+		{
+			return Margin(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);
+		}
 
-		public static RectangleF Margin(this RectangleF rect, float all) => Margin(rect, all, all, all, all);
+		public static RectangleF Margin(this RectangleF rect, float all)
+		{
+			return Margin(rect, all, all, all, all);
+		}
 
-		public static RectangleF Margin(this RectangleF rect, float left, float top, float right, float bottom) => new RectangleF(rect.X + left, rect.Y + top, rect.Width + left + right, rect.Height + top + bottom);
+		public static RectangleF Margin(this RectangleF rect, float left, float top, float right, float bottom)
+		{
+			return new RectangleF(rect.X + left, rect.Y + top, rect.Width + left + right, rect.Height + top + bottom);
+		}
 
 		public static Point Center(this Rectangle rect, Size controlSize)
-			=> new Point((rect.Width - controlSize.Width) / 2 + rect.X, (rect.Height - controlSize.Height) / 2 + rect.Y);
+		{
+			return new Point(((rect.Width - controlSize.Width) / 2) + rect.X, ((rect.Height - controlSize.Height) / 2) + rect.Y);
+		}
 
 		public static Point Center(this Rectangle rect, int width, int height)
-			=> new Point((rect.Width - width) / 2 + rect.X, (rect.Height - height) / 2 + rect.Y);
+		{
+			return new Point(((rect.Width - width) / 2) + rect.X, ((rect.Height - height) / 2) + rect.Y);
+		}
 
 		public static Point Center(this Size rect, Size controlSize)
-			=> new Point((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2);
+		{
+			return new Point((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2);
+		}
 
 		public static PointF Center(this RectangleF rect, SizeF controlSize)
-			=> new PointF((rect.Width - controlSize.Width) / 2 + rect.X, (rect.Height - controlSize.Height) / 2 + rect.Y);
+		{
+			return new PointF(((rect.Width - controlSize.Width) / 2) + rect.X, ((rect.Height - controlSize.Height) / 2) + rect.Y);
+		}
 
 		public static PointF Center(this SizeF rect, SizeF controlSize)
-			=> new PointF((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2);
+		{
+			return new PointF((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2);
+		}
 
 		public static Rectangle CenterR(this Rectangle rect, Size controlSize)
-			=> new Rectangle(new Point((rect.Width - controlSize.Width) / 2 + rect.X, (rect.Height - controlSize.Height) / 2 + rect.Y), controlSize);
+		{
+			return new Rectangle(new Point(((rect.Width - controlSize.Width) / 2) + rect.X, ((rect.Height - controlSize.Height) / 2) + rect.Y), controlSize);
+		}
 
 		public static Rectangle CenterR(this Rectangle rect, int width, int height)
-			=> new Rectangle(new Point((rect.Width - width) / 2 + rect.X, (rect.Height - height) / 2 + rect.Y), new Size(width, height));
+		{
+			return new Rectangle(new Point(((rect.Width - width) / 2) + rect.X, ((rect.Height - height) / 2) + rect.Y), new Size(width, height));
+		}
 
 		public static Rectangle CenterR(this Size rect, Size controlSize)
-			=> new Rectangle(new Point((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2), controlSize);
+		{
+			return new Rectangle(new Point((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2), controlSize);
+		}
 
 		public static RectangleF CenterR(this RectangleF rect, SizeF controlSize)
-			=> new RectangleF(new PointF((rect.Width - controlSize.Width) / 2 + rect.X, (rect.Height - controlSize.Height) / 2 + rect.Y), controlSize);
+		{
+			return new RectangleF(new PointF(((rect.Width - controlSize.Width) / 2) + rect.X, ((rect.Height - controlSize.Height) / 2) + rect.Y), controlSize);
+		}
 
 		public static RectangleF CenterR(this SizeF rect, SizeF controlSize)
-			=> new RectangleF(new PointF((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2), controlSize);
+		{
+			return new RectangleF(new PointF((rect.Width - controlSize.Width) / 2, (rect.Height - controlSize.Height) / 2), controlSize);
+		}
 
 		/// <summary>
 		/// Removes controls from the collection
@@ -129,25 +184,35 @@ namespace Extensions
 				if (testFunc == null || testFunc(controls[ix]))
 				{
 					if (dispose)
+					{
 						controls[ix].Dispose();
+					}
 					else
+					{
 						controls.RemoveAt(ix);
+					}
 				}
 			}
 		}
 
 		public static IEnumerable<T> GetControls<T>(this Form form) where T : Control
-		 => GetControls<T>(form);
+		{
+			return GetControls<T>(form);
+		}
 
 		public static IEnumerable<T> GetControls<T>(this Control control) where T : Control
 		{
 			if (control is T)
-				yield return (control as T);
+			{
+				yield return control as T;
+			}
 
 			foreach (Control item in control.Controls)
 			{
 				foreach (var ctrl in GetControls<T>(item))
-					yield return (ctrl as T);
+				{
+					yield return ctrl;
+				}
 			}
 		}
 
@@ -155,12 +220,17 @@ namespace Extensions
 		/// Colors the <see cref="Image"/> of a <see cref="PictureBox"/> with the <paramref name="color"/>
 		/// </summary>
 		public static void Color(this PictureBox pictureBox, Color color)
-			=> pictureBox.Image = pictureBox.Image.Color(color);
+		{
+			pictureBox.Image = pictureBox.Image.Color(color);
+		}
 
 		/// <summary>
 		/// Colors the <see cref="Image"/> with the <paramref name="color"/>
 		/// </summary>
-		public static Bitmap Color(this Image image, Color color, byte alpha = 255) => (image as Bitmap).Color(color, alpha);
+		public static Bitmap Color(this Image image, Color color, byte alpha = 255)
+		{
+			return (image as Bitmap).Color(color, alpha);
+		}
 
 		/// <summary>
 		/// Colors the <see cref="Bitmap"/> with the <paramref name="color"/>
@@ -199,11 +269,18 @@ namespace Extensions
 			catch { return null; }
 		}
 
-		public static Bitmap SafeColor(this Image image, Color color) => (image as Bitmap).SafeColor(color);
+		public static Bitmap SafeColor(this Image image, Color color)
+		{
+			return (image as Bitmap).SafeColor(color);
+		}
 
 		public static Bitmap SafeColor(this Bitmap bitmap, Color color)
 		{
-			if (bitmap == null) return null;
+			if (bitmap == null)
+			{
+				return null;
+			}
+
 			try
 			{
 				var W = bitmap.Width;
@@ -222,7 +299,10 @@ namespace Extensions
 			catch { return null; }
 		}
 
-		public static Bitmap Alpha(this Image image, int alpha) => (image as Bitmap).Alpha(alpha);
+		public static Bitmap Alpha(this Image image, int alpha)
+		{
+			return (image as Bitmap).Alpha(alpha);
+		}
 
 		public static Bitmap Alpha(this Bitmap bitmap, int alpha)
 		{
@@ -267,15 +347,19 @@ namespace Extensions
 				{
 					double temp2;
 					if (l < 0.5)
+					{
 						temp2 = l * (1.0 + s);
+					}
 					else
+					{
 						temp2 = l + s - (l * s);
+					}
 
-					var temp1 = 2.0 * l - temp2;
+					var temp1 = (2.0 * l) - temp2;
 
-					r = GetColorComponent(temp1, temp2, h + 1.0 / 3.0);
+					r = GetColorComponent(temp1, temp2, h + (1.0 / 3.0));
 					g = GetColorComponent(temp1, temp2, h);
-					b = GetColorComponent(temp1, temp2, h - 1.0 / 3.0);
+					b = GetColorComponent(temp1, temp2, h - (1.0 / 3.0));
 				}
 			}
 			return System.Drawing.Color.FromArgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
@@ -288,7 +372,10 @@ namespace Extensions
 		{
 			var l = new List<T>(list.Count);
 			foreach (var item in list)
+			{
 				l.Add(func(item));
+			}
+
 			return l.AsEnumerable();
 		}
 
@@ -297,9 +384,13 @@ namespace Extensions
 			try
 			{
 				if (control?.InvokeRequired ?? false)
+				{
 					control.Invoke(new Action(action));
+				}
 				else
+				{
 					action();
+				}
 			}
 			catch { return false; }
 
@@ -311,9 +402,13 @@ namespace Extensions
 			try
 			{
 				if (control?.IsHandleCreated ?? false)
+				{
 					control.BeginInvoke(new Action(() => { try { action(); } catch { } }));
+				}
 				else
+				{
 					action();
+				}
 			}
 			catch { return false; }
 
@@ -322,12 +417,18 @@ namespace Extensions
 
 		public static Control GetCurrentlyFocusedControl(this Control control)
 		{
-			if (control.Focused) return control;
+			if (control.Focused)
+			{
+				return control;
+			}
 
 			foreach (Control item in control.Controls)
 			{
 				var c = GetCurrentlyFocusedControl(item);
-				if (c != null) return c;
+				if (c != null)
+				{
+					return c;
+				}
 			}
 
 			return null;
@@ -336,9 +437,13 @@ namespace Extensions
 		public static void ResetFocus(this Control control)
 		{
 			if (control is IFirstFocus ff && ff?.FirstFocusedControl != null)
+			{
 				ff.FirstFocusedControl.Focus();
+			}
 			else if (control != null && !resetFocus(control))
+			{
 				control.Focus();
+			}
 		}
 
 		private static bool resetFocus(Control control)
@@ -346,9 +451,14 @@ namespace Extensions
 			foreach (var item in control.Controls.Cast<Control>().OrderBy(x => x.TabIndex))
 			{
 				if (item.Controls.Count > 0 && resetFocus(item))
+				{
 					return true;
+				}
+
 				if (item.TabStop && item.Focus())
+				{
 					return true;
+				}
 			}
 
 			return false;
@@ -358,20 +468,28 @@ namespace Extensions
 		/// Checks if a <see cref="Control"/> is ultimately visible to the User
 		/// </summary>
 		public static bool IsVisible(this Control control)
-			=> !control.IsHandleCreated || (control.Visible && (control.Parent != null ? IsVisible(control.Parent) : control is Form));
+		{
+			return !control.IsHandleCreated || (control.Visible && (control.Parent != null ? IsVisible(control.Parent) : control is Form));
+		}
 
 		/// <summary>
 		/// Checks if an <see cref="Image"/> is an animated GIF
 		/// </summary>
 		public static bool IsAnimated(this Image img)
-			=> img != null && img.GetFrameCount(new FrameDimension(img.FrameDimensionsList[0])) > 1;
+		{
+			return img != null && img.GetFrameCount(new FrameDimension(img.FrameDimensionsList[0])) > 1;
+		}
 
 		/// <summary>
 		/// Merges two Colors together
 		/// </summary>
 		public static Color MergeColor(this Color color, Color backColor, int Perc = 50)
 		{
-			if (backColor == null) return color;
+			if (backColor == null)
+			{
+				return color;
+			}
+
 			var R = (color.R * Perc / 100) + (backColor.R * (100 - Perc) / 100);
 			var G = (color.G * Perc / 100) + (backColor.G * (100 - Perc) / 100);
 			var B = (color.B * Perc / 100) + (backColor.B * (100 - Perc) / 100);
@@ -384,13 +502,18 @@ namespace Extensions
 		public static void OrderBy<TKey>(this Panel panel, Func<Control, TKey> keySelector, bool suspendDrawing = true)
 		{
 			if (panel == null || panel.Controls == null)
+			{
 				return;
+			}
 
 			var controls = panel.Controls.Cast<Control>();
 
 			var index = 0;
 			if (suspendDrawing)
+			{
 				panel.SuspendDrawing();
+			}
+
 			foreach (var item in controls.OrderBy(keySelector))
 			{
 				item.TabIndex = index;
@@ -398,7 +521,9 @@ namespace Extensions
 			}
 
 			if (suspendDrawing)
+			{
 				panel.ResumeDrawing();
+			}
 		}
 
 		/// <summary>
@@ -407,13 +532,18 @@ namespace Extensions
 		public static void OrderByDescending<TKey>(this Panel panel, Func<Control, TKey> keySelector, bool suspendDrawing = true)
 		{
 			if (panel == null || panel.Controls == null)
+			{
 				return;
+			}
 
 			var controls = panel.Controls.Cast<Control>();
 
 			var index = 0;
 			if (suspendDrawing)
+			{
 				panel.SuspendDrawing();
+			}
+
 			foreach (var item in controls.OrderByDescending(keySelector))
 			{
 				item.TabIndex = index;
@@ -421,7 +551,9 @@ namespace Extensions
 			}
 
 			if (suspendDrawing)
+			{
 				panel.ResumeDrawing();
+			}
 		}
 
 		/// <summary>
@@ -430,7 +562,9 @@ namespace Extensions
 		public static void OrderBy<TKey>(this Control.ControlCollection ctrls, Func<Control, TKey> keySelector, bool suspendDrawing = true)
 		{
 			if (ctrls == null)
+			{
 				return;
+			}
 
 			var controls = ctrls.Cast<Control>();
 
@@ -440,7 +574,10 @@ namespace Extensions
 
 				var index = 0;
 				if (suspendDrawing)
+				{
 					panel.SuspendDrawing();
+				}
+
 				foreach (var item in controls.OrderBy(keySelector))
 				{
 					item.TabIndex = index;
@@ -448,7 +585,9 @@ namespace Extensions
 				}
 
 				if (suspendDrawing)
+				{
 					panel.ResumeDrawing();
+				}
 			}
 		}
 
@@ -458,7 +597,9 @@ namespace Extensions
 		public static void OrderByDescending<TKey>(this Control.ControlCollection ctrls, Func<Control, TKey> keySelector, bool suspendDrawing = true)
 		{
 			if (ctrls == null)
+			{
 				return;
+			}
 
 			var controls = ctrls.Cast<Control>();
 
@@ -468,7 +609,10 @@ namespace Extensions
 
 				var index = 0;
 				if (suspendDrawing)
+				{
 					panel.SuspendDrawing();
+				}
+
 				foreach (var item in controls.OrderByDescending(keySelector))
 				{
 					item.TabIndex = index;
@@ -476,7 +620,9 @@ namespace Extensions
 				}
 
 				if (suspendDrawing)
+				{
 					panel.ResumeDrawing();
+				}
 			}
 		}
 
@@ -485,11 +631,15 @@ namespace Extensions
 			control.Click += handler;
 
 			foreach (Control child in control.Controls)
+			{
 				RecursiveClick(child, handler);
+			}
 		}
 
 		public static Color GetAverageColor(this Image bmp, Rectangle? rectangle = null)
-			=> (bmp as Bitmap).GetAverageColor(rectangle);
+		{
+			return (bmp as Bitmap).GetAverageColor(rectangle);
+		}
 
 		public static Color GetAverageColor(this Bitmap bmp, Rectangle? rectangle = null)
 		{
@@ -525,19 +675,32 @@ namespace Extensions
 			return System.Drawing.Color.FromArgb(r, g, b);
 		}
 
-		public static Image Blur(this Image image, int? radius = null, bool doNotDispose = false) => (image as Bitmap).Blur(radius, doNotDispose);
+		public static Image Blur(this Image image, int? radius = null, bool doNotDispose = false)
+		{
+			return (image as Bitmap).Blur(radius, doNotDispose);
+		}
 
 		public static Bitmap Blur(this Bitmap img, int? radius = null, bool doNotDispose = false)
 		{
-			if (img == null) return null;
+			if (img == null)
+			{
+				return null;
+			}
 
 			if (radius == 0)
+			{
 				return img;
+			}
 
-			if (doNotDispose) return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
+			if (doNotDispose)
+			{
+				return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
+			}
 
 			using (img)
+			{
 				return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
+			}
 
 			#region OldBlur
 
@@ -645,13 +808,19 @@ namespace Extensions
 			var b = color.GetBrightness();
 
 			if (b > .75)
+			{
 				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .2);
+			}
 
 			if (b < .25)
+			{
 				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .8);
+			}
 
 			if (b > .5)
+			{
 				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .05);
+			}
 
 			return ColorFromHSL(color.GetHue(), color.GetSaturation(), .95);
 		}
@@ -689,30 +858,46 @@ namespace Extensions
 
 			// top left arc
 			if (topleft)
+			{
 				path.AddArc(arc, 180, 90);
+			}
 			else
+			{
 				path.AddLine(bounds.X, bounds.Y, bounds.X + bounds.Width, bounds.Y);
+			}
 
 			// top right arc
 			arc.X = bounds.Right - diameter;
 			if (topright)
+			{
 				path.AddArc(arc, 270, 90);
+			}
 			else
+			{
 				path.AddLine(bounds.X + bounds.Width, bounds.Y, bounds.X + bounds.Width, bounds.Y + bounds.Height);
+			}
 
 			// bottom right arc
 			arc.Y = bounds.Bottom - diameter;
 			if (botright)
+			{
 				path.AddArc(arc, 0, 90);
+			}
 			else
+			{
 				path.AddLine(bounds.X + bounds.Width, bounds.Y + bounds.Height, bounds.X, bounds.Y + bounds.Height);
+			}
 
 			// bottom left arc
 			arc.X = bounds.Left;
 			if (botleft)
+			{
 				path.AddArc(arc, 90, 90);
+			}
 			else
+			{
 				path.AddLine(bounds.X, bounds.Y + bounds.Height, bounds.X, topleft ? bounds.Y + radius : bounds.Y);
+			}
 
 			path.CloseFigure();
 			return path;
@@ -721,9 +906,14 @@ namespace Extensions
 		public static void DrawRoundedRectangle(this Graphics graphics, Pen pen, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 		{
 			if (graphics == null)
+			{
 				throw new ArgumentNullException("graphics");
+			}
+
 			if (pen == null)
+			{
 				throw new ArgumentNullException("pen");
+			}
 
 			using (var path = RoundedRect(bounds, cornerRadius, topLeft, topRight, botRight, botLeft))
 			{
@@ -734,9 +924,14 @@ namespace Extensions
 		public static void FillRoundedRectangle(this Graphics graphics, Brush brush, Rectangle bounds, int cornerRadius, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 		{
 			if (graphics == null)
+			{
 				throw new ArgumentNullException("graphics");
+			}
+
 			if (brush == null)
+			{
 				throw new ArgumentNullException("brush");
+			}
 
 			using (var path = RoundedRect(bounds, cornerRadius, topLeft, topRight, botRight, botLeft))
 			{
@@ -755,7 +950,9 @@ namespace Extensions
 			using (var imageGraphics = Graphics.FromImage(newImage))
 			{
 				if (background != null)
+				{
 					imageGraphics.Clear(background.Value);
+				}
 
 				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
@@ -780,7 +977,9 @@ namespace Extensions
 			using (var imageGraphics = Graphics.FromImage(newImage))
 			{
 				if (background != null)
+				{
 					imageGraphics.Clear(background.Value);
+				}
 
 				imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 				imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
@@ -818,7 +1017,11 @@ namespace Extensions
 		/// </summary>
 		public static Bitmap Rotate(this Bitmap bitmap, RotateFlipType flipType = RotateFlipType.Rotate90FlipNone)
 		{
-			if (bitmap == null) return null;
+			if (bitmap == null)
+			{
+				return null;
+			}
+
 			bitmap.RotateFlip(flipType);
 			return bitmap;
 		}
@@ -832,10 +1035,14 @@ namespace Extensions
 		public static T ShowUp<T>(this T form, bool initialize) where T : Form, new()
 		{
 			if (initialize && (form == null || form.IsDisposed))
+			{
 				form = new T();
+			}
 
 			if (form.WindowState == FormWindowState.Minimized)
+			{
 				form.WindowState = FormWindowState.Normal;
+			}
 
 			form.Show();
 			form.Focus();
@@ -850,7 +1057,9 @@ namespace Extensions
 		public static void ShowUp(this Form form)
 		{
 			if (form.WindowState == FormWindowState.Minimized)
+			{
 				form.WindowState = FormWindowState.Normal;
+			}
 
 			form.Show();
 			form.Focus();
@@ -878,7 +1087,11 @@ namespace Extensions
 		/// <param name="Hue">Added Hue, ranges from -360 to 360</param>
 		public static Bitmap Tint(this Bitmap bitmap, float Lum = 0, float Sat = 0, float Hue = 0)
 		{
-			if (bitmap == null) return null;
+			if (bitmap == null)
+			{
+				return null;
+			}
+
 			var W = bitmap.Width;
 			var H = bitmap.Height;
 			double nH, nS, nL;
@@ -906,7 +1119,9 @@ namespace Extensions
 		/// <param name="Lum">Added Luminance, ranges from -100 to 100</param>
 		/// <param name="Sat">Added Saturation, ranges from -100 to 100</param>
 		public static Color Tint(this Color color, Color source, float Lum = 0, float Sat = 0)
-			=> color.Tint(source.GetHue(), Lum, Sat);
+		{
+			return color.Tint(source.GetHue(), Lum, Sat);
+		}
 
 		/// <summary>
 		/// Tints the <see cref="Color"/> with selected Luminance, Saturation and Hue
@@ -915,71 +1130,128 @@ namespace Extensions
 		/// <param name="Sat">Added Saturation, ranges from -100 to 100</param>
 		/// <param name="Hue">Added Hue, ranges from -360 to 360</param>
 		public static Color Tint(this Color color, float? Hue = null, float Lum = 0, float Sat = 0)
-			=> System.Drawing.Color.FromArgb(color.A, ColorFromHSL((double)(Hue ?? color.GetHue()) / 360, (color.GetSaturation() + (Sat / 100d)).Between(0, 1), (color.GetBrightness() + (Lum / 100d)).Between(0, 1)));
+		{
+			return System.Drawing.Color.FromArgb(color.A, ColorFromHSL((double)(Hue ?? color.GetHue()) / 360, (color.GetSaturation() + (Sat / 100d)).Between(0, 1), (color.GetBrightness() + (Lum / 100d)).Between(0, 1)));
+		}
 
 		/// <summary>
 		/// Returns a collection of the controls that match the <paramref name="test"/>
 		/// </summary>
 		public static IEnumerable<Control> Where(this Control.ControlCollection controls, Func<Control, bool> predicate)
-			=> controls.Cast<Control>().Where(predicate);
+		{
+			return controls.Cast<Control>().Where(predicate);
+		}
 
 		public static bool Any(this Control.ControlCollection controls, Func<Control, bool> predicate)
-			=> controls.Cast<Control>().Any(predicate);
+		{
+			return controls.Cast<Control>().Any(predicate);
+		}
 
 		public static Control FirstOrDefault(this Control.ControlCollection controls, Func<Control, bool> predicate)
-			=> controls.Cast<Control>().FirstOrDefault(predicate);
+		{
+			return controls.Cast<Control>().FirstOrDefault(predicate);
+		}
 
 		public static Control First(this Control.ControlCollection controls, Func<Control, bool> predicate)
-			=> controls.Cast<Control>().First(predicate);
+		{
+			return controls.Cast<Control>().First(predicate);
+		}
 
 		public static int Max(this Control.ControlCollection controls, Func<Control, int> predicate)
-			=> controls.Count == 0 ? 0 : controls.Cast<Control>().Max(predicate);
+		{
+			return controls.Count == 0 ? 0 : controls.Cast<Control>().Max(predicate);
+		}
 
 		public static double Max(this Control.ControlCollection controls, Func<Control, double> predicate)
-			=> controls.Count == 0 ? 0 : controls.Cast<Control>().Max(predicate);
+		{
+			return controls.Count == 0 ? 0 : controls.Cast<Control>().Max(predicate);
+		}
 
 		public static int Min(this Control.ControlCollection controls, Func<Control, int> predicate)
-			=> controls.Count == 0 ? 0 : controls.Cast<Control>().Min(predicate);
+		{
+			return controls.Count == 0 ? 0 : controls.Cast<Control>().Min(predicate);
+		}
 
 		public static double Min(this Control.ControlCollection controls, Func<Control, double> predicate)
-			=> controls.Count == 0 ? 0 : controls.Cast<Control>().Min(predicate);
+		{
+			return controls.Count == 0 ? 0 : controls.Cast<Control>().Min(predicate);
+		}
 
 		private static double GetColorComponent(double temp1, double temp2, double temp3)
 		{
 			if (temp3 < 0.0)
+			{
 				temp3 += 1.0;
+			}
 			else if (temp3 > 1.0)
+			{
 				temp3 -= 1.0;
+			}
 
 			if (temp3 < 1.0 / 6.0)
-				return temp1 + (temp2 - temp1) * 6.0 * temp3;
+			{
+				return temp1 + ((temp2 - temp1) * 6.0 * temp3);
+			}
 			else if (temp3 < 0.5)
+			{
 				return temp2;
+			}
 			else if (temp3 < 2.0 / 3.0)
+			{
 				return temp1 + ((temp2 - temp1) * ((2.0 / 3.0) - temp3) * 6.0);
+			}
 			else
+			{
 				return temp1;
+			}
 		}
 
 		public static Color GetAccentColor(this Color color)
-			=> color.R * 0.299 + color.G * 0.587 + color.B * 0.114 > 186 ? System.Drawing.Color.Black : System.Drawing.Color.White;
+		{
+			return (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186 ? System.Drawing.Color.Black : System.Drawing.Color.White;
+		}
 
 		private static float HuetoRGB(float p, float q, float t)
 		{
-			if (t < 0) t += 1;
-			if (t > 1) t -= 1;
-			if (t < 1 / 6) return p + (q - p) * 6 * t;
-			if (t < 1 / 2) return q;
-			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			if (t < 0)
+			{
+				t += 1;
+			}
+
+			if (t > 1)
+			{
+				t -= 1;
+			}
+
+			if (t < 1 / 6)
+			{
+				return p + ((q - p) * 6 * t);
+			}
+
+			if (t < 1 / 2)
+			{
+				return q;
+			}
+
+			if (t < 2 / 3)
+			{
+				return p + ((q - p) * ((2 / 3) - t) * 6);
+			}
+
 			return p;
 		}
 
 		public static void DrawIconsOverImage(this Graphics g, Rectangle imgRect, Point mousePosition, params Bitmap[] bitmaps)
-			=> DrawIconsOverImage(g, imgRect, mousePosition, 1, bitmaps);
+		{
+			DrawIconsOverImage(g, imgRect, mousePosition, 1, bitmaps);
+		}
 
 		public static void DrawIconsOverImage(this Graphics g, Rectangle imgRect, Point mousePosition, double opacity, params Bitmap[] bitmaps)
 		{
-			if ((bitmaps?.Length ?? 0) == 0) return;
+			if ((bitmaps?.Length ?? 0) == 0)
+			{
+				return;
+			}
 
 			imgRect = imgRect.Pad(2);
 
@@ -989,7 +1261,7 @@ namespace Extensions
 
 			for (var i = 0; i < bitmaps.Length; i++)
 			{
-				var drawRect = new Rectangle(new Point(baseX, imgRect.Top + (imgRect.Height - bitmaps[i].Height) / 2), bitmaps[i].Size);
+				var drawRect = new Rectangle(new Point(baseX, imgRect.Top + ((imgRect.Height - bitmaps[i].Height) / 2)), bitmaps[i].Size);
 				var hovered = drawRect.Pad(-7).Contains(mousePosition);
 
 				g.DrawImage(new Bitmap(bitmaps[i]).Color(hovered ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor, (byte)(int)(255 * opacity)), drawRect);
@@ -1000,7 +1272,10 @@ namespace Extensions
 
 		public static void DrawImage(this Graphics g, Bitmap bitmap, Rectangle rectangle, ImageSizeMode sizeMode)
 		{
-			if (bitmap == null) return;
+			if (bitmap == null)
+			{
+				return;
+			}
 
 			try
 			{
@@ -1012,7 +1287,10 @@ namespace Extensions
 					case ImageSizeMode.Fill:
 					case ImageSizeMode.CenterScaled:
 						if (bitSize.Width < rectangle.Width && bitSize.Height < rectangle.Height)
+						{
 							sizeMode = ImageSizeMode.Center; // Automatic Center
+						}
+
 						break;
 				}
 
@@ -1022,9 +1300,13 @@ namespace Extensions
 					case ImageSizeMode.FillForced:
 					case ImageSizeMode.CenterScaled:
 						if ((float)rectangle.Width / bitSize.Width > (float)rectangle.Height / bitSize.Height)
+						{
 							bitSrc.Height = bitSize.Width * rectangle.Height / rectangle.Width;
+						}
 						else
+						{
 							bitSrc.Width = bitSize.Height * rectangle.Width / rectangle.Height;
+						}
 
 						if (sizeMode == ImageSizeMode.CenterScaled)
 						{
@@ -1051,38 +1333,55 @@ namespace Extensions
 		}
 
 		public static void DrawImage(this Graphics g, Bitmap bitmap, int x, int y, int width, int height, ImageSizeMode sizeMode)
-			=> g.DrawImage(bitmap, new Rectangle(x, y, width, height), sizeMode);
+		{
+			g.DrawImage(bitmap, new Rectangle(x, y, width, height), sizeMode);
+		}
 
 		public static void DrawImage(this Graphics g, Image bitmap, int x, int y, int width, int height, ImageSizeMode sizeMode)
-			=> g.DrawImage((Bitmap)bitmap, new Rectangle(x, y, width, height), sizeMode);
+		{
+			g.DrawImage((Bitmap)bitmap, new Rectangle(x, y, width, height), sizeMode);
+		}
 
 		public static void DrawImage(this Graphics g, Image bitmap, Rectangle rectangle, ImageSizeMode sizeMode)
-			=> g.DrawImage((Bitmap)bitmap, rectangle, sizeMode);
+		{
+			g.DrawImage((Bitmap)bitmap, rectangle, sizeMode);
+		}
 
 		public static void DrawBorderedImage(this Graphics g, Bitmap bitmap, Rectangle rectangle, ImageSizeMode sizeMode = ImageSizeMode.Fill, Color? borderColor = null, bool noComposite = false)
 		{
 			var bitRect = new Rectangle(rectangle.X + 3, rectangle.Y + 3, rectangle.Width - 5, rectangle.Height - 5);
 
 			using (var pen = new Pen(borderColor ?? FormDesign.Design.AccentColor, 1.5F))
+			{
 				g.DrawRectangle(pen, rectangle);
+			}
 
-			if (bitmap == null) return;
+			if (bitmap == null)
+			{
+				return;
+			}
 
 			var bitSize = bitmap.Size;
 			var bitSrc = new Rectangle(Point.Empty, bitSize);
 
 			if (sizeMode != ImageSizeMode.Stretch && sizeMode != ImageSizeMode.Center
 				&& bitSize.Width <= bitRect.Width && bitSize.Height <= bitRect.Height)
+			{
 				sizeMode = ImageSizeMode.Center; // Automatic Center
+			}
 
 			switch (sizeMode)
 			{
 				case ImageSizeMode.Fill:
 				case ImageSizeMode.CenterScaled:
 					if ((float)bitRect.Width / bitSize.Width > (float)bitRect.Height / bitSize.Height)
+					{
 						bitSrc.Height = bitSize.Width * bitRect.Height / bitRect.Width;
+					}
 					else
+					{
 						bitSrc.Width = bitSize.Height * bitRect.Width / bitRect.Height;
+					}
 
 					if (sizeMode == ImageSizeMode.CenterScaled)
 					{
@@ -1091,12 +1390,18 @@ namespace Extensions
 					}
 
 					if (!noComposite)
+					{
 						g.CompositingMode = CompositingMode.SourceCopy;
+					}
+
 					break;
 
 				case ImageSizeMode.Stretch:
 					if (!noComposite)
+					{
 						g.CompositingMode = CompositingMode.SourceCopy;
+					}
+
 					break;
 
 				case ImageSizeMode.Center:
@@ -1109,33 +1414,43 @@ namespace Extensions
 		}
 
 		public static void DrawBorderedImage(this Graphics g, Bitmap bitmap, int x, int y, int width, int height, ImageSizeMode sizeMode = ImageSizeMode.Fill, Color? borderColor = null)
-			=> g.DrawBorderedImage(bitmap, new Rectangle(x, y, width, height), sizeMode, borderColor);
+		{
+			g.DrawBorderedImage(bitmap, new Rectangle(x, y, width, height), sizeMode, borderColor);
+		}
 
 		public static void DrawBorderedImage(this Graphics g, Image bitmap, int x, int y, int width, int height, ImageSizeMode sizeMode = ImageSizeMode.Fill, Color? borderColor = null)
-			=> g.DrawBorderedImage((Bitmap)bitmap, new Rectangle(x, y, width, height), sizeMode, borderColor);
+		{
+			g.DrawBorderedImage((Bitmap)bitmap, new Rectangle(x, y, width, height), sizeMode, borderColor);
+		}
 
 		public static void DrawBorderedImage(this Graphics g, Image bitmap, Rectangle rectangle, ImageSizeMode sizeMode = ImageSizeMode.Fill, Color? borderColor = null)
-			=> g.DrawBorderedImage((Bitmap)bitmap, rectangle, sizeMode, borderColor);
+		{
+			g.DrawBorderedImage((Bitmap)bitmap, rectangle, sizeMode, borderColor);
+		}
 
 		public static void DrawFancyText(this Graphics g, string text, Font font, Rectangle rectangle, StringFormat stringFormat = null)
 		{
 			g.DrawString(text, font, new SolidBrush(System.Drawing.Color.FromArgb(100, FormDesign.Design.BackColor)), rectangle, stringFormat ?? new StringFormat());
-			rectangle.Y -= 2; rectangle.X -= 2;
+			rectangle.Y -= 2;
+			rectangle.X -= 2;
 			g.DrawString(text, font, new SolidBrush(System.Drawing.Color.FromArgb(40, FormDesign.Design.ForeColor)), rectangle, stringFormat ?? new StringFormat());
-			rectangle.Y += 1; rectangle.X += 1;
+			rectangle.Y += 1;
+			rectangle.X += 1;
 			g.DrawString(text, font, rectangle.Gradient(FormDesign.Design.ActiveColor), rectangle, stringFormat ?? new StringFormat());
 		}
 
-		public static Brush Gradient(this Rectangle rect, Color color, float caliber = 1F)
+		public static Brush Gradient(this Rectangle rect, Color color, float caliber = 0.75F)
 		{
 			var hue = color.GetHue();
 
 			if (rect.Width <= 0 || rect.Height <= 0)
+			{
 				return new SolidBrush(color);
-			
+			}
+
 			return new LinearGradientBrush(rect,
-				color.Tint(hue + caliber* 4F, +caliber* 3.5F, +caliber* 3.5F),
-				color.Tint(hue - caliber* 4F, -caliber* 3.5F, -caliber* 3.5F),
+				color.Tint(hue + (caliber * 4F), +caliber * 3.5F, +caliber * 3.5F),
+				color.Tint(hue - (caliber * 4F), -caliber * 3.5F, -caliber * 3.5F),
 				45);
 		}
 	}
