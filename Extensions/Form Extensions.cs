@@ -805,7 +805,7 @@ namespace Extensions
 
 		public static Color GetTextColor(this Color color)
 		{
-			var b = (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186 ? 0 : 1;
+			var b = (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186 ? 0.05 : 0.95;
 
 			return ColorFromHSL(color.GetHue(), 0.2, b);
 		}
