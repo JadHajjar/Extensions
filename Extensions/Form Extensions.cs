@@ -805,24 +805,9 @@ namespace Extensions
 
 		public static Color GetTextColor(this Color color)
 		{
-			var b = color.GetBrightness();
+			var b = (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186 ? 0 : 1;
 
-			if (b > .75)
-			{
-				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .2);
-			}
-
-			if (b < .25)
-			{
-				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .8);
-			}
-
-			if (b > .5)
-			{
-				return ColorFromHSL(color.GetHue(), color.GetSaturation(), .05);
-			}
-
-			return ColorFromHSL(color.GetHue(), color.GetSaturation(), .95);
+			return ColorFromHSL(color.GetHue(), 0.2, b);
 		}
 
 		/// <summary>
