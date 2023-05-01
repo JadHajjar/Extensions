@@ -11,6 +11,9 @@ namespace Extensions
 				var list = new DesignList()
 				{
 					Modern,
+#if DEBUG
+					CS2,
+#endif
 					BerryBlues,
 					Chic,
 					Dark,
@@ -25,6 +28,27 @@ namespace Extensions
 				return list;
 			}
 		}
+
+#if DEBUG
+		public static FormDesign CS2 = new FormDesign("CS:2", 1, FormDesignType.Dark)
+		{
+			BackColor = Color.FromArgb(0, 22, 38),
+			ForeColor = Color.FromArgb(255, 255, 255),
+			ButtonColor = Color.FromArgb(35, 50, 87),
+			ButtonForeColor = Color.FromArgb(255, 255, 255),
+			AccentColor = Color.FromArgb(58, 193, 216),
+			MenuColor = Color.FromArgb(28, 32, 51),
+			MenuForeColor = Color.FromArgb(255, 255, 255),
+			LabelColor = Color.FromArgb(210, 218, 235),
+			InfoColor = Color.FromArgb(227, 228, 229),
+			ActiveColor = Color.FromArgb(25, 136, 255),
+			ActiveForeColor = Color.FromArgb(255, 255, 255),
+			RedColor = Color.FromArgb(255, 50, 50),
+			GreenColor = Color.FromArgb(57, 192, 73),
+			YellowColor = Color.FromArgb(255, 183, 50),
+			IconColor = Color.FromArgb(255, 255, 255)
+		};
+#endif
 
 		public static FormDesign Modern = new FormDesign("Modern", 0, FormDesignType.Light)
 		{
@@ -45,7 +69,7 @@ namespace Extensions
 			IconColor = Color.FromArgb(77, 87, 102)
 		};
 
-		public static FormDesign BerryBlues = new FormDesign("Berry Blues", 1, FormDesignType.Dark)
+		public static FormDesign BerryBlues = new FormDesign("Berry Blues", 2, FormDesignType.Dark)
 		{
 			BackColor = Color.FromArgb(35, 37, 50),
 			ForeColor = Color.FromArgb(227, 231, 235),
@@ -64,12 +88,12 @@ namespace Extensions
 			IconColor = Color.FromArgb(227, 231, 235)
 		};
 
-		public static FormDesign Ice = new FormDesign("Ice", 2, FormDesignType.Light)
+		public static FormDesign Ice = new FormDesign("Ice", 3, FormDesignType.Light)
 		{
 			BackColor = Color.FromArgb(241, 241, 242),
-			ForeColor = Color.FromArgb(45, 69, 85),
+			ForeColor = Color.FromArgb(27, 41, 51),
 			ButtonColor = Color.FromArgb(223, 229, 237),
-			ButtonForeColor = Color.FromArgb(23, 118, 136),
+			ButtonForeColor = Color.FromArgb(17, 77, 88),
 			AccentColor = Color.FromArgb(206, 223, 227),
 			MenuColor = Color.FromArgb(233, 236, 238),
 			MenuForeColor = Color.FromArgb(88, 108, 121),
@@ -79,11 +103,11 @@ namespace Extensions
 			ActiveForeColor = Color.FromArgb(241, 241, 242),
 			RedColor = Color.FromArgb(248, 110, 120),
 			GreenColor = Color.FromArgb(101, 223, 172),
-			YellowColor = Color.FromArgb(250, 218, 134),
+			YellowColor = Color.FromArgb(217, 210, 28),
 			IconColor = Color.FromArgb(83, 125, 151)
 		};
 
-		public static FormDesign Chic = new FormDesign("Chic", 3, FormDesignType.Light)
+		public static FormDesign Chic = new FormDesign("Chic", 4, FormDesignType.Light)
 		{
 			BackColor = Color.FromArgb(251, 248, 237),
 			ButtonForeColor = Color.FromArgb(116, 106, 97),
@@ -91,7 +115,7 @@ namespace Extensions
 			ForeColor = Color.FromArgb(116, 106, 97),
 			ButtonColor = Color.FromArgb(233, 217, 203),
 			AccentColor = Color.FromArgb(227, 211, 195),
-			MenuColor = Color.FromArgb(240, 235, 223),
+			MenuColor = Color.FromArgb(229, 225, 213),
 			LabelColor = Color.FromArgb(157, 145, 133),
 			InfoColor = Color.FromArgb(171, 161, 152),
 			ActiveColor = Color.FromArgb(212, 161, 124),
@@ -102,14 +126,14 @@ namespace Extensions
 			IconColor = Color.FromArgb(173, 147, 120)
 		};
 
-		public static FormDesign Strawberries = new FormDesign("Strawberries", 4, FormDesignType.Light)
+		public static FormDesign Strawberries = new FormDesign("Strawberries", 5, FormDesignType.Light)
 		{
 			BackColor = Color.FromArgb(250, 245, 248),
-			ForeColor = Color.FromArgb(119, 22, 52),
+			ForeColor = Color.FromArgb(102, 18, 45),
 			ButtonColor = Color.FromArgb(245, 203, 214),
 			ButtonForeColor = Color.FromArgb(93, 0, 29),
 			AccentColor = Color.FromArgb(235, 194, 204),
-			MenuColor = Color.FromArgb(62, 30, 41),
+			MenuColor = Color.FromArgb(99, 55, 70),
 			MenuForeColor = Color.FromArgb(245, 207, 219),
 			LabelColor = Color.FromArgb(205, 107, 150),
 			InfoColor = Color.FromArgb(228, 140, 167),
@@ -121,7 +145,7 @@ namespace Extensions
 			IconColor = Color.FromArgb(218, 129, 156)
 		};
 
-		public static FormDesign Dark = new FormDesign("Dark", 5, FormDesignType.Dark)
+		public static FormDesign Dark = new FormDesign("Dark", 6, FormDesignType.Dark)
 		{
 			BackColor = Color.FromArgb(18, 20, 23),
 			ForeColor = Color.FromArgb(215, 218, 224),
@@ -140,7 +164,7 @@ namespace Extensions
 			IconColor = Color.FromArgb(175, 178, 183)
 		};
 
-		public static FormDesign GoldForest = new FormDesign("Golden Forest", 6, FormDesignType.Dark)
+		public static FormDesign GoldForest = new FormDesign("Golden Forest", 7, FormDesignType.Dark)
 		{
 			BackColor = Color.FromArgb(5, 26, 26),
 			ForeColor = Color.FromArgb(236, 247, 244),

@@ -160,7 +160,7 @@ namespace Extensions
 			}
 			else if (ts.TotalDays < 7)
 			{
-				return $"{(past ? "Last " : "Next ")}{dt.DayOfWeek} at {dt:h:mm tt}";
+				return $"{(past ? "Last " : "Next ")}{dt:dddd} at {dt:h:mm tt}";
 			}
 
 			var days = ts.Days;

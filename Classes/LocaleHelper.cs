@@ -1,16 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Extensions
 {
@@ -34,23 +28,33 @@ namespace Extensions
 				{
 					var cultureInfo = new CultureInfo(culture);
 
-					CurrentCulture = cultureInfo;
+					SetCultureAndCalendar(cultureInfo);
 
 					return;
 				}
 				catch { }
 			}
 
-			CurrentCulture = CultureInfo.CurrentCulture;
+			SetCultureAndCalendar(CultureInfo.CurrentCulture);
 		}
 
 		public static void SetLanguage(CultureInfo cultureInfo)
 		{
-			CurrentCulture = cultureInfo;
+			SetCultureAndCalendar(cultureInfo);
 
 			ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "Shared");
 
 			LanguageChanged?.Invoke();
+		}
+
+		private static void SetCultureAndCalendar(CultureInfo cultureInfo)
+		{
+			CurrentCulture = cultureInfo;
+
+			if (!CurrentCulture.DateTimeFormat.IsReadOnly)
+			{
+				CurrentCulture.DateTimeFormat.Calendar = CurrentCulture.OptionalCalendars.FirstOrDefault(x => x is GregorianCalendar g && g.CalendarType == GregorianCalendarTypes.Localized) ?? CurrentCulture.OptionalCalendars.FirstOrDefault(x => x is GregorianCalendar);
+			}
 		}
 
 		protected LocaleHelper(string dictionaryResourceName)
@@ -105,7 +109,9 @@ namespace Extensions
 				var langKey = lines[0][i];
 
 				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+				{
 					langKey = langKey.Substring(1, langKey.Length - 2);
+				}
 
 				_locale[langKey] = dics[i - 1];
 			}
@@ -113,19 +119,25 @@ namespace Extensions
 			for (var i = 1; i < lines.Count; i++)
 			{
 				if (lines[i][0].Length == 0)
+				{
 					continue;
+				}
 
 				var langKey = lines[i][0];
 
 				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+				{
 					langKey = langKey.Substring(1, langKey.Length - 2);
+				}
 
 				for (var j = 1; j < lines[i].Length; j++)
 				{
 					var value = lines[i][j];
 
 					if (value.StartsWith("\"") && value.EndsWith("\""))
+					{
 						value = value.Substring(1, value.Length - 2);
+					}
 
 					dics[j - 1][langKey] = value.Replace("\"\"", "\"").Trim();
 				}
@@ -139,14 +151,19 @@ namespace Extensions
 				: _locale[string.Empty];
 
 			if (dic.ContainsKey(key))
+			{
 				return dic[key].Replace("\\n", "\r\n");
+			}
 
 			return key.FormatWords();
 		}
 
 		public static string GetGlobalText(string key)
 		{
-			if (string.IsNullOrEmpty(key)) return string.Empty;
+			if (string.IsNullOrEmpty(key))
+			{
+				return string.Empty;
+			}
 
 			foreach (var item in _locales)
 			{
@@ -156,7 +173,9 @@ namespace Extensions
 					: locale[string.Empty];
 
 				if (dic.ContainsKey(key))
+				{
 					return dic[key].Replace("\\n", "\r\n");
+				}
 			}
 
 			return key;
