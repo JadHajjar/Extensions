@@ -18,6 +18,26 @@ namespace Extensions
 				list.Add(item);
 			}
 		}
+		public static IEnumerable<TResult> SelectWhereNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+		{
+			if (source == null)
+			{
+				throw new ArgumentNullException("source");
+			}
+
+			if (selector == null)
+			{
+				throw new ArgumentNullException("selector");
+			}
+
+			foreach (var item in source)
+			{
+				var obj = selector(item);
+
+				if (obj != null)
+					yield return obj;
+			}
+		}
 
 		public static List<T> ToList<T, TSource>(this IEnumerable<TSource> values, Func<TSource, T> conversion)
 		{
