@@ -38,6 +38,26 @@ namespace Extensions
 			return enumerable.Where(x => !string.IsNullOrWhiteSpace(x));
 		}
 
+		public static string LowerFirstLetter(this string s)
+		{
+			if (s != null && s.Length > 0)
+			{
+				return char.ToLower(s[0]) + s.Substring(1);
+			}
+
+			return s;
+		}
+
+		public static string UpperFirstLetter(this string s)
+		{
+			if (s != null && s.Length > 0)
+			{
+				return char.ToUpper(s[0]) + s.Substring(1);
+			}
+
+			return s;
+		}
+
 		public static string Plural(this string @base, bool plural, string addition = "s")
 		{
 			return plural ? $"{@base}{addition}" : @base;
