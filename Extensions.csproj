@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
+    <Compile Include="Classes\Encryption.cs" />
     <Compile Include="Classes\Parallelism.cs" />
     <Compile Include="Classes\PathEqualityComparer.cs" />
     <Compile Include="Classes\Cloning.cs" />
