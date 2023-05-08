@@ -831,7 +831,7 @@ namespace Extensions
 		{
 			var path = new GraphicsPath();
 
-			if (radius == 0 || ISave.CurrentPlatform != Platform.Windows)
+			if (radius <= 0 || ISave.CurrentPlatform != Platform.Windows)
 			{
 				path.AddRectangle(bounds);
 				return path;
