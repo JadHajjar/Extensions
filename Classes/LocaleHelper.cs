@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,7 +16,7 @@ namespace Extensions
 
 		private static readonly List<LocaleHelper> _locales = new List<LocaleHelper>();
 
-		private Dictionary<string, Dictionary<string, string>> _locale;
+		private readonly Dictionary<string, Dictionary<string, Translation>> _locale;
 
 		public static CultureInfo CurrentCulture { get; set; }
 
@@ -60,91 +62,43 @@ namespace Extensions
 		protected LocaleHelper(string dictionaryResourceName)
 		{
 			var assembly = Assembly.GetCallingAssembly();
-			using (var resourceStream = assembly.GetManifestResourceStream(dictionaryResourceName))
+
+			_locales.Add(this);
+			_locale = new Dictionary<string, Dictionary<string, Translation>>
 			{
-				if (resourceStream == null)
-				{
-					_locale = new Dictionary<string, Dictionary<string, string>>
-					{
-						{ string.Empty, new Dictionary<string, string>() }
-					};
-
-					return;
-				}
-
-				using (var reader = new StreamReader(resourceStream, Encoding.UTF8))
-				{
-					var lines = new List<string[]>();
-
-					while (!reader.EndOfStream)
-					{
-						var line = reader.ReadLine();
-						var values = line.Split('\t');
-						lines.Add(values);
-					}
-
-					ConstructDictionary(lines);
-				}
-
-				_locales.Add(this);
-			}
-		}
-
-		private void ConstructDictionary(List<string[]> lines)
-		{
-			var dics = new List<Dictionary<string, string>>
-			{
-				new Dictionary<string, string>()
+				[string.Empty] = GetDictionary(dictionaryResourceName)
 			};
 
-			_locale = new Dictionary<string, Dictionary<string, string>>
+			foreach (var name in assembly.GetManifestResourceNames())
 			{
-				{ string.Empty, dics[0] }
-			};
-
-			for (var i = 2; i < lines[0].Length; i++)
-			{
-				dics.Add(new Dictionary<string, string>());
-
-				var langKey = lines[0][i];
-
-				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
-				{
-					langKey = langKey.Substring(1, langKey.Length - 2);
-				}
-
-				_locale[langKey] = dics[i - 1];
-			}
-
-			for (var i = 1; i < lines.Count; i++)
-			{
-				if (lines[i][0].Length == 0)
+				if (name == dictionaryResourceName || !name.Contains(Path.GetFileNameWithoutExtension(dictionaryResourceName)))
 				{
 					continue;
 				}
 
-				var langKey = lines[i][0];
+				var key = Path.GetFileNameWithoutExtension(name);
 
-				if (langKey.StartsWith("\"") && langKey.EndsWith("\""))
+				_locale[key.Substring(key.LastIndexOf('.') + 1)] = GetDictionary(name);
+			}
+
+			Dictionary<string, Translation> GetDictionary(string resourceName)
+			{
+				using (var resourceStream = assembly.GetManifestResourceStream(resourceName))
 				{
-					langKey = langKey.Substring(1, langKey.Length - 2);
-				}
-
-				for (var j = 1; j < lines[i].Length; j++)
-				{
-					var value = lines[i][j];
-
-					if (value.StartsWith("\"") && value.EndsWith("\""))
+					if (resourceStream == null)
 					{
-						value = value.Substring(1, value.Length - 2);
+						return new Dictionary<string, Translation>();
 					}
 
-					dics[j - 1][langKey] = value.Replace("\"\"", "\"").Trim();
+					using (var reader = new StreamReader(resourceStream, Encoding.UTF8))
+					{
+						return JsonConvert.DeserializeObject<Dictionary<string, Translation>>(reader.ReadToEnd());
+					}
 				}
 			}
 		}
 
-		public string GetText(string key)
+		public Translation GetText(string key)
 		{
 			var dic = _locale.ContainsKey(CurrentCulture.IetfLanguageTag)
 				? _locale[CurrentCulture.IetfLanguageTag]
@@ -152,13 +106,13 @@ namespace Extensions
 
 			if (dic.ContainsKey(key))
 			{
-				return dic[key].Replace("\\n", "\r\n");
+				return dic[key];
 			}
 
 			return key.FormatWords();
 		}
 
-		public static string GetGlobalText(string key)
+		public static Translation GetGlobalText(string key)
 		{
 			if (string.IsNullOrEmpty(key))
 			{
@@ -174,7 +128,7 @@ namespace Extensions
 
 				if (dic.ContainsKey(key))
 				{
-					return dic[key].Replace("\\n", "\r\n");
+					return dic[key];
 				}
 			}
 
@@ -187,8 +141,39 @@ namespace Extensions
 			{
 				foreach (var lang in item._locale.Keys)
 				{
-					yield return lang.IfEmpty("en");
+					yield return lang.IfEmpty("en-US");
 				}
+			}
+		}
+
+		public struct Translation
+		{
+			public string One { get; set; }
+			public string Plural { get; set; }
+
+			public static implicit operator Translation(string text)
+			{
+				return new Translation { One = text };
+			}
+
+			public static implicit operator string(Translation translation)
+			{
+				return translation.One;
+			}
+
+			public string Format(params object[] values)
+			{
+				return string.Format(One, values);
+			}
+
+			public string FormatPlural(object value)
+			{
+				return string.Format(value.Equals(1) ? One : Plural, value);
+			}
+
+			public override string ToString()
+			{
+				return One;
 			}
 		}
 	}
