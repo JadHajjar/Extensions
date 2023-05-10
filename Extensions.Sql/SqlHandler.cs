@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace Extensions.Sql
 {
@@ -30,7 +30,9 @@ namespace Extensions.Sql
 			table.Load(ExecuteReader(procedure, parameters));
 
 			if (table.Rows.Count > 0)
+			{
 				return table.Rows[0];
+			}
 
 			return null;
 		}
@@ -66,9 +68,37 @@ namespace Extensions.Sql
 			table.Load(ExecuteReader(connection, procedure, parameters));
 
 			if (table.Rows.Count > 0)
+			{
 				return table.Rows[0];
+			}
 
 			return null;
+		}
+
+		internal static Transaction CreateTransaction() => new();
+
+		public class Transaction : IDisposable
+		{
+			private readonly SqlConnection _connection;
+			private readonly SqlTransaction _transaction;
+
+			public Transaction()
+			{
+				_connection = new SqlConnection(ConnectionString);
+
+				_connection.Open();
+
+				_transaction = _connection.BeginTransaction();
+			}
+
+			public void Dispose()
+			{
+				_connection?.Dispose();
+				_transaction?.Dispose();
+			}
+
+			public static implicit operator SqlTransaction(Transaction transaction) => transaction._transaction;
+			public static implicit operator SqlConnection(Transaction transaction) => transaction._connection;
 		}
 		#endregion
 	}

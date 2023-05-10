@@ -28,6 +28,7 @@ using System.Xml;
 using System.Data.SqlClient;
 using System.Collections;
 
+#nullable disable
 namespace Extensions.Sql
 {
     /// <summary>
@@ -2638,3 +2639,4 @@ namespace Extensions.Sql
 
     }
 }
+#nullable enable

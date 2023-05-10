@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Data;
 using System.Data.SqlClient;
 
+#nullable disable
 namespace Extensions.Sql
 {
 	public static class DynamicSql
@@ -247,7 +248,7 @@ namespace Extensions.Sql
 				, props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).Select(x => x.ColumnValue(item)).ToArray()), classInf.AlwaysReturn ? item : default);
 		}
 
-		public static IEnumerable<T> SqlGetByIndex<T>(this T item, string condition = null, SqlTransaction tr = null) where T : IDynamicSql, new()
+		public static List<T> SqlGetByIndex<T>(this T item, string condition = null, SqlTransaction tr = null) where T : IDynamicSql, new()
 		{
 			var type = typeof(T);
 			var classInf = getDynamicClass(type);
@@ -369,3 +370,4 @@ namespace Extensions.Sql
 		#endregion Private Methods
 	}
 }
+#nullable enable

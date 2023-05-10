@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Extensions
 {
@@ -69,6 +66,34 @@ namespace Extensions
 			}
 
 			return (T)newObject;
+		}
+
+		public static T2 CloneTo<T, T2>(this T obj) where T2 : class, T where T : class
+		{
+			// Check if the object is null
+			if (obj == null)
+			{
+				return default;
+			}
+
+			// Get the type of the object
+			var type = obj.GetType();
+			var newObject = Activator.CreateInstance(typeof(T2));
+			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			foreach (var property in properties)
+			{
+				if (property.CanWrite && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
+				{
+					var value = property.GetValue(obj, null);
+					if (value != null)
+					{
+						var newValue = Clone(value);
+						property.SetValue(newObject, newValue, null);
+					}
+				}
+			}
+
+			return (T2)newObject;
 		}
 	}
 
