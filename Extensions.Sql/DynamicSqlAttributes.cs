@@ -1,5 +1,5 @@
 ﻿using System;
-
+#nullable disable
 namespace Extensions.Sql
 {
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
@@ -25,3 +25,4 @@ namespace Extensions.Sql
 		public bool Timestamp { get; set; }
 	}
 }
+#nullable enable

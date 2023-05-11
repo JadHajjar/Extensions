@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
+#nullable disable
 namespace Extensions.Sql
 {
 	public class SqlHandler
@@ -105,3 +106,4 @@ namespace Extensions.Sql
 		#endregion
 	}
 }
+#nullable enable

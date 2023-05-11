@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
+#nullable disable
 namespace Extensions.Sql
 {
 	public static class SqlReflector
@@ -219,3 +220,4 @@ namespace Extensions.Sql
 			.ToDictionary(x => x, x => (DynamicSqlPropertyAttribute)x.GetCustomAttributes(typeof(DynamicSqlPropertyAttribute), false).FirstOrDefault());
 	}
 }
+#nullable enable
