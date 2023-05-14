@@ -18,6 +18,19 @@ namespace Extensions
 				list.Add(item);
 			}
 		}
+
+		public static T FirstOrAny<T>(this IEnumerable<T> values, Func<T, bool> predicate) where T : class
+			=> values == null ? default : values.FirstOrDefault(predicate) ?? values.FirstOrDefault();
+
+		public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
+		{
+			while (source.Any())
+			{
+				yield return source.Take(chunkSize);
+				source = source.Skip(chunkSize);
+			}
+		}
+
 		public static IEnumerable<TResult> SelectWhereNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
 		{
 			if (source == null)
@@ -49,6 +62,11 @@ namespace Extensions
 			}
 
 			return list;
+		}
+
+		public static T[] ToArray<T, TSource>(this IEnumerable<TSource> values, Func<TSource, T> conversion)
+		{
+			return values.Select(conversion).ToArray();
 		}
 
 		public static List<T> AllWhere<T>(this IEnumerable<T> values, Predicate<T> predicate)
@@ -95,7 +113,7 @@ namespace Extensions
 		/// </summary>
 		public static bool Any<T>(this IEnumerable<T> l, T item)
 		{
-			return l.Any(x => x.Equals(item));
+			return l.Any(x => x?.Equals(item) ?? item == null);
 		}
 
 		/// <summary>

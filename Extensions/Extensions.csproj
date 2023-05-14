@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
     <Compile Include="Classes\Encryption.cs" />
+    <Compile Include="Classes\ITimestamped.cs" />
     <Compile Include="Classes\Parallelism.cs" />
     <Compile Include="Classes\PathEqualityComparer.cs" />
     <Compile Include="Classes\Cloning.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="FormDesign\Properties.cs" />
     <Compile Include="Handlers\ISave.cs" />
     <Compile Include="Classes\HslColor.cs" />
+    <Compile Include="Handlers\PeriodicProcessor.cs" />
     <Compile Include="Identifiers\Dispenser.cs" />
     <Compile Include="Identifiers\Factory.cs" />
     <Compile Include="Interfaces\IFirstFocus.cs" />

@@ -148,6 +148,7 @@ namespace Extensions
 
 		public struct Translation
 		{
+			public string Zero { get; set; }
 			public string One { get; set; }
 			public string Plural { get; set; }
 
@@ -166,9 +167,9 @@ namespace Extensions
 				return string.Format(One, values);
 			}
 
-			public string FormatPlural(object value)
+			public string FormatPlural(params object[] values)
 			{
-				return string.Format(value.Equals(1) ? One : Plural, value);
+				return string.Format(Plural is null || values[0].Equals(1) ? One : Plural, values);
 			}
 
 			public override string ToString()

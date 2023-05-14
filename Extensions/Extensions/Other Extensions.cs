@@ -19,6 +19,15 @@ namespace Extensions
 				list.Add(item);
 		}
 
+		public static void AddIfNotExist<T>(this List<T> list, IEnumerable<T> values)
+		{
+			foreach (T item in values)
+			{
+				if (!list.Any(item))
+					list.Add(item);
+			}
+		}
+
 		/// <summary>
 		/// Checks if Any of the objects in the <see cref="IEnumerable<T>"/> are equal to the <paramref name="item"/>
 		/// </summary>
