@@ -1070,7 +1070,7 @@ namespace Extensions
 		/// <param name="Lum">Added Luminance, ranges from -100 to 100</param>
 		/// <param name="Sat">Added Saturation, ranges from -100 to 100</param>
 		/// <param name="Hue">Added Hue, ranges from -360 to 360</param>
-		public static Bitmap Tint(this Bitmap bitmap, float Lum = 0, float Sat = 0, float Hue = 0)
+		public static Bitmap Tint(this Bitmap bitmap, float? Lum = null, float? Sat = null, float? Hue = null)
 		{
 			if (bitmap == null)
 			{
@@ -1086,9 +1086,9 @@ namespace Extensions
 				for (var j = 0; j < W; j++)
 				{
 					var color = bitmap.GetPixel(j, i);
-					nH = ((color.GetHue() + Hue) / 360d).Between(0, 1);
-					nS = (color.GetSaturation() + (Sat / 100d)).Between(0, 1);
-					nL = (color.GetBrightness() + (Lum / 100d)).Between(0, 1);
+					nH = ((Hue ?? color.GetHue()) / 360d).Between(0, 1);
+					nS = (Sat ?? color.GetSaturation()).Between(0, 1);
+					nL = (Lum ?? color.GetBrightness()).Between(0, 1);
 
 					bitmap.SetPixel(j, i, System.Drawing.Color.FromArgb(bitmap.GetPixel(j, i).A,
 						ColorFromHSL(nH, nS, nL)));

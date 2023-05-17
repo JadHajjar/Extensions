@@ -119,12 +119,15 @@ namespace Extensions
 			timer.Start();
 		}
 
-		public System.Timers.Timer RunEvery(int milliseconds)
+		public System.Timers.Timer RunEvery(int milliseconds, bool runNow = false)
 		{
 			var timer = new System.Timers.Timer(milliseconds);
 
 			timer.Elapsed += (s, e) => Run();
 			timer.Start();
+
+			if (runNow)
+				Run();
 
 			return timer;
 		}
