@@ -171,5 +171,18 @@ namespace Extensions
 
 			return results;
 		}
+
+		public void AddToCache(Dictionary<TEntity, TResult> results)
+		{
+			lock (this)
+			{
+				foreach (var entity in results)
+				{
+					_results[entity.Key] = entity.Value;
+				}
+
+				CacheItems(_results);
+			}
+		}
 	}
 }

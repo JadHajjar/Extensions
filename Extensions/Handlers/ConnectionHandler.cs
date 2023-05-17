@@ -87,6 +87,15 @@ namespace Extensions
 			checkTimer.Start();
 		}
 
+		public static bool CheckConnection()
+		{
+			checkTimer.Stop();
+
+			getConnectionState();
+
+			return IsConnected;
+		}
+
 		public static bool WhenConnected(ExtensionClass.action action)
 		{
 			if (State == ConnectionState.Connected)
