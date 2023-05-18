@@ -8,11 +8,12 @@ namespace Extensions
 		Icon,
 		Green,
 		Red,
+		Orange,
 		Yellow,
 		Text
 	}
 
-	public static class ColorStyleExtemsions
+	public static class ColorStyleExtensions
 	{
 		public static Color GetColor(this ColorStyle style)
 		{
@@ -32,6 +33,9 @@ namespace Extensions
 
 				case ColorStyle.Red:
 					return FormDesign.Design.RedColor;
+
+				case ColorStyle.Orange:
+					return FormDesign.Design.RedColor.MergeColor(FormDesign.Design.YellowColor);
 
 				case ColorStyle.Yellow:
 					return FormDesign.Design.YellowColor;
@@ -58,6 +62,9 @@ namespace Extensions
 					return FormDesign.Design.MenuColor;
 
 				case ColorStyle.Red:
+					return FormDesign.Design.BackColor;
+
+				case ColorStyle.Orange:
 					return FormDesign.Design.BackColor;
 
 				case ColorStyle.Yellow:
