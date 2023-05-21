@@ -28,6 +28,49 @@ namespace Extensions
 			}
 		}
 
+		public static IEnumerable<T> GetValues<T>(this T @enum) where T : Enum
+		{
+			if (@enum.Equals(default(T)))
+			{
+				yield return @enum;
+				yield break;
+			}
+
+			foreach (T value in Enum.GetValues(typeof(T)))
+			{
+				if (!value.Equals(default(T)) && @enum.HasFlag(value))
+				{
+					yield return value;
+				}
+			}
+		}
+
+		public static bool HasAnyFlag<T>(this T @enum, params T[] values) where T : Enum
+		{
+			foreach (var value in values)
+			{
+				if (@enum.HasFlag(value))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static bool HasAllFlag<T>(this T @enum, params T[] values) where T : Enum
+		{
+			foreach (var value in values)
+			{
+				if (!@enum.HasFlag(value))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		/// <summary>
 		/// Checks if Any of the objects in the <see cref="IEnumerable<T>"/> are equal to the <paramref name="item"/>
 		/// </summary>

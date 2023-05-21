@@ -71,7 +71,7 @@ namespace Extensions
 
 			foreach (var name in assembly.GetManifestResourceNames())
 			{
-				if (name == dictionaryResourceName || !name.Contains(Path.GetFileNameWithoutExtension(dictionaryResourceName)))
+				if (name == dictionaryResourceName || !name.Contains(Path.GetFileNameWithoutExtension(dictionaryResourceName) + "."))
 				{
 					continue;
 				}

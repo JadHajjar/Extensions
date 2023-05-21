@@ -9,7 +9,7 @@ namespace Extensions
 	public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimestamped
 	{
 		private readonly Timer _timer;
-		private readonly List<TEntity> _entities;
+		private readonly HashSet<TEntity> _entities;
 		private readonly Dictionary<TEntity, TResult> _results;
 		private bool processing;
 
@@ -23,7 +23,7 @@ namespace Extensions
 			ProcessingPower = processingPower;
 
 			_results = cache ?? new Dictionary<TEntity, TResult>();
-			_entities = new List<TEntity>();
+			_entities = new HashSet<TEntity>();
 			_timer = new Timer(interval) { AutoReset = false };
 			_timer.Elapsed += _timer_Elapsed;
 			_timer.Start();
@@ -52,7 +52,7 @@ namespace Extensions
 				{
 					foreach (var entity in _entities)
 					{
-						if (!_results.TryGetValue(entity, out var result) || DateTime.Now - result.Timestamp < MaxCacheTime)
+						if (!_results.TryGetValue(entity, out var result) || DateTime.Now - result.Timestamp > MaxCacheTime)
 							entities.Add(entity);
 					}
 
@@ -81,7 +81,7 @@ namespace Extensions
 		{
 			lock (this)
 			{
-				_entities.AddIfNotExist(entity);
+				_entities.Add(entity);
 			}
 		}
 
@@ -89,7 +89,10 @@ namespace Extensions
 		{
 			lock (this)
 			{
-				_entities.AddIfNotExist(entities);
+				foreach (var item in entities)
+				{
+					_entities.Add(item);
+				}
 			}
 		}
 
@@ -111,9 +114,9 @@ namespace Extensions
 			{
 				if (_results.TryGetValue(entity, out var result))
 				{
-					if (DateTime.Now - result.Timestamp < MaxCacheTime)
+					if (!_entities.Contains(entity)&&DateTime.Now - result.Timestamp > MaxCacheTime)
 					{
-						_entities.AddIfNotExist(entity);
+						_entities.Add(entity);
 					}
 
 					return result;
@@ -121,7 +124,7 @@ namespace Extensions
 
 				if (!wait)
 				{
-					_entities.AddIfNotExist(entity);
+					_entities.Add(entity);
 
 					return default;
 				}

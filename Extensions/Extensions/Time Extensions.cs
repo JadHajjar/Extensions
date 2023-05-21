@@ -169,12 +169,13 @@ namespace Extensions
 			var months = days / 30;
 
 			if (years > 0)
-				return (past ? $"{years} years ago" : $"in {years} years") + $" on {dt.ToReadableString(true, DateFormat.TDMY)}";
+				return dt.ToReadableString(true, DateFormat.DMY);
+			//return (past ? $"{years} years ago" : $"in {years} years") + $" on {dt.ToReadableString(true, DateFormat.TDMY)}";
 
 			if (months > 0)
-				return (past ? $"{months} months ago" : $"in {months} months") + $" on {dt.ToReadableString(false, DateFormat.TDMY)}";
+				return (past ? $"{months} months ago" : $"in {months} months") + $" on {dt.ToReadableString(false, DateFormat.MDY)}";
 
-			return (past ? $"{days} days ago" : $"in {days} days") + $" on {dt.ToReadableString(false, DateFormat.TDMY)}";
+			return (past ? $"{days} days ago" : $"in {days} days");
 		}
 	}
 }
