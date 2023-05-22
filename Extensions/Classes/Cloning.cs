@@ -54,7 +54,7 @@ namespace Extensions
 			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach (var property in properties)
 			{
-				if (property.CanWrite && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
+				if (property.CanWrite && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
 				{
 					var value = property.GetValue(obj, null);
 					if (value != null)
@@ -82,7 +82,7 @@ namespace Extensions
 			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach (var property in properties)
 			{
-				if (property.CanWrite && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
+				if (property.CanWrite && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
 				{
 					var value = property.GetValue(obj, null);
 					if (value != null)
