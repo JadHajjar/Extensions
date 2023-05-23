@@ -48,12 +48,14 @@ namespace Extensions
 			{
 				processing = true;
 
-				lock (this)
+				//lock (this)
 				{
 					foreach (var entity in _entities)
 					{
 						if (!_results.TryGetValue(entity, out var result) || DateTime.Now - result.Timestamp > MaxCacheTime)
+						{
 							entities.Add(entity);
+						}
 					}
 
 					_entities.Clear();
@@ -71,7 +73,10 @@ namespace Extensions
 			_timer.Start();
 		}
 
-		protected virtual bool CanProcess() => true;
+		protected virtual bool CanProcess()
+		{
+			return true;
+		}
 
 		protected abstract void CacheItems(Dictionary<TEntity, TResult> results);
 
@@ -79,7 +84,7 @@ namespace Extensions
 
 		public void Add(TEntity entity)
 		{
-			lock (this)
+			//lock (this)
 			{
 				_entities.Add(entity);
 			}
@@ -87,7 +92,7 @@ namespace Extensions
 
 		public void AddRange(IEnumerable<TEntity> entities)
 		{
-			lock (this)
+			//lock (this)
 			{
 				foreach (var item in entities)
 				{
@@ -110,11 +115,11 @@ namespace Extensions
 
 		public async Task<TResult> Get(TEntity entity, bool wait = false)
 		{
-			lock (this)
+			//lock (this)
 			{
 				if (_results.TryGetValue(entity, out var result))
 				{
-					if (!_entities.Contains(entity)&&DateTime.Now - result.Timestamp > MaxCacheTime)
+					if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
 					{
 						_entities.Add(entity);
 					}
@@ -132,7 +137,7 @@ namespace Extensions
 
 			var results = await ProcessItems(new List<TEntity> { entity });
 
-			lock (this)
+			//lock (this)
 			{
 				foreach (var item in results)
 				{
@@ -160,7 +165,7 @@ namespace Extensions
 		{
 			var results = await ProcessItems(entities);
 
-			lock (this)
+			//lock (this)
 			{
 				foreach (var entity in results)
 				{
@@ -177,7 +182,7 @@ namespace Extensions
 
 		public void AddToCache(Dictionary<TEntity, TResult> results)
 		{
-			lock (this)
+			//lock (this)
 			{
 				foreach (var entity in results)
 				{

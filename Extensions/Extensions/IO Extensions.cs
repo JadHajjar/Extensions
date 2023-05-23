@@ -26,6 +26,62 @@ namespace Extensions
 			return AbreviatedPath(folder.FullName);
 		}
 
+		public static void MoveFolder(string original, string target, bool overwrite)
+		{
+			var sourceDir = new DirectoryInfo(original);
+			var targetDir = new DirectoryInfo(target);
+
+			// Create the target directory if it doesn't exist
+			if (!targetDir.Exists)
+			{
+				targetDir.Create();
+			}
+
+			// Move files
+			foreach (var file in sourceDir.GetFiles())
+			{
+				var targetFilePath = Path.Combine(targetDir.FullName, file.Name);
+
+				// Check if the file already exists in the target directory
+				if (FileExists(targetFilePath))
+				{
+					if (overwrite)
+					{
+						DeleteFile(targetFilePath);
+					}
+					else
+					{
+						// Skip this file if it already exists
+						continue;
+					}
+				}
+
+				// Move the file to the target directory
+				file.MoveTo(targetFilePath);
+			}
+
+			// Move directories recursively
+			foreach (var subDir in sourceDir.GetDirectories())
+			{
+				var targetSubDirPath = Path.Combine(targetDir.FullName, subDir.Name);
+
+				// Move the subdirectory recursively
+				MoveFolder(subDir.FullName, targetSubDirPath, overwrite);
+			}
+		}
+
+		public static bool FileExists(string path)
+		{
+			if (ISave.CurrentPlatform != Platform.Windows)
+			{
+				try
+				{ return Directory.GetFiles(Path.GetDirectoryName(path).Replace('\\', '/'), Path.GetFileName(path)).Length != 0; }
+				catch { }
+			}
+
+			return File.Exists(path);
+		}
+
 		public static bool IsNetwork(this DirectoryInfo folder)
 		{
 			if (!folder.FullName.StartsWith(@"/") && !folder.FullName.StartsWith(@"\"))
