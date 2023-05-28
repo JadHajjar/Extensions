@@ -275,7 +275,7 @@ namespace Extensions
 		/// </summary>
 		public static string Remove(this string S, string text)
 		{
-			return S == null ? null : (S.IndexOf(text) >= 0 ? S.Remove(S.IndexOf(text), text.Length) : S);
+			return  S == null ? null : S == text ? string.Empty : (S.IndexOf(text) >= 0 ? S.Remove(S.IndexOf(text), text.Length) : S);
 		}
 
 		/// <summary>
