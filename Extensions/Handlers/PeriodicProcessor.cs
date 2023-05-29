@@ -117,15 +117,19 @@ namespace Extensions
 		{
 			//lock (this)
 			{
-				if (_results.TryGetValue(entity, out var result))
+				try
 				{
-					if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
+					if (_results.TryGetValue(entity, out var result))
 					{
-						_entities.Add(entity);
-					}
+						if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
+						{
+							_entities.Add(entity);
+						}
 
-					return result;
+						return result;
+					}
 				}
+				catch { } // catch useless potential IndexOutOfRangeException errors
 
 				if (!wait)
 				{

@@ -25,6 +25,15 @@ namespace Extensions
 		private static string host;
 		private static double timer;
 
+		private static readonly string[] _dnsIps = new[]
+		{
+			"1.1.1.1",
+			"8.8.8.8",
+			"8.8.4.4",
+			"208.67.222.222",
+			"208.67.220.220"
+		};
+
 		public static ConnectionState State
 		{
 			get => state;
@@ -40,7 +49,7 @@ namespace Extensions
 
 		public static string IpAddress => ipAddress ?? (ipAddress = new WebClient().DownloadString("http://icanhazip.com").Trim());
 
-		public static void Start() => Start("8.8.8.8", 15000);
+		public static void Start() => Start(_dnsIps[0], 15000);
 
 		public static void Start(string host, double timer)
 		{
@@ -81,6 +90,11 @@ namespace Extensions
 			catch
 			{
 				State = ConnectionState.Disconnected;
+			}
+
+			if (State == ConnectionState.Disconnected)
+			{
+				host = _dnsIps.Next(host, true);
 			}
 
 			checkTimer.Interval = IsConnected ? timer : 2500;
