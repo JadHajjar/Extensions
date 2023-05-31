@@ -28,6 +28,7 @@ namespace Extensions
 			}
 		}
 
+#if NET47
 		public static IEnumerable<T> GetValues<T>(this T @enum) where T : Enum
 		{
 			if (@enum.Equals(default(T)))
@@ -70,6 +71,7 @@ namespace Extensions
 
 			return true;
 		}
+#endif
 
 		/// <summary>
 		/// Checks if Any of the objects in the <see cref="IEnumerable<T>"/> are equal to the <paramref name="item"/>
