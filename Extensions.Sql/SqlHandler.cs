@@ -103,6 +103,11 @@ public class SqlHandler
 			_transaction?.Dispose();
 		}
 
+		internal void Commit()
+		{
+			_transaction.Commit();
+		}
+
 		public static implicit operator SqlTransaction(Transaction transaction)
 		{
 			return transaction._transaction;
