@@ -42,6 +42,9 @@ namespace Extensions
 		/// <returns>the 'xx'th of 'month' 'year'</returns>
 		public static string ToReadableString(this DateTime DT, bool AddYear = true, DateFormat format = DateFormat.DMY, bool fullMonth = true)
 		{
+			if (LocaleHelper.CurrentCulture?.TwoLetterISOLanguageName != "en")
+				return DT.ToString("d");
+
 			var day = "th";
 			var month = DT.ToString(fullMonth ? "MMMM" : "MMM");
 
