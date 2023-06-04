@@ -127,7 +127,7 @@ namespace Extensions
 			return res && !Directory.Exists(folderPath);
 		}
 
-		public static void DeleteFile(string file)
+		public static void DeleteFile(string file, bool completely = false)
 		{
 			if (ISave.CurrentPlatform is Platform.MacOSX)
 			{
@@ -137,9 +137,13 @@ namespace Extensions
 				}
 				catch { }
 			}
-			else
+			else if (completely || ISave.CurrentPlatform is Platform.Linux)
 			{
 				File.Delete(file);
+			}
+			else
+			{
+				FileOperationAPIWrapper .MoveToRecycleBin(file);
 			}
 		}
 

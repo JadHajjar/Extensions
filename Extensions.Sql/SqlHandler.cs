@@ -87,6 +87,7 @@ public class SqlHandler
 	{
 		private readonly SqlConnection _connection;
 		private readonly SqlTransaction _transaction;
+		private bool committed;
 
 		public Transaction()
 		{
@@ -99,6 +100,11 @@ public class SqlHandler
 
 		public void Dispose()
 		{
+			if (!committed)
+			{
+				_transaction?.Rollback();
+			}
+
 			_connection?.Dispose();
 			_transaction?.Dispose();
 		}
@@ -106,6 +112,8 @@ public class SqlHandler
 		internal void Commit()
 		{
 			_transaction.Commit();
+			
+			committed = true;
 		}
 
 		public static implicit operator SqlTransaction(Transaction transaction)

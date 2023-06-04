@@ -128,13 +128,16 @@ namespace Extensions
 
 						return result;
 					}
+
+					if (!wait)
+					{
+						_entities.Add(entity);
+					}
 				}
 				catch { } // catch useless potential IndexOutOfRangeException errors
-
+				
 				if (!wait)
 				{
-					_entities.Add(entity);
-
 					return default;
 				}
 			}
