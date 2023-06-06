@@ -18,17 +18,31 @@ namespace Extensions
 			{
 				var hours = TS.Hours;
 				var days = TS.Days;
-				var years = days / 365; days -= years * 365;
-				var months = days / 30; days -= months * 30;
-				if (TS.TotalDays >= 1) days += hours > 0 ? 1 : 0;
-				if (days > 30) { days -= 30; months++; }
+				var years = days / 365;
+				days -= years * 365;
+				var months = days / 30;
+				days -= months * 30;
+				if (TS.TotalDays >= 1)
+				{
+					days += hours > 0 ? 1 : 0;
+				}
+
+				if (days > 30)
+				{ days -= 30; months++; }
 				var Out = "";
 				if (years > 0)
+				{
 					Out = (years > 0 ? years + " year" + (years != 1 ? "s" : "") + ", " : "") + (months > 0 ? months + " month" + (months != 1 ? "s" : "") + ", " : "");
+				}
 				else if (TS.TotalDays >= 1)
+				{
 					Out = (months > 0 ? months + " month" + (months != 1 ? "s" : "") + ", " : "") + (days > 0 ? days + " day" + (days != 1 ? "s" : "") + ", " : "");
+				}
 				else
+				{
 					Out = (days > 0 ? days + " day" + (days != 1 ? "s" : "") + ", " : "") + (hours > 0 ? hours + " hour" + (hours != 1 ? "s" : "") + ", " : "");
+				}
+
 				return Out.Substring(0, Out.Length - 2);
 			}
 			catch (Exception)
@@ -43,18 +57,28 @@ namespace Extensions
 		public static string ToReadableString(this DateTime DT, bool AddYear = true, DateFormat format = DateFormat.DMY, bool fullMonth = true)
 		{
 			if (LocaleHelper.CurrentCulture?.TwoLetterISOLanguageName != "en")
+			{
 				return DT.ToString("d");
+			}
 
 			var day = "th";
 			var month = DT.ToString(fullMonth ? "MMMM" : "MMM");
 
 			if (DT.Day < 4 || DT.Day > 20)
+			{
 				switch (DT.Day % 10)
 				{
-					case 1: day = "st"; break;
-					case 2: day = "nd"; break;
-					case 3: day = "rd"; break;
+					case 1:
+						day = "st";
+						break;
+					case 2:
+						day = "nd";
+						break;
+					case 3:
+						day = "rd";
+						break;
 				}
+			}
 
 			switch (format)
 			{
@@ -82,32 +106,56 @@ namespace Extensions
 				{
 					var sb = new List<string>();
 					var days = TS.Days;
-					var years = days / 365; days -= years * 365;
-					var months = days / 30; days -= months * 30;
+					var years = days / 365;
+					days -= years * 365;
+					var months = days / 30;
+					days -= months * 30;
 					var large = years > 0 || months > 1;
 
 					if (large)
 					{
 						if (years != 0)
-							sb.Add(years + " year".Plural(years));
+						{
+							sb.Add(LocaleHelper.GetGlobalText("{0} year").FormatPlural(years));
+						}
+
 						if (months != 0)
-							sb.Add(months + " month".Plural(months));
+						{
+							sb.Add(LocaleHelper.GetGlobalText("{0} month").FormatPlural(months));
+						}
+
 						if (days != 0)
-							sb.Add(days + " day".Plural(days));
+						{
+							sb.Add(LocaleHelper.GetGlobalText("{0} day").FormatPlural(days));
+						}
 					}
 					else
 					{
 						if (TS.Days != 0)
-							sb.Add(TS.Days + (!longWords ? "d" : " day".Plural(TS.Days)));
+						{
+							sb.Add(LocaleHelper.GetGlobalText(longWords ? "{0} day" : "{0}d").FormatPlural(TS.Days));
+						}
+
 						if (TS.Hours != 0)
-							sb.Add(TS.Hours + (!longWords ? "h" : " hour".Plural(TS.Hours)));
+						{
+							sb.Add(LocaleHelper.GetGlobalText(longWords ? "{0} hour" : "{0}h").FormatPlural(TS.Hours));
+						}
+
 						if (TS.Minutes != 0)
-							sb.Add(TS.Minutes + (!longWords ? "m" : " minute".Plural(TS.Minutes)));
+						{
+							sb.Add(LocaleHelper.GetGlobalText(longWords ? "{0} minute" : "{0}m").FormatPlural(TS.Minutes));
+						}
+
 						if ((TS.Seconds != 0 || TS.TotalSeconds < 1) && (!shorter || TS.TotalSeconds < 60))
-							sb.Add((TS.TotalSeconds < 1 ? Math.Round(TS.TotalSeconds, 2) : TS.Seconds) + (!longWords ? "s" : " second".Plural(TS.Seconds)));
+						{
+							sb.Add(LocaleHelper.GetGlobalText(longWords ? "{0} second" : "{0}s").FormatPlural((TS.TotalSeconds < 1 ? Math.Round(TS.TotalSeconds, 2) : TS.Seconds)));
+						}
 					}
 
-					if (shorter) return string.Join(", ", sb.Take(2));
+					if (shorter)
+					{
+						return string.Join(", ", sb.Take(2));
+					}
 
 					return string.Join(", ", sb);
 				}
@@ -115,7 +163,7 @@ namespace Extensions
 			catch
 			{ }
 
-			return !longWords ? "0s" : "0 seconds";
+			return LocaleHelper.GetGlobalText(longWords ? "{0} second" : "{0}s").FormatPlural(0);
 		}
 
 		/// <summary>
@@ -129,11 +177,19 @@ namespace Extensions
 				var sb = new List<string>();
 
 				if (TS.Hours != 0)
+				{
 					sb.Add(TS.Hours + "h");
+				}
+
 				if (TS.Minutes != 0)
+				{
 					sb.Add(TS.Minutes + "m");
+				}
+
 				if (TS.TotalSeconds != 0)
+				{
 					sb.Add(Math.Round(TS.TotalSeconds % 60, 2) + "s");
+				}
 
 				return sb.Count == 0 ? "0s" : string.Join(", ", sb);
 			}
@@ -150,20 +206,23 @@ namespace Extensions
 			if (ts.TotalHours < 5)
 			{
 				if (past)
-					return ts.ToReadableString(shorter, longWords) + " ago";
-				return "in " + ts.ToReadableString(shorter, longWords);
+				{
+					return LocaleHelper.GetGlobalText("{0} ago").Format(ts.ToReadableString(shorter, longWords));
+				}
+
+				return LocaleHelper.GetGlobalText("in {0}").Format(ts.ToReadableString(shorter, longWords));
 			}
 			else if (dt.Date == today)
 			{
-				return $"Today at {dt:h:mm tt}";
+				return LocaleHelper.GetGlobalText("Today at {0}").Format(dt.ToString("t"));
 			}
 			else if (dt.Date.AnyOf(today.AddDays(1), today.AddDays(-1)))
 			{
-				return (past ? "Yesterday at " : "Tomorrow at ") + dt.ToString("h:mm tt");
+				return LocaleHelper.GetGlobalText(past ? "Yesterday at {0}" : "Tomorrow at {0}").Format(dt.ToString("t"));
 			}
 			else if (ts.TotalDays < 7)
 			{
-				return $"{(past ? "Last " : "Next ")}{dt:dddd} at {dt:h:mm tt}";
+				return LocaleHelper.GetGlobalText(past ? "Last {0} at {1}" : "Next {0} at {1}").Format(dt.ToString("dddd"), dt.ToString("t"));
 			}
 
 			var days = ts.Days;
@@ -172,13 +231,16 @@ namespace Extensions
 			var months = days / 30;
 
 			if (years > 0)
+			{
 				return dt.ToReadableString(true, DateFormat.DMY);
-			//return (past ? $"{years} years ago" : $"in {years} years") + $" on {dt.ToReadableString(true, DateFormat.TDMY)}";
+			}
 
 			if (months > 0)
-				return (past ? $"{months} months ago" : $"in {months} months") + $" on {dt.ToReadableString(false, DateFormat.MDY)}";
+			{
+				return LocaleHelper.GetGlobalText(past ? "{0} month ago on {1}" : "in {0} month on {1}").FormatPlural(months, dt.ToReadableString(false, DateFormat.MDY));
+			}
 
-			return (past ? $"{days} days ago" : $"in {days} days");
+			return LocaleHelper.GetGlobalText(past ? "{0} day ago" : "in {0} day").FormatPlural(days);
 		}
 	}
 }

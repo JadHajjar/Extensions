@@ -245,7 +245,7 @@ public static class SqlReflector
 			{
 				dbValue = Activator.CreateInstance(type);
 			}
-			else
+			else if (Nullable.GetUnderlyingType(type) != dbValue.GetType())
 			{
 				dbValue = Convert.ChangeType(dbValue, type, CultureInfo.InvariantCulture);
 			}
