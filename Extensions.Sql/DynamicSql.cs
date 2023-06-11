@@ -218,7 +218,7 @@ public static class DynamicSql
 
 		sb.AppendLine("SELECT");
 		sb.AppendLine(props.ListStrings(x => x.ColumnName(true), ", "));
-		sb.AppendLine(string.Format(" FROM [{0}]", classInf.TableName));
+		sb.AppendLine(string.Format(" FROM [{0}] WITH (NOLOCK)", classInf.TableName));
 
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
@@ -246,7 +246,7 @@ public static class DynamicSql
 
 		sb.AppendLine("SELECT TOP 1 ");
 		sb.AppendLine(props.ListStrings(x => x.ColumnName(true), ", "));
-		sb.AppendLine(string.Format(" FROM [{0}]", classInf.TableName));
+		sb.AppendLine(string.Format(" FROM [{0}] WITH (NOLOCK)", classInf.TableName));
 
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
@@ -272,7 +272,7 @@ public static class DynamicSql
 		var props = getDynamicProperties(type);
 		var sb = new StringBuilder();
 
-		sb.AppendLine(string.Format("SELECT * FROM [{0}]", classInf.TableName));
+		sb.AppendLine(string.Format("SELECT * FROM [{0}] WITH (NOLOCK)", classInf.TableName));
 		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{
@@ -300,7 +300,7 @@ public static class DynamicSql
 		var props = getDynamicProperties(type);
 		var sb = new StringBuilder();
 
-		sb.AppendLine(string.Format("SELECT * FROM [{0}]", classInf.TableName));
+		sb.AppendLine(string.Format("SELECT * FROM [{0}] WITH (NOLOCK)", classInf.TableName));
 		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.Indexer).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{

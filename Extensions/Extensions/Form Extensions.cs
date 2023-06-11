@@ -62,6 +62,11 @@ namespace Extensions
 			}
 		}
 
+		public static Rectangle InvertPad(this Rectangle rect, Padding padding)
+		{
+			return Pad(rect, -padding.Left, -padding.Top, -padding.Right, -padding.Bottom);
+		}
+
 		public static Rectangle Pad(this Rectangle rect, Padding padding)
 		{
 			return Pad(rect, padding.Left, padding.Top, padding.Right, padding.Bottom);

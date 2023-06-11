@@ -77,18 +77,22 @@ namespace Extensions
 			}
 
 			// Get the type of the object
-			var type = obj.GetType();
-			var newObject = Activator.CreateInstance(typeof(T2));
+			var type = typeof(T);
+			var typeTo = typeof(T2);
+			var newObject = Activator.CreateInstance(typeTo);
 			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
 			foreach (var property in properties)
 			{
-				if (property.CanWrite && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
+				var target = typeTo.GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance);
+
+				if (target?.CanWrite == true && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
 				{
 					var value = property.GetValue(obj, null);
 					if (value != null)
 					{
 						var newValue = Clone(value);
-						property.SetValue(newObject, newValue, null);
+						target.SetValue(newObject, newValue, null);
 					}
 				}
 			}

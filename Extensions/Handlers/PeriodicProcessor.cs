@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Extensions;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -198,6 +200,11 @@ namespace Extensions
 
 				CacheItems(_results);
 			}
+		}
+
+		public void Clear()
+		{
+			_results.Clear();
 		}
 	}
 }
