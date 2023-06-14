@@ -49,6 +49,8 @@ namespace Extensions
 
 		public static string IpAddress => ipAddress ?? (ipAddress = new WebClient().DownloadString("http://icanhazip.com").Trim());
 
+		public static bool AssumeInternetConnectivity { get; set; }
+
 		public static void Start() => Start(_dnsIps[0], 15000);
 
 		public static void Start(string host, double timer)
@@ -64,7 +66,7 @@ namespace Extensions
 
 		private static void getConnectionState()
 		{
-			if (ISave.CurrentPlatform == Platform.MacOSX)
+			if (AssumeInternetConnectivity || ISave.CurrentPlatform == Platform.MacOSX)
 			{
 				State = ConnectionState.Connected;
 				return;
