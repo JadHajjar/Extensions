@@ -57,6 +57,9 @@ namespace Extensions
 		{
 			ConnectionHandler.host = host;
 			ConnectionHandler.timer = timer;
+
+			checkTimer?.Dispose();
+
 			checkTimer = new Timer(timer) { AutoReset = false };
 
 			checkTimer.Elapsed += (s, e) => getConnectionState();
