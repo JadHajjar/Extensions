@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="Identifiers\TicketBooth.cs" />
     <Compile Include="Identifiers\WaitIdentifier.cs" />
+    <Compile Include="Services\ServiceCollection.cs" />
     <None Include="FormDesign\Borderless Move-Resize.cs" />
     <Compile Include="Handlers\AnimationHandler.cs" />
     <Compile Include="Identifiers\DisableIdentifier.cs" />
