@@ -80,6 +80,7 @@
     <Compile Include="Extensions\Dictionary Extensions.cs" />
     <Compile Include="Extensions\Enumerable Extensions.cs" />
     <Compile Include="Enums\ColorStyle.cs" />
+    <Compile Include="Handlers\CrossIO.cs" />
     <Compile Include="Handlers\GaussianBlur.cs" />
     <Compile Include="Handlers\ConnectionHandler.cs" />
     <Compile Include="FormDesign\DesignList.cs" />

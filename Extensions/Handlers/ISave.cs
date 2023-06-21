@@ -14,11 +14,9 @@ namespace Extensions
 	{
 		public static string AppName { get; set; } = Application.ProductName;
 
-		public static string DocsFolder => Path.Combine(CustomSaveDirectory.IfEmpty(GetFolderPath(SpecialFolder.MyDocuments)), AppName);
+		public static string DocsFolder => CrossIO.Combine(CustomSaveDirectory.IfEmpty(GetFolderPath(SpecialFolder.MyDocuments)), AppName);
 
 		public static string CustomSaveDirectory { get; set; }
-
-		public static Platform CurrentPlatform { get; set; }
 
 		public virtual string Name { get; set; }
 
@@ -178,7 +176,7 @@ namespace Extensions
 
 			var doc = GetPath(name.IfEmpty(Name), appName, local);
 
-			ExtensionClass.DeleteFile(doc);
+			CrossIO.DeleteFile(doc);
 		}
 
 		private static string Read(string path)
@@ -218,9 +216,9 @@ namespace Extensions
 				var guid = Guid.NewGuid();
 				var tries = 3;
 				var parent = Directory.GetParent(path);
-				var temp = Path.Combine(parent.FullName, $"{guid}.tmp");
+				var temp = CrossIO.Combine(parent.FullName, $"{guid}.tmp");
 
-				noBackup |= CurrentPlatform == Platform.MacOSX;
+				noBackup |= CrossIO.CurrentPlatform == Platform.MacOSX;
 
 				retry:
 				try
@@ -256,7 +254,7 @@ namespace Extensions
 				{
 					if (!noBackup && File.Exists(temp))
 					{
-						ExtensionClass.DeleteFile(temp);
+						CrossIO.DeleteFile(temp);
 					}
 				}
 			}
@@ -280,7 +278,7 @@ namespace Extensions
 				basePath = GetFolderPath(SpecialFolder.MyDocuments);
 			}
 
-			return Path.Combine(basePath, appName.IfEmpty(AppName), name);
+			return CrossIO.Combine(basePath, appName.IfEmpty(AppName), name);
 		}
 
 		#endregion Other
