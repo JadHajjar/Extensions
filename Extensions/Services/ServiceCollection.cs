@@ -27,7 +27,7 @@ namespace Extensions
 			_singletonInitializers.TryAdd(typeof(T), s => initializer(s));
 		}
 
-		public void AddSingleton<T, T2>(Func<ServiceCollection, T2> initializer = null) where T2 : class
+		public void AddSingleton<T, T2>(Func<ServiceCollection, T2> initializer = null) where T2 : class, T
 		{
 			if (initializer == null)
 			{
@@ -47,7 +47,7 @@ namespace Extensions
 			_transient.TryAdd(typeof(T), s => initializer(s));
 		}
 
-		public void AddTransient<T, T2>(Func<ServiceCollection, T2> initializer = null) where T2 : class
+		public void AddTransient<T, T2>(Func<ServiceCollection, T2> initializer = null) where T2 : class, T
 		{
 			if (initializer == null)
 			{
@@ -102,6 +102,30 @@ namespace Extensions
 
 			return null;
 		}
+
+#if DEBUG
+		public void CheckForLoops()
+		{
+			foreach (var item in _singletonInitializers)
+			{
+				var obj = item.Value(this);
+
+				circleFind(obj, item.Key);
+			}
+
+			foreach (var item in _transient)
+			{
+				var obj = item.Value(this);
+
+				circleFind(obj, item.Key);
+			}
+		
+			void circleFind(object obj, Type originalType)
+			{
+
+			}
+		}
+#endif
 	}
 
 	public interface IService
