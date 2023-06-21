@@ -69,7 +69,7 @@ namespace Extensions
 
 		private static void getConnectionState()
 		{
-			if (AssumeInternetConnectivity || ISave.CurrentPlatform == Platform.MacOSX)
+			if (AssumeInternetConnectivity || CrossIO.CurrentPlatform == Platform.MacOSX)
 			{
 				State = ConnectionState.Connected;
 				return;
