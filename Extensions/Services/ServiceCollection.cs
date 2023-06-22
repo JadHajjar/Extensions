@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Extensions
@@ -66,14 +67,18 @@ namespace Extensions
 
 		private object CreateInstance(Type serviceType)
 		{
-			var constructor = serviceType.GetConstructors().FirstOrDefault();
-
-			if (constructor != null)
+			try
 			{
-				return constructor.Invoke(constructor.GetParameters().Select(x => GetService(x.ParameterType)).ToArray());
-			}
+				var constructor = serviceType.GetConstructors().FirstOrDefault();
 
-			return Activator.CreateInstance(serviceType);
+				if (constructor != null)
+				{
+					return constructor.Invoke(constructor.GetParameters().Select(x => GetService(x.ParameterType)).ToArray());
+				}
+
+				return Activator.CreateInstance(serviceType);
+			}
+			catch (Exception ex) { throw new Exception($"Failed to create an instance of {serviceType.Name}, {ex.Message}"); }
 		}
 
 		public T GetService<T>()
@@ -83,9 +88,19 @@ namespace Extensions
 
 		public object GetService(Type type)
 		{
+			if (typeof(ServiceCollection) == type)
+			{
+				return this;
+			}
+
 			if (_singletons.TryGetValue(type, out var singleton))
 			{
 				return singleton;
+			}
+
+			if (_transient.TryGetValue(type, out var transient))
+			{
+				return transient(this);
 			}
 
 			if (_singletonInitializers.TryGetValue(type, out var singletonInitializer))
@@ -95,37 +110,8 @@ namespace Extensions
 				return _singletons[type];
 			}
 
-			if (_transient.TryGetValue(type, out var transient))
-			{
-				return transient(this);
-			}
-
 			return null;
 		}
-
-#if DEBUG
-		public void CheckForLoops()
-		{
-			foreach (var item in _singletonInitializers)
-			{
-				var obj = item.Value(this);
-
-				circleFind(obj, item.Key);
-			}
-
-			foreach (var item in _transient)
-			{
-				var obj = item.Value(this);
-
-				circleFind(obj, item.Key);
-			}
-		
-			void circleFind(object obj, Type originalType)
-			{
-
-			}
-		}
-#endif
 	}
 
 	public interface IService
