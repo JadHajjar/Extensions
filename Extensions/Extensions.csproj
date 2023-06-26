@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
+    <Compile Include="Classes\DelayedAction.cs" />
     <Compile Include="Classes\Encryption.cs" />
     <Compile Include="Classes\ITimestamped.cs" />
     <Compile Include="Classes\Parallelism.cs" />

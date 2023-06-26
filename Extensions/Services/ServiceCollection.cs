@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Extensions
 {
-	public class ServiceCollection
+	internal class ServiceCollection
 	{
 		public ServiceCollection()
 		{
