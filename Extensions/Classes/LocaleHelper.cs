@@ -22,11 +22,11 @@ namespace Extensions
 
 		static LocaleHelper()
 		{
-			ISave.Load<string>(out var culture, "Language.tf", "Shared");
-
-			if (!string.IsNullOrWhiteSpace(culture))
+			try
 			{
-				try
+				ISave.Load<string>(out var culture, "Language.tf", "Shared");
+
+				if (!string.IsNullOrWhiteSpace(culture))
 				{
 					var cultureInfo = new CultureInfo(culture);
 
@@ -34,8 +34,8 @@ namespace Extensions
 
 					return;
 				}
-				catch { }
 			}
+			catch { }
 
 			SetCultureAndCalendar(CultureInfo.CurrentCulture);
 		}
