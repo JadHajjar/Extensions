@@ -52,9 +52,11 @@
   <ItemGroup>
     <Compile Include="Classes\BackgroundAction.cs" />
     <Compile Include="Classes\Cloning.cs" />
+    <Compile Include="Classes\Encryption.cs" />
     <Compile Include="Classes\EventHandler.cs" />
     <Compile Include="Classes\InterfaceContractResolver.cs" />
     <Compile Include="Classes\DateRange.cs" />
+    <Compile Include="Classes\ITimestamped.cs" />
     <Compile Include="Classes\LocaleHelper.cs" />
     <Compile Include="Classes\MachineInfo.cs" />
     <Compile Include="Classes\Parallelism.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Extensions\Dictionary Extensions.cs" />
     <Compile Include="Extensions\Enumerable Extensions.cs" />
     <Compile Include="Enums\ColorStyle.cs" />
+    <Compile Include="Handlers\CrossIO.cs" />
     <Compile Include="Handlers\GaussianBlur.cs" />
     <Compile Include="Handlers\ConnectionHandler.cs" />
     <Compile Include="FormDesign\DesignList.cs" />
