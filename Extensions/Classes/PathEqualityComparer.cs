@@ -17,8 +17,7 @@ namespace Extensions
 		public int GetHashCode(string obj)
 		{
 			return obj
-				.Replace('/', Path.DirectorySeparatorChar)
-				.Replace('\\', Path.DirectorySeparatorChar)
+				.Replace(CrossIO.InvalidPathSeparator, CrossIO.PathSeparator)
 				.ToLower()
 				.GetHashCode();
 		}

@@ -171,24 +171,24 @@ namespace Extensions
 				return true;
 			}
 
-			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath1 = path1.Replace(InvalidPathSeparator, PathSeparator);
+			var normalizedPath2 = path2.Replace(InvalidPathSeparator, PathSeparator);
 
 			return string.Equals(normalizedPath1, normalizedPath2, StringComparison.OrdinalIgnoreCase);
 		}
 
 		public static bool PathContains(this string path1, string path2)
 		{
-			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath1 = path1.Replace(InvalidPathSeparator, PathSeparator);
+			var normalizedPath2 = path2.Replace(InvalidPathSeparator, PathSeparator);
 
 			return normalizedPath1.IndexOf(normalizedPath2, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
 		public static string PathReplace(this string path1, string path2, string path)
 		{
-			var normalizedPath1 = path1.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-			var normalizedPath2 = path2.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+			var normalizedPath1 = path1.Replace(InvalidPathSeparator, PathSeparator);
+			var normalizedPath2 = path2.Replace(InvalidPathSeparator, PathSeparator);
 
 			var index = normalizedPath1.IndexOf(normalizedPath2, StringComparison.OrdinalIgnoreCase);
 

@@ -137,7 +137,7 @@ namespace Extensions
 					}
 				}
 				catch { } // catch useless potential IndexOutOfRangeException errors
-				
+
 				if (!wait)
 				{
 					return default;
@@ -205,6 +205,11 @@ namespace Extensions
 		public void Clear()
 		{
 			_results.Clear();
+		}
+
+		public Dictionary<TEntity, TResult> GetCache()
+		{
+			return _results;
 		}
 	}
 }
