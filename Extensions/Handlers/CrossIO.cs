@@ -12,6 +12,7 @@ namespace Extensions
 		public static Platform CurrentPlatform { get; set; }
 		public static string PathSeparator => CurrentPlatform == Platform.Windows ? "\\" : "/";
 		public static string InvalidPathSeparator => CurrentPlatform != Platform.Windows ? "\\" : "/";
+		public static string NewLine => CurrentPlatform != Platform.Windows ? "\n" : "\r\n";
 
 		public static string FormatPath(this string path)
 		{

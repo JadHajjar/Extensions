@@ -205,7 +205,7 @@ namespace Extensions
 		/// </summary>
 		public static string ListStrings<T>(this IEnumerable<T> list, Func<T, string> Format, string seperator)
 		{
-			return list.Select(Format).ListStrings(x => x + seperator, false);
+			return list.Select(Format).WhereNotEmpty().ListStrings(x => x + seperator, false);
 		}
 
 		/// <summary>
