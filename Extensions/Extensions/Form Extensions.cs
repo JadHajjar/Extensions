@@ -498,7 +498,7 @@ namespace Extensions
 			var R = (color.R * Perc / 100) + (backColor.R * (100 - Perc) / 100);
 			var G = (color.G * Perc / 100) + (backColor.G * (100 - Perc) / 100);
 			var B = (color.B * Perc / 100) + (backColor.B * (100 - Perc) / 100);
-			return System.Drawing.Color.FromArgb(R, G, B);
+			return System.Drawing.Color.FromArgb(color.A, R, G, B);
 		}
 
 		/// <summary>

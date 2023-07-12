@@ -99,6 +99,9 @@ namespace Extensions
 
 		public static bool DeleteFolder(string folderPath)
 		{
+			if (!Directory.Exists(folderPath))
+			{ return true; }
+
 			var res = true;
 			// Delete all files inside the folder
 			foreach (var file in Directory.GetFiles(folderPath))
