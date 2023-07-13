@@ -500,7 +500,7 @@ namespace Extensions
 
 		public static string GetString(this Version version)
 		{
-			if (version.Revision > 0)
+			if (version.Revision > 0 && version.Revision <= 999)
 			{
 				return version.ToString(4);
 			}

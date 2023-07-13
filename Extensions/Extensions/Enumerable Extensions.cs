@@ -320,6 +320,20 @@ namespace Extensions
 			return default;
 		}
 
+		public static T2 GetOrAdd<T, T2>(this Dictionary<T, T2> enumerable, T index) where T2 : new()
+		{
+			if (enumerable.TryGetValue(index, out var val))
+			{
+				return val;
+			}
+
+			var newVal = new T2();
+
+			enumerable[index] = newVal;
+
+			return newVal;
+		}
+
 		/// <summary>
 		/// Removes occurences of the <paramref name="source"/> collection from the <see cref="List{T}"/>
 		/// </summary>
