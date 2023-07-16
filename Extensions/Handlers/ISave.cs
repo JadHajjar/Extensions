@@ -14,7 +14,7 @@ namespace Extensions
 	{
 		public static string AppName { get; set; } = Application.ProductName;
 
-		public static string DocsFolder => CrossIO.Combine(CustomSaveDirectory.IfEmpty(GetFolderPath(SpecialFolder.MyDocuments)), AppName);
+		public static string DocsFolder => CrossIO.Combine(CustomSaveDirectory.IfEmpty(GetFolderPath(SpecialFolder.LocalApplicationData)), AppName);
 
 		public static string CustomSaveDirectory { get; set; }
 
@@ -273,9 +273,9 @@ namespace Extensions
 				basePath = CustomSaveDirectory;
 			}
 
-			if (basePath == null)
+			if (string.IsNullOrEmpty(basePath))
 			{
-				basePath = GetFolderPath(SpecialFolder.MyDocuments);
+				basePath = GetFolderPath(SpecialFolder.LocalApplicationData);
 			}
 
 			return CrossIO.Combine(basePath, appName.IfEmpty(AppName), name);

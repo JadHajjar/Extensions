@@ -94,9 +94,9 @@ namespace Extensions
 		{
 			Initialized = true;
 
-			if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared")))
+			if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI")))
 			{
-				Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared"));
+				Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
 			}
 
 			Load();
@@ -146,7 +146,7 @@ namespace Extensions
 
 			var watcher = new FileSystemWatcher
 			{
-				Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared"),
+				Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"),
 				NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 				Filter = "*.*",
 			};
@@ -190,7 +190,7 @@ namespace Extensions
 			loadIdentifier.Disable();
 			try
 			{
-				var obj = ISave.LoadRaw("DesignMode.tf", "Shared");
+				var obj = ISave.LoadRaw("DesignMode.tf", "SlickUI");
 
 				if (obj != null)
 				{
@@ -226,7 +226,7 @@ namespace Extensions
 		{
 			loadIdentifier.Disable();
 			try
-			{ ISave.Save(new { Design = design.ToString(), Custom, NightModeEnabled, UseSystemTheme }, "DesignMode.tf", appName: "Shared"); }
+			{ ISave.Save(new { Design = design.ToString(), Custom, NightModeEnabled, UseSystemTheme }, "DesignMode.tf", appName: "SlickUI"); }
 			catch { }
 			loadIdentifier.Enable();
 		}

@@ -24,7 +24,7 @@ namespace Extensions
 		{
 			try
 			{
-				ISave.Load<string>(out var culture, "Language.tf", "Shared");
+				ISave.Load<string>(out var culture, "Language.tf", "SlickUI");
 
 				if (!string.IsNullOrWhiteSpace(culture))
 				{
@@ -44,7 +44,7 @@ namespace Extensions
 		{
 			SetCultureAndCalendar(cultureInfo);
 
-			ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "Shared");
+			ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "SlickUI");
 
 			LanguageChanged?.Invoke();
 		}
