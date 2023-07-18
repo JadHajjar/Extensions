@@ -88,6 +88,16 @@ namespace Extensions
 			}
 		}
 
+		public static void Delete(string name, string appName = null, bool local = false)
+		{
+			var doc = GetPath(name, appName, local);
+
+			if (CrossIO.FileExists(doc))
+			{
+				CrossIO.DeleteFile(doc);
+			}
+		}
+
 		#endregion Load
 
 		#region Save
@@ -167,17 +177,17 @@ namespace Extensions
 			}
 		}
 
-		public void Delete(string name = null, string appName = null, bool local = false)
-		{
-			if (string.IsNullOrWhiteSpace(name.IfEmpty(Name)))
-			{
-				throw new MissingFieldException("ISave", "Name");
-			}
+		//public void Delete(string name = null, string appName = null, bool local = false)
+		//{
+		//	if (string.IsNullOrWhiteSpace(name.IfEmpty(Name)))
+		//	{
+		//		throw new MissingFieldException("ISave", "Name");
+		//	}
 
-			var doc = GetPath(name.IfEmpty(Name), appName, local);
+		//	var doc = GetPath(name.IfEmpty(Name), appName, local);
 
-			CrossIO.DeleteFile(doc);
-		}
+		//	CrossIO.DeleteFile(doc);
+		//}
 
 		private static string Read(string path)
 		{
