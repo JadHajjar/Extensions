@@ -11,9 +11,7 @@ namespace Extensions
 				var list = new DesignList()
 				{
 					Modern,
-#if DEBUG
-					CS2,
-#endif
+					Midnight,
 					BerryBlues,
 					Chic,
 					Dark,
@@ -28,27 +26,6 @@ namespace Extensions
 				return list;
 			}
 		}
-
-#if DEBUG
-		public static FormDesign CS2 = new FormDesign("CS:2", 1, FormDesignType.Dark)
-		{
-			BackColor = Color.FromArgb(0, 22, 38),
-			ForeColor = Color.FromArgb(255, 255, 255),
-			ButtonColor = Color.FromArgb(35, 50, 87),
-			ButtonForeColor = Color.FromArgb(255, 255, 255),
-			AccentColor = Color.FromArgb(58, 193, 216),
-			MenuColor = Color.FromArgb(28, 32, 51),
-			MenuForeColor = Color.FromArgb(255, 255, 255),
-			LabelColor = Color.FromArgb(210, 218, 235),
-			InfoColor = Color.FromArgb(227, 228, 229),
-			ActiveColor = Color.FromArgb(25, 136, 255),
-			ActiveForeColor = Color.FromArgb(255, 255, 255),
-			RedColor = Color.FromArgb(255, 50, 50),
-			GreenColor = Color.FromArgb(57, 192, 73),
-			YellowColor = Color.FromArgb(255, 183, 50),
-			IconColor = Color.FromArgb(255, 255, 255)
-		};
-#endif
 
 		public static FormDesign Modern = new FormDesign("Modern", 0, FormDesignType.Light)
 		{
@@ -67,6 +44,25 @@ namespace Extensions
 			GreenColor = Color.FromArgb(170, 224, 113),
 			YellowColor = Color.FromArgb(229, 193, 52),
 			IconColor = Color.FromArgb(77, 87, 102)
+		};
+
+		public static readonly FormDesign Midnight = new FormDesign("Midnight", 1, FormDesignType.Dark)
+		{
+			BackColor = Color.FromArgb(24, 26, 33),
+			ForeColor = Color.FromArgb(255, 255, 255),
+			ButtonColor = Color.FromArgb(56, 67, 82),
+			ButtonForeColor = Color.FromArgb(255, 255, 255),
+			AccentColor = Color.FromArgb(159, 202, 245),
+			MenuColor = Color.FromArgb(39, 47, 59),
+			MenuForeColor = Color.FromArgb(223, 227, 245),
+			LabelColor = Color.FromArgb(202, 211, 222),
+			InfoColor = Color.FromArgb(196, 197, 204),
+			ActiveColor = Color.FromArgb(44, 114, 245),
+			ActiveForeColor = Color.FromArgb(233, 237, 247),
+			RedColor = Color.FromArgb(204, 53, 63),
+			GreenColor = Color.FromArgb(68, 184, 105),
+			YellowColor = Color.FromArgb(219, 180, 88),
+			IconColor = Color.FromArgb(222, 230, 250)
 		};
 
 		public static FormDesign BerryBlues = new FormDesign("Berry Blues", 2, FormDesignType.Dark)
