@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -43,7 +42,9 @@ namespace Extensions
 			get
 			{
 				if (!Initialized)
+				{
 					return Modern;
+				}
 
 				if (UseSystemTheme && IsDarkMode != IsSystemDark())
 				{
@@ -96,6 +97,15 @@ namespace Extensions
 
 			if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI")))
 			{
+				try
+				{
+					if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared")))
+					{
+						Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
+					}
+				}
+				catch { }
+
 				Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
 			}
 
@@ -160,7 +170,7 @@ namespace Extensions
 
 		private static void FileChanged(object sender, FileSystemEventArgs e)
 		{
-			if (Path.GetFileName(e.FullPath) .StartsWith( "DesignMode.tf") && !loadIdentifier.Disabled)
+			if (Path.GetFileName(e.FullPath).StartsWith("DesignMode.tf") && !loadIdentifier.Disabled)
 			{
 				_form.TryInvoke(Load);
 			}
