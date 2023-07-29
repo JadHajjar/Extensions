@@ -109,7 +109,7 @@ namespace Extensions
 				return dic[key];
 			}
 
-			return key.FormatWords();
+			return key.Contains(' ') ? key : key.FormatWords();
 		}
 
 		public static Translation GetGlobalText(string key)
