@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Extensions
@@ -40,7 +41,7 @@ namespace Extensions
 			if (type.IsArray)
 			{
 				var elementType = type.GetElementType();
-				var array = (obj as Array);
+				var array = obj as Array;
 				var copiedArray = Array.CreateInstance(elementType, array.Length);
 				for (var i = 0; i < array.Length; i++)
 				{
@@ -51,7 +52,7 @@ namespace Extensions
 
 			// If the object is a class, create a new instance and copy its properties
 			var newObject = Activator.CreateInstance(type);
-			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var properties = GetProperties(type);
 			foreach (var property in properties)
 			{
 				if (property.CanWrite && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
@@ -80,7 +81,7 @@ namespace Extensions
 			var type = typeof(T);
 			var typeTo = typeof(T2);
 			var newObject = Activator.CreateInstance(typeTo);
-			var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var properties = GetProperties(type);
 
 			foreach (var property in properties)
 			{
@@ -98,6 +99,25 @@ namespace Extensions
 			}
 
 			return (T2)newObject;
+		}
+
+		private static IEnumerable<PropertyInfo> GetProperties(Type type)
+		{
+			if (type.IsInterface)
+			{
+				foreach (var @interface in type.GetInterfaces().Reverse())
+				{
+					foreach (var item in @interface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+					{
+						yield return item;
+					}
+				}
+			}
+
+			foreach (var item in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+			{
+				yield return item;
+			}
 		}
 	}
 
