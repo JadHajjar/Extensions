@@ -112,7 +112,7 @@ public class SqlHandler
 		internal void Commit()
 		{
 			_transaction.Commit();
-			
+
 			committed = true;
 		}
 
