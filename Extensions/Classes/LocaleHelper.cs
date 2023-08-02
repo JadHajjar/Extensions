@@ -61,7 +61,7 @@ namespace Extensions
 
 		protected LocaleHelper(string dictionaryResourceName)
 		{
-			var assembly = Assembly.GetCallingAssembly();
+			var assembly = GetType().Assembly;
 
 			_locales.Add(this);
 			_locale = new Dictionary<string, Dictionary<string, Translation>>
