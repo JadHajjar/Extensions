@@ -24,6 +24,20 @@ namespace Extensions
 		{
 			try
 			{
+				if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI")))
+				{
+					try
+					{
+						if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared")))
+						{
+							Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Shared"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
+						}
+					}
+					catch { }
+
+					Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
+				}
+
 				ISave.Load<string>(out var culture, "Language.tf", "SlickUI");
 
 				if (!string.IsNullOrWhiteSpace(culture))
