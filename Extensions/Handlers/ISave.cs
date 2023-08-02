@@ -177,18 +177,6 @@ namespace Extensions
 			}
 		}
 
-		//public void Delete(string name = null, string appName = null, bool local = false)
-		//{
-		//	if (string.IsNullOrWhiteSpace(name.IfEmpty(Name)))
-		//	{
-		//		throw new MissingFieldException("ISave", "Name");
-		//	}
-
-		//	var doc = GetPath(name.IfEmpty(Name), appName, local);
-
-		//	CrossIO.DeleteFile(doc);
-		//}
-
 		private static string Read(string path)
 		{
 			lock (lockObj(path))
@@ -264,7 +252,7 @@ namespace Extensions
 				{
 					if (!noBackup && File.Exists(temp))
 					{
-						CrossIO.DeleteFile(temp);
+						CrossIO.DeleteFile(temp, true);
 					}
 				}
 			}
