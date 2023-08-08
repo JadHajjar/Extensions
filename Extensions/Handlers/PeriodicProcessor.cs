@@ -25,7 +25,7 @@ namespace Extensions
 			ProcessingPower = processingPower;
 
 			_results = cache ?? new Dictionary<TEntity, TResult>();
-			_entities = new HashSet<TEntity>();
+			_entities = new HashSet<TEntity>(new List<TEntity>());
 			_timer = new Timer(interval) { AutoReset = false };
 			_timer.Elapsed += _timer_Elapsed;
 			_timer.Start();
