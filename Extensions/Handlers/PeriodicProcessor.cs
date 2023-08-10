@@ -14,6 +14,8 @@ namespace Extensions
 		private readonly HashSet<TEntity> _entities;
 		private readonly Dictionary<TEntity, TResult> _results;
 		private bool processing;
+		private int failedAttempts;
+		private DateTime lastFailedAttempt;
 
 		public TimeSpan MaxCacheTime { get; set; } = TimeSpan.FromMinutes(15);
 		public int ProcessingPower { get; }
@@ -25,7 +27,7 @@ namespace Extensions
 			ProcessingPower = processingPower;
 
 			_results = cache ?? new Dictionary<TEntity, TResult>();
-			_entities = new HashSet<TEntity>(new List<TEntity>());
+			_entities = new HashSet<TEntity>();
 			_timer = new Timer(interval) { AutoReset = false };
 			_timer.Elapsed += _timer_Elapsed;
 			_timer.Start();
@@ -50,7 +52,7 @@ namespace Extensions
 			{
 				processing = true;
 
-				//lock (this)
+				lock (this)
 				{
 					foreach (var entity in _entities)
 					{
@@ -86,7 +88,7 @@ namespace Extensions
 
 		public void Add(TEntity entity)
 		{
-			//lock (this)
+			lock (this)
 			{
 				_entities.Add(entity);
 			}
@@ -94,7 +96,7 @@ namespace Extensions
 
 		public void AddRange(IEnumerable<TEntity> entities)
 		{
-			//lock (this)
+			lock (this)
 			{
 				foreach (var item in entities)
 				{
@@ -117,7 +119,7 @@ namespace Extensions
 
 		public async Task<TResult> Get(TEntity entity, bool wait = false)
 		{
-			//lock (this)
+			lock (this)
 			{
 				try
 				{
@@ -146,7 +148,7 @@ namespace Extensions
 
 			var results = await ProcessItems(new List<TEntity> { entity });
 
-			//lock (this)
+			lock (this)
 			{
 				foreach (var item in results)
 				{
@@ -172,9 +174,32 @@ namespace Extensions
 
 		protected async Task<Dictionary<TEntity, TResult>> ProcessItemsWrapper(List<TEntity> entities)
 		{
-			var results = await ProcessItems(entities);
+			Dictionary<TEntity, TResult> results;
 
-			//lock (this)
+			try
+			{
+				if (failedAttempts > 4 && DateTime.Now - lastFailedAttempt < TimeSpan.FromMinutes(5))
+				{
+					results = new Dictionary<TEntity, TResult>();
+				}
+				else
+				{
+					if (failedAttempts > 4)
+					{
+						failedAttempts = 0;
+					}
+
+					results = await ProcessItems(entities);
+				}
+			}
+			catch
+			{
+				failedAttempts++;
+				lastFailedAttempt = DateTime.Now;
+				throw;
+			}
+
+			lock (this)
 			{
 				foreach (var entity in results)
 				{
@@ -191,7 +216,7 @@ namespace Extensions
 
 		public void AddToCache(Dictionary<TEntity, TResult> results)
 		{
-			//lock (this)
+			lock (this)
 			{
 				foreach (var entity in results)
 				{
