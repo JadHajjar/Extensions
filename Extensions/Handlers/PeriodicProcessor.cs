@@ -96,9 +96,9 @@ namespace Extensions
 
 		public void AddRange(IEnumerable<TEntity> entities)
 		{
-			lock (this)
+			foreach (var item in entities)
 			{
-				foreach (var item in entities)
+				lock (this)
 				{
 					_entities.Add(item);
 				}
@@ -119,7 +119,7 @@ namespace Extensions
 
 		public async Task<TResult> Get(TEntity entity, bool wait = false)
 		{
-			lock (this)
+			//lock (this)
 			{
 				try
 				{
@@ -148,9 +148,9 @@ namespace Extensions
 
 			var results = await ProcessItems(new List<TEntity> { entity });
 
-			lock (this)
+			foreach (var item in results)
 			{
-				foreach (var item in results)
+				lock (this)
 				{
 					return _results[item.Key] = item.Value;
 				}
@@ -199,13 +199,16 @@ namespace Extensions
 				throw;
 			}
 
-			lock (this)
+			foreach (var entity in results)
 			{
-				foreach (var entity in results)
+				lock (this)
 				{
 					_results[entity.Key] = entity.Value;
 				}
+			}
 
+			lock (this)
+			{
 				CacheItems(_results);
 			}
 
@@ -216,13 +219,16 @@ namespace Extensions
 
 		public void AddToCache(Dictionary<TEntity, TResult> results)
 		{
-			lock (this)
+			foreach (var entity in results)
 			{
-				foreach (var entity in results)
+				lock (this)
 				{
 					_results[entity.Key] = entity.Value;
 				}
+			}
 
+			lock (this)
+			{
 				CacheItems(_results);
 			}
 		}
