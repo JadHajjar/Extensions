@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 
+using Timer = System.Timers.Timer;
+
 namespace Extensions
 {
 	public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimestamped
@@ -33,12 +35,12 @@ namespace Extensions
 			_timer.Start();
 		}
 
-		private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+		private async void _timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			Process();
+			await Process();
 		}
 
-		private async void Process()
+		public async Task Process()
 		{
 			if (!CanProcess())
 			{
@@ -84,7 +86,7 @@ namespace Extensions
 
 		protected abstract void CacheItems(Dictionary<TEntity, TResult> results);
 
-		protected abstract Task<Dictionary<TEntity, TResult>> ProcessItems(List<TEntity> entities);
+		protected abstract Task<(Dictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
 
 		public void Add(TEntity entity)
 		{
@@ -105,17 +107,17 @@ namespace Extensions
 			}
 		}
 
-		public void Run()
-		{
-			if (processing)
-			{
-				return;
-			}
+		//public void Run()
+		//{
+		//	if (processing)
+		//	{
+		//		return;
+		//	}
 
-			_timer.Stop();
+		//	_timer.Stop();
 
-			new BackgroundAction(Process).Run();
-		}
+		//	new BackgroundAction(Process).Run();
+		//}
 
 		public async Task<TResult> Get(TEntity entity, bool wait = false)
 		{
@@ -148,11 +150,14 @@ namespace Extensions
 
 			var results = await ProcessItems(new List<TEntity> { entity });
 
-			foreach (var item in results)
+			if (!results.failed)
 			{
-				lock (this)
+				foreach (var item in results.results)
 				{
-					return _results[item.Key] = item.Value;
+					lock (this)
+					{
+						return _results[item.Key] = item.Value;
+					}
 				}
 			}
 
@@ -178,18 +183,26 @@ namespace Extensions
 
 			try
 			{
-				if (failedAttempts > 4 && DateTime.Now - lastFailedAttempt < TimeSpan.FromMinutes(5))
+				if (failedAttempts > 3 && DateTime.Now - lastFailedAttempt < TimeSpan.FromMinutes(5))
 				{
 					results = new Dictionary<TEntity, TResult>();
 				}
 				else
 				{
-					if (failedAttempts > 4)
+					if (failedAttempts > 3)
 					{
 						failedAttempts = 0;
 					}
 
-					results = await ProcessItems(entities);
+					var result = await ProcessItems(entities);
+
+					results = result.results;
+
+					if (result.failed)
+					{
+						failedAttempts++;
+						lastFailedAttempt = DateTime.Now;
+					}
 				}
 			}
 			catch
@@ -197,6 +210,11 @@ namespace Extensions
 				failedAttempts++;
 				lastFailedAttempt = DateTime.Now;
 				throw;
+			}
+
+			if (results.Count == 0)
+			{
+				return results;
 			}
 
 			foreach (var entity in results)

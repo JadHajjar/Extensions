@@ -64,7 +64,7 @@ namespace Extensions
 		{
 			var doc = GetPath(name, appName, local);
 
-			if (File.Exists(doc) && new FileInfo(doc).Length > 0)
+			if (CrossIO.FileExists(doc) && new FileInfo(doc).Length > 0)
 			{
 				obj = JsonConvert.DeserializeObject<T>(Read(doc));
 			}
@@ -78,7 +78,7 @@ namespace Extensions
 		{
 			var doc = GetPath(name, appName, local);
 
-			if (File.Exists(doc))
+			if (CrossIO.FileExists(doc))
 			{
 				return JsonConvert.DeserializeObject<dynamic>(Read(doc));
 			}
@@ -96,18 +96,23 @@ namespace Extensions
 			{
 				CrossIO.DeleteFile(doc);
 			}
+
+			if (CrossIO.FileExists(doc + ".bak"))
+			{
+				CrossIO.DeleteFile(doc + ".bak");
+			}
 		}
 
 		#endregion Load
 
 		#region Save
 
-		public void Save(string name = null, bool supressErrors = false, string appName = null, bool local = false, bool noBackup = false)
+		public void Save(string name = null, bool suppressErrors = false, string appName = null, bool local = false, bool noBackup = false)
 		{
-			Save(null, name, supressErrors, appName, local, noBackup);
+			Save(null, name, suppressErrors, appName, local, noBackup);
 		}
 
-		public void Save(Type[] specificType, string name = null, bool supressErrors = false, string appName = null, bool local = false, bool noBackup = false)
+		public void Save(Type[] specificType, string name = null, bool suppressErrors = false, string appName = null, bool local = false, bool noBackup = false)
 		{
 			if (string.IsNullOrWhiteSpace(name.IfEmpty(Name)))
 			{
@@ -117,7 +122,7 @@ namespace Extensions
 			var doc = GetPath(name.IfEmpty(Name), appName, local);
 			var settings = new JsonSerializerSettings();
 
-			if (supressErrors)
+			if (suppressErrors)
 			{
 				settings.Error += (o, args) => args.ErrorContext.Handled = true;
 			}
@@ -130,9 +135,9 @@ namespace Extensions
 			Write(doc, JsonConvert.SerializeObject(this, Formatting.Indented, settings), noBackup);
 		}
 
-		public static void Save(object obj, string name, bool supressErrors = false, string appName = null, bool local = false, bool noBackup = false)
+		public static void Save(object obj, string name, bool suppressErrors = false, string appName = null, bool local = false, bool noBackup = false)
 		{
-			Save(obj, null, name, supressErrors, appName, local, noBackup);
+			Save(obj, null, name, suppressErrors, appName, local, noBackup);
 		}
 
 		public static void Save(object obj, Type[] specificType, string name, bool supressErrors = false, string appName = null, bool local = false, bool noBackup = false)
@@ -162,27 +167,27 @@ namespace Extensions
 
 		#region Other
 
-		private static readonly Dictionary<string, object> lockObjects = new Dictionary<string, object>();
+		private static readonly Dictionary<string, object> _lockObjects = new Dictionary<string, object>();
 
-		private static object lockObj(string path)
+		private static object LockObj(string path)
 		{
-			lock (lockObjects)
+			lock (_lockObjects)
 			{
-				if (!lockObjects.ContainsKey(path))
+				if (!_lockObjects.ContainsKey(path))
 				{
-					lockObjects.Add(path, new object());
+					_lockObjects.Add(path, new object());
 				}
 
-				return lockObjects[path];
+				return _lockObjects[path];
 			}
 		}
 
 		private static string Read(string path)
 		{
-			lock (lockObj(path))
+			lock (LockObj(path))
 			{
-				var pathExists = File.Exists(path);
-				if (!pathExists && !File.Exists($"{path}.bak"))
+				var pathExists = CrossIO.FileExists(path);
+				if (!pathExists && !CrossIO.FileExists($"{path}.bak"))
 				{
 					return null;
 				}
@@ -209,7 +214,7 @@ namespace Extensions
 
 		private static void Write(string path, string content, bool noBackup)
 		{
-			lock (lockObj(path))
+			lock (LockObj(path))
 			{
 				var guid = Guid.NewGuid();
 				var tries = 3;
@@ -227,7 +232,7 @@ namespace Extensions
 
 					if (!noBackup)
 					{
-						if (File.Exists(path))
+						if (CrossIO.FileExists(path))
 						{
 							File.Replace(temp, path, $"{path}.bak");
 							File.SetAttributes($"{path}.bak", FileAttributes.System | FileAttributes.Hidden);
@@ -250,7 +255,7 @@ namespace Extensions
 				}
 				finally
 				{
-					if (!noBackup && File.Exists(temp))
+					if (!noBackup && CrossIO.FileExists(temp))
 					{
 						CrossIO.DeleteFile(temp, true);
 					}
