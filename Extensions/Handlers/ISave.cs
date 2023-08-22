@@ -182,7 +182,7 @@ namespace Extensions
 			}
 		}
 
-		private static string Read(string path)
+		public static string Read(string path)
 		{
 			lock (LockObj(path))
 			{
@@ -212,7 +212,7 @@ namespace Extensions
 			}
 		}
 
-		private static void Write(string path, string content, bool noBackup)
+		public static void Write(string path, string content, bool noBackup)
 		{
 			lock (LockObj(path))
 			{
