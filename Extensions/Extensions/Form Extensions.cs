@@ -62,6 +62,11 @@ namespace Extensions
 			}
 		}
 
+		public static Rectangle ClipTo(this Rectangle rectangle, int height)
+		{
+			return new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, height);
+		}
+
 		public static Rectangle InvertPad(this Rectangle rect, Padding padding)
 		{
 			return Pad(rect, -padding.Left, -padding.Top, -padding.Right, -padding.Bottom);

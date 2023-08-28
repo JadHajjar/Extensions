@@ -15,7 +15,6 @@ namespace Extensions
 		private readonly Timer _timer;
 		private readonly HashSet<TEntity> _entities;
 		private readonly Dictionary<TEntity, TResult> _results;
-		private bool processing;
 		private int failedAttempts;
 		private DateTime lastFailedAttempt;
 
@@ -52,8 +51,6 @@ namespace Extensions
 
 			try
 			{
-				processing = true;
-
 				lock (this)
 				{
 					foreach (var entity in _entities)
@@ -71,8 +68,6 @@ namespace Extensions
 				{
 					await ProcessInChunks(entities);
 				}
-
-				processing = false;
 			}
 			catch { }
 
