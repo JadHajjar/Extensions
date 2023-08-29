@@ -91,7 +91,7 @@ namespace Extensions
 			ButtonColor = Color.FromArgb(223, 229, 237),
 			ButtonForeColor = Color.FromArgb(17, 77, 88),
 			AccentColor = Color.FromArgb(206, 223, 227),
-			MenuColor = Color.FromArgb(233, 236, 238),
+			MenuColor = Color.FromArgb(220, 225, 228),
 			MenuForeColor = Color.FromArgb(88, 108, 121),
 			LabelColor = Color.FromArgb(102, 143, 168),
 			InfoColor = Color.FromArgb(132, 151, 172),
@@ -148,7 +148,7 @@ namespace Extensions
 			ButtonColor = Color.FromArgb(33, 37, 43),
 			ButtonForeColor = Color.FromArgb(191, 195, 201),
 			AccentColor = Color.FromArgb(69, 75, 86),
-			MenuColor = Color.FromArgb(22, 24, 29),
+			MenuColor = Color.FromArgb(27, 28, 35),
 			MenuForeColor = Color.FromArgb(157, 165, 180),
 			LabelColor = Color.FromArgb(171, 178, 191),
 			InfoColor = Color.FromArgb(92, 99, 112),
@@ -162,12 +162,12 @@ namespace Extensions
 
 		public static FormDesign GoldForest = new FormDesign("Golden Forest", 7, FormDesignType.Dark)
 		{
-			BackColor = Color.FromArgb(5, 26, 26),
+			BackColor = Color.FromArgb(6, 30, 30),
 			ForeColor = Color.FromArgb(236, 247, 244),
 			ButtonColor = Color.FromArgb(26, 47, 40),
 			ButtonForeColor = Color.FromArgb(221, 178, 130),
 			AccentColor = Color.FromArgb(208, 159, 97),
-			MenuColor = Color.FromArgb(5, 23, 23),
+			MenuColor = Color.FromArgb(5, 22, 22),
 			MenuForeColor = Color.FromArgb(213, 237, 223),
 			LabelColor = Color.FromArgb(197, 229, 214),
 			InfoColor = Color.FromArgb(125, 179, 169),

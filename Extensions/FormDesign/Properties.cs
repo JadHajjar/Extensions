@@ -42,22 +42,22 @@ namespace Extensions
 					
 				return darkMode = new FormDesign(Name, ID, FormDesignType.Dark, true)
 				{
-					BackColor = Dark.BackColor.Tint(ActiveColor, 0.25F, -50),
-					MenuColor = Dark.MenuColor.Tint(ActiveColor, 0.5F, -50),
+					BackColor = Midnight.BackColor.Tint(ActiveColor, -2F, -50),
+					MenuColor = Midnight.MenuColor.Tint(ActiveColor, -2.5F, -50),
 					ActiveColor = ActiveColor.Tint(null, 0, -25),
 					GreenColor = GreenColor.Tint(null, 0, -15),
 					YellowColor = YellowColor.Tint(null, 0, -15),
 					RedColor = RedColor.Tint(null, 0, -15),
 
-					ActiveForeColor = Dark.ActiveForeColor.Tint(Sat: -100),
-					ForeColor = Dark.ForeColor.Tint(Sat: -100),
-					ButtonColor = Dark.ButtonColor.Tint(ActiveColor, Sat: -20),
-					ButtonForeColor = Dark.ButtonForeColor.Tint(Sat: -100),
-					AccentColor = Dark.AccentColor.Tint(ActiveColor, Sat: -20),
-					MenuForeColor = Dark.MenuForeColor.Tint(Sat: -100),
-					LabelColor = Dark.LabelColor.Tint(ActiveColor, Sat: -20),
-					InfoColor = Dark.InfoColor.Tint(ActiveColor, Sat: -20),
-					IconColor = Dark.IconColor.Tint(ActiveColor, Sat: -20)
+					ActiveForeColor = Midnight.ActiveForeColor.Tint(Sat: -100),
+					ForeColor = Midnight.ForeColor.Tint(Sat: -100),
+					ButtonColor = Midnight.ButtonColor.Tint(ActiveColor, Sat: -20),
+					ButtonForeColor = Midnight.ButtonForeColor.Tint(Sat: -100),
+					AccentColor = Midnight.AccentColor.Tint(ActiveColor, -25F, Sat: -50),
+					MenuForeColor = Midnight.MenuForeColor.Tint(Sat: -100),
+					LabelColor = Midnight.LabelColor.Tint(ActiveColor, Sat: -20),
+					InfoColor = Midnight.InfoColor.Tint(ActiveColor, Sat: -20),
+					IconColor = Midnight.IconColor.Tint(ActiveColor, Sat: -20)
 				};
 			}
 			set => darkMode = value;

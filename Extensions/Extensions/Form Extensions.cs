@@ -816,12 +816,16 @@ namespace Extensions
 		public static Color GetTextColor(this Color color)
 		{
 			if (color.A <= 125)
+			{
 				return FormDesign.Design.ForeColor;
+			}
 
 			var dark = (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186;
 
 			if (dark == (FormDesign.Design.Type == FormDesignType.Light))
+			{
 				return FormDesign.Design.ForeColor;
+			}
 
 			var b = dark ? 0.05 : 0.95;
 
@@ -1451,10 +1455,14 @@ namespace Extensions
 				return new SolidBrush(color);
 			}
 
-			return new LinearGradientBrush(rect,
-				color.Tint(hue + (caliber * 4F), +caliber * 3.5F, +caliber * 3.5F),
-				color.Tint(hue - (caliber * 4F), -caliber * 3.5F, -caliber * 3.5F),
-				45);
+			var length = (float)Math.Sqrt(Math.Pow(rect.Width, 2) + Math.Pow(rect.Height, 2));
+
+			caliber *= Math.Min(length / 400, 2);
+
+			var color1 = color.Tint(hue + (caliber * 4F), +caliber * 4F, +caliber * 3.5F);
+			var color2 = color.Tint(hue - (caliber * 4F), -caliber * 4F, -caliber * 3.5F);
+
+			return new LinearGradientBrush(rect, color1, color2, 45);
 		}
 	}
 }
