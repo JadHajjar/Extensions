@@ -84,38 +84,39 @@ namespace Extensions
 		public static int Sign(this double i)
 			=> i > 0 ? 1 : i < 0 ? -1 : 0;
 
-		public static float ClosestMultipleTo(this float f, float max)
+		public static float ClosestMultipleTo(this float f, float max, bool upper = false)
 		{
 			if (f > max)
 				return f;
 
 			float current = 0;
 
-			while (current + f <= max)
+			while ((upper ? current : (current + f)) <= max)
 				current += f;
 
 			return current;
 		}
 
-		public static int ClosestMultipleTo(this int f, int max)
+		public static int ClosestMultipleTo(this int f, int max, bool upper = false)
 		{
 			if (f > max)
 				return f;
 
 			int current = 0;
-			while (current + f <= max)
+			while ((upper ? current : (current + f)) <= max)
 				current += f;
 
 			return current;
 		}
 
-		public static double ClosestMultipleTo(this double f, double max)
+		public static double ClosestMultipleTo(this double f, double max, bool upper = false)
 		{
 			if (f > max)
 				return f;
 
 			double current = 0;
-			while (current + f <= max)
+
+			while ((upper ? current : (current + f)) <= max)
 				current += f;
 
 			return current;
