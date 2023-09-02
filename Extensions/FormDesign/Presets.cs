@@ -31,7 +31,7 @@ namespace Extensions
 		{
 			BackColor = Color.FromArgb(239, 243, 248),
 			ForeColor = Color.FromArgb(50, 58, 69),
-			ButtonColor = Color.FromArgb(219, 225, 234),
+			ButtonColor = Color.FromArgb(212, 218, 226),
 			ButtonForeColor = Color.FromArgb(72, 84, 100),
 			AccentColor = Color.FromArgb(177, 192, 212),
 			MenuColor = Color.FromArgb(51, 63, 79),

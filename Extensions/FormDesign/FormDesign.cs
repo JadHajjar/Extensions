@@ -17,6 +17,7 @@ namespace Extensions
 
 		public static event DesignEventHandler DesignChanged;
 
+		public static bool WindowsButtons { get; set; }
 		public static bool NightModeEnabled { get; set; }
 		public static bool NightMode { get; private set; } = !DateTime.Now.Hour.IsWithin(7, 20);
 
@@ -223,6 +224,7 @@ namespace Extensions
 						IconColor = obj.Custom.IconColor
 					};
 
+					WindowsButtons = (bool?)obj.WindowsButtons ?? false;
 					NightModeEnabled = (bool?)obj.NightModeEnabled ?? true;
 					UseSystemTheme = (bool?)obj.UseSystemTheme ?? true;
 					Design = List[(string)obj.Design];
@@ -236,7 +238,7 @@ namespace Extensions
 		{
 			loadIdentifier.Disable();
 			try
-			{ ISave.Save(new { Design = design.ToString(), Custom, NightModeEnabled, UseSystemTheme }, "DesignMode.tf", appName: "SlickUI"); }
+			{ ISave.Save(new { Design = design.ToString(), Custom, NightModeEnabled, UseSystemTheme, WindowsButtons }, "DesignMode.tf", appName: "SlickUI"); }
 			catch { }
 			loadIdentifier.Enable();
 		}

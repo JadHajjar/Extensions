@@ -1459,8 +1459,8 @@ namespace Extensions
 
 			caliber *= Math.Min(length / 400, 2);
 
-			var color1 = color.Tint(hue + (caliber * 4F), +caliber * 4F, +caliber * 3.5F);
-			var color2 = color.Tint(hue - (caliber * 4F), -caliber * 4F, -caliber * 3.5F);
+			var color1 = color.Tint(hue + (caliber * 3F), +caliber * 3F, +caliber * 2.5F);
+			var color2 = color.Tint(hue - (caliber * 3F), -caliber * 3F, -caliber * 2.5F);
 
 			return new LinearGradientBrush(rect, color1, color2, 45);
 		}
