@@ -224,7 +224,7 @@ namespace Extensions
 						IconColor = obj.Custom.IconColor
 					};
 
-					WindowsButtons = (bool?)obj.WindowsButtons ?? false;
+					WindowsButtons = (bool?)obj.WindowsButtons ?? true;
 					NightModeEnabled = (bool?)obj.NightModeEnabled ?? true;
 					UseSystemTheme = (bool?)obj.UseSystemTheme ?? true;
 					Design = List[(string)obj.Design];
