@@ -136,7 +136,8 @@ namespace Extensions
 			foreach (var item in _locales)
 			{
 				var locale = item._locale;
-				var dic = locale.ContainsKey(CurrentCulture.IetfLanguageTag)
+				var nonDefault = locale.ContainsKey(CurrentCulture.IetfLanguageTag);
+				var dic = nonDefault
 					? locale[CurrentCulture.IetfLanguageTag]
 					: locale[string.Empty];
 
@@ -144,7 +145,11 @@ namespace Extensions
 				{
 					return dic[key];
 				}
-			}
+				else if (nonDefault && locale[string.Empty].ContainsKey(key))
+                {
+					return locale[string.Empty][key];
+				}
+            }
 
 			return key;
 		}
