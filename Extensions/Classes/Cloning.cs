@@ -87,7 +87,7 @@ namespace Extensions
 			{
 				var target = typeTo.GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance);
 
-				if (target?.CanWrite == true && property.CanRead && property.CanWrite && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
+				if (target?.CanWrite == true && property.CanRead && property.GetCustomAttributes(typeof(CloneIgnoreAttribute), false).Length == 0)
 				{
 					var value = property.GetValue(obj, null);
 					if (value != null)
