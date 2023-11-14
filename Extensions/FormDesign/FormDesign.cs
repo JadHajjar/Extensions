@@ -17,7 +17,7 @@ namespace Extensions
 
 		public static event DesignEventHandler DesignChanged;
 
-		public static bool WindowsButtons { get; set; }
+		public static bool WindowsButtons { get; set; } = true;
 		public static bool NightModeEnabled { get; set; }
 		public static bool NightMode { get; private set; } = !DateTime.Now.Hour.IsWithin(7, 20);
 
