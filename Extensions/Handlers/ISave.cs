@@ -12,9 +12,11 @@ namespace Extensions
 {
 	public class ISave
 	{
+		private static string appDataFolder = GetFolderPath(SpecialFolder.LocalApplicationData);
+
 		public static string AppName { get; set; } = Application.ProductName;
 
-		public static string DocsFolder => CrossIO.Combine(CustomSaveDirectory.IfEmpty(GetFolderPath(SpecialFolder.LocalApplicationData)), AppName);
+		public static string SaveFolder => CrossIO.Combine(CustomSaveDirectory.IfEmpty(appDataFolder), AppName);
 
 		public static string CustomSaveDirectory { get; set; }
 
