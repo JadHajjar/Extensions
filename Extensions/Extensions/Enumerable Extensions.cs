@@ -31,6 +31,20 @@ namespace Extensions
 			}
 		}
 
+		public static IEnumerable<TSource> SelectWhereNotNull<TSource>(this IEnumerable<TSource> source)
+		{
+			if (source == null)
+			{
+				throw new ArgumentNullException("source");
+			}
+
+			foreach (var item in source)
+			{
+				if (item != null)
+					yield return item;
+			}
+		}
+
 		public static IEnumerable<TResult> SelectWhereNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
 		{
 			if (source == null)
