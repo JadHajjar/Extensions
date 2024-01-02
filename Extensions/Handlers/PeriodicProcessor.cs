@@ -83,6 +83,11 @@ namespace Extensions
 
 		protected abstract Task<(Dictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
 
+		public void CacheItems()
+		{
+			CacheItems(_results);
+		}
+
 		public void Add(TEntity entity)
 		{
 			lock (this)
@@ -249,6 +254,8 @@ namespace Extensions
 		public void Clear()
 		{
 			_results.Clear();
+
+			CacheItems(_results);
 		}
 
 		public Dictionary<TEntity, TResult> GetCache()

@@ -242,6 +242,45 @@ namespace Extensions
 		}
 
 		/// <summary>
+		/// Gets the Data Size in the <see cref="SizeLength"/> format, base size must be in Bytes
+		/// </summary>
+		public static double Size(this ulong size, SizeLength sizeLength)
+		{
+			switch (sizeLength)
+			{
+				case SizeLength.GB:
+					return Math.Round(size / 1073741824d, 2);
+
+				case SizeLength.MB:
+					return Math.Round(size / 1048576d, 2);
+
+				case SizeLength.KB:
+					return Math.Round(size / 1024d, 2);
+
+				case SizeLength.bits:
+					return Math.Round(size * 8d, 2);
+
+				default:
+					return size;
+			}
+		}
+
+		/// <summary>
+		/// Gets the Data Size in the <see cref="SizeLength"/> format, base size must be in Bytes
+		/// </summary>
+		public static string SizeString(this ulong size)
+		{
+			if (size > Math.Pow(1024, 3))
+				return $"{size.Size(SizeLength.GB)} GB";
+			else if (size > Math.Pow(1024, 2))
+				return $"{size.Size(SizeLength.MB)} MB";
+			else if (size > Math.Pow(1024, 1))
+				return $"{size.Size(SizeLength.KB)} KB";
+
+			return $"{size.Size(SizeLength.B)} Bytes";
+		}
+
+		/// <summary>
 		/// Swaps 2 variable values
 		/// </summary>
 		public static void Swap<T>(ref T O1, ref T O2)

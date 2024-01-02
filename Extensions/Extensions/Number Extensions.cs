@@ -127,5 +127,18 @@ namespace Extensions
 
 		public static float RoundToMultipleOf(this float f, float rounding)
 			=> f + ((f % rounding) >= (rounding / 2) ? rounding : 0) - (f % rounding);
+
+		public static string ToMagnitudeString(this int val)
+		{
+			var abs = Math.Abs(val);
+
+			if (abs < 1_000)
+				return val.ToString();
+
+			if (abs < 1_000_000)
+				return $"{val / 1_000M:0.0} K";
+
+			return $"{val / 1_000_000M:0.0} M";
+		}
 	}
 }
