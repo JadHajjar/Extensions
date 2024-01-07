@@ -205,21 +205,21 @@ namespace Extensions
 		/// <summary>
 		/// Gets the Data Size in the <see cref="SizeLength"/> format, base size must be in Bytes
 		/// </summary>
-		public static double Size(this long size, SizeLength sizeLength)
+		public static double Size(this long size, SizeLength sizeLength, int rounding = 2)
 		{
 			switch (sizeLength)
 			{
 				case SizeLength.GB:
-					return Math.Round(size / 1073741824d, 2);
+					return Math.Round(size / 1073741824d, rounding);
 
 				case SizeLength.MB:
-					return Math.Round(size / 1048576d, 2);
+					return Math.Round(size / 1048576d, rounding);
 
 				case SizeLength.KB:
-					return Math.Round(size / 1024d, 2);
+					return Math.Round(size / 1024d, rounding);
 
 				case SizeLength.bits:
-					return Math.Round(size * 8d, 2);
+					return Math.Round(size * 8d, rounding);
 
 				default:
 					return size;
@@ -229,16 +229,16 @@ namespace Extensions
 		/// <summary>
 		/// Gets the Data Size in the <see cref="SizeLength"/> format, base size must be in Bytes
 		/// </summary>
-		public static string SizeString(this long size)
+		public static string SizeString(this long size, int rounding = 2)
 		{
-			if (size > Math.Pow(1024, 3))
-				return $"{size.Size(SizeLength.GB)} GB";
-			else if (size > Math.Pow(1024, 2))
-				return $"{size.Size(SizeLength.MB)} MB";
-			else if (size > Math.Pow(1024, 1))
-				return $"{size.Size(SizeLength.KB)} KB";
+			if (size > Math.Pow(1000, 3))
+				return $"{size.Size(SizeLength.GB, rounding)} GB";
+			else if (size > Math.Pow(1000, 2))
+				return $"{size.Size(SizeLength.MB, rounding)} MB";
+			else if (size > Math.Pow(1000, 1))
+				return $"{size.Size(SizeLength.KB, rounding)} KB";
 
-			return $"{size.Size(SizeLength.B)} Bytes";
+			return $"{size.Size(SizeLength.B, rounding)} Bytes";
 		}
 
 		/// <summary>
@@ -270,11 +270,11 @@ namespace Extensions
 		/// </summary>
 		public static string SizeString(this ulong size)
 		{
-			if (size > Math.Pow(1024, 3))
+			if (size > Math.Pow(1000, 3))
 				return $"{size.Size(SizeLength.GB)} GB";
-			else if (size > Math.Pow(1024, 2))
+			else if (size > Math.Pow(1000, 2))
 				return $"{size.Size(SizeLength.MB)} MB";
-			else if (size > Math.Pow(1024, 1))
+			else if (size > Math.Pow(1000, 1))
 				return $"{size.Size(SizeLength.KB)} KB";
 
 			return $"{size.Size(SizeLength.B)} Bytes";

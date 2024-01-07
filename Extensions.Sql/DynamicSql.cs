@@ -78,15 +78,12 @@ public static class DynamicSql
 			}
 		}
 
-		if (tr == null)
-		{
-			return SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
+		return tr == null
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 				, CommandType.Text
 				, sb.ToString()
-				, props.Select(x => x.ColumnValue(item)).ToArray());
-		}
-
-		return SqlHelper.ExecuteScalar(tr
+				, props.Select(x => x.ColumnValue(item)).ToArray())
+			: SqlHelper.ExecuteScalar(tr
 			, CommandType.Text
 			, sb.ToString()
 			, props.Select(x => x.ColumnValue(item)).ToArray());
@@ -115,15 +112,12 @@ public static class DynamicSql
 
 		sb.AppendLine("END");
 
-		if (tr == null)
-		{
-			return SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
+		return tr == null
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 				, CommandType.Text
 				, sb.ToString()
-				, props.Select(x => x.ColumnValue(item)).ToArray());
-		}
-
-		return SqlHelper.ExecuteScalar(tr
+				, props.Select(x => x.ColumnValue(item)).ToArray())
+			: SqlHelper.ExecuteScalar(tr
 			, CommandType.Text
 			, sb.ToString()
 			, props.Select(x => x.ColumnValue(item)).ToArray());
@@ -138,15 +132,12 @@ public static class DynamicSql
 
 		sb.AppendLine(string.Format("DELETE FROM [{0}] WHERE {1}", classInf.TableName, props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 
-		if (tr == null)
-		{
-			return SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
+		return tr == null
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 			 , CommandType.Text
 			 , sb.ToString()
-			 , props.Where(x => x.Value.PrimaryKey).Select(x => x.ColumnValue(item)).ToArray());
-		}
-
-		return SqlHelper.ExecuteScalar(tr
+			 , props.Where(x => x.Value.PrimaryKey).Select(x => x.ColumnValue(item)).ToArray())
+			: SqlHelper.ExecuteScalar(tr
 		 , CommandType.Text
 		 , sb.ToString()
 		 , props.Where(x => x.Value.PrimaryKey).Select(x => x.ColumnValue(item)).ToArray());
@@ -164,14 +155,11 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" WHERE {0}", condition));
 		}
 
-		if (tr == null)
-		{
-			return SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
+		return tr == null
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 			 , CommandType.Text
-			 , sb.ToString());
-		}
-
-		return SqlHelper.ExecuteScalar(tr
+			 , sb.ToString())
+			: SqlHelper.ExecuteScalar(tr
 		 , CommandType.Text
 		 , sb.ToString());
 	}
@@ -195,15 +183,12 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" AND {0}", condition));
 		}
 
-		if (tr == null)
-		{
-			return SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
+		return tr == null
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 				 , CommandType.Text
 				 , sb.ToString()
-				 , props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray());
-		}
-
-		return SqlHelper.ExecuteScalar(tr
+				 , props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray())
+			: SqlHelper.ExecuteScalar(tr
 			 , CommandType.Text
 			 , sb.ToString()
 			 , props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray());
@@ -225,14 +210,11 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
 		}
 
-		if (tr == null)
-		{
-			return SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+		return tr == null
+			? SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
 			 , CommandType.Text
-			 , sb.ToString()));
-		}
-
-		return SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(tr
+			 , sb.ToString()))
+			: SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(tr
 		 , CommandType.Text
 		 , sb.ToString()));
 	}
@@ -253,14 +235,11 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
 		}
 
-		if (tr == null)
-		{
-			return SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+		return tr == null
+			? SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
 			 , CommandType.Text
-			 , sb.ToString()));
-		}
-
-		return SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(tr
+			 , sb.ToString()))
+			: SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(tr
 		 , CommandType.Text
 		 , sb.ToString()));
 	}
@@ -279,15 +258,12 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" AND {0}", classInf.GetCondition));
 		}
 
-		if (tr == null)
-		{
-			return SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+		return tr == null
+			? SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
 			, CommandType.Text
 			, sb.ToString()
-			, props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).Select(x => x.ColumnValue(item)).ToArray()), classInf.AlwaysReturn ? item : default);
-		}
-
-		return SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(tr
+			, props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).Select(x => x.ColumnValue(item)).ToArray()), classInf.AlwaysReturn ? item : default)
+			: SqlReflector.ReflectObject<T>(SqlHelper.ExecuteReader(tr
 			, CommandType.Text
 			, sb.ToString()
 			, props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).Select(x => x.ColumnValue(item)).ToArray()), classInf.AlwaysReturn ? item : default);
@@ -312,15 +288,12 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" AND {0}", condition));
 		}
 
-		if (tr == null)
-		{
-			return SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+		return tr == null
+			? SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(SqlHandler.ConnectionString
 			, CommandType.Text
 			, sb.ToString()
-			, props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray()));
-		}
-
-		return SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(tr
+			, props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray()))
+			: SqlReflector.ReflectList<T>(SqlHelper.ExecuteReader(tr
 		, CommandType.Text
 		, sb.ToString()
 		, props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray()));
@@ -344,12 +317,9 @@ public static class DynamicSql
 
 	private static string ColumnName(this KeyValuePair<PropertyInfo, DynamicSqlPropertyAttribute> kvp, bool asSelect = false)
 	{
-		if (string.IsNullOrEmpty(kvp.Value.Conversion))
-		{
-			return string.Format("[{0}]", string.IsNullOrEmpty(kvp.Value.ColumnName) ? kvp.Key.Name : kvp.Value.ColumnName);
-		}
-
-		return string.Format("CONVERT({0}, [{1}])" + (asSelect ? " as {1}" : ""), kvp.Value.Conversion, string.IsNullOrEmpty(kvp.Value.ColumnName) ? kvp.Key.Name : kvp.Value.ColumnName);
+		return string.IsNullOrEmpty(kvp.Value.Conversion)
+			? string.Format("[{0}]", string.IsNullOrEmpty(kvp.Value.ColumnName) ? kvp.Key.Name : kvp.Value.ColumnName)
+			: string.Format("CONVERT({0}, [{1}])" + (asSelect ? " as {1}" : ""), kvp.Value.Conversion, string.IsNullOrEmpty(kvp.Value.ColumnName) ? kvp.Key.Name : kvp.Value.ColumnName);
 	}
 
 	private static string ColumnVar(this KeyValuePair<PropertyInfo, DynamicSqlPropertyAttribute> kvp)
@@ -412,32 +382,25 @@ public static class DynamicSql
 			};
 		}
 
-		if (val is byte[])
+		return val is byte[]? new SqlParameter(ColumnVar(kvp), SqlDbType.VarBinary)
 		{
-			return new SqlParameter(ColumnVar(kvp), SqlDbType.VarBinary)
+			Direction = ParameterDirection.Input,
+			Size = ((byte[])val).Length,
+			Value = val
+		}
+			: val is Guid
+			? new SqlParameter(ColumnVar(kvp), SqlDbType.UniqueIdentifier)
 			{
 				Direction = ParameterDirection.Input,
-				Size = ((byte[])val).Length,
+				Size = val == null ? 0 : val.ToString().Length,
 				Value = val
-			};
-		}
-
-		if (val is Guid)
-		{
-			return new SqlParameter(ColumnVar(kvp), SqlDbType.UniqueIdentifier)
+			}
+			: new SqlParameter(ColumnVar(kvp), SqlDbType.NVarChar)
 			{
 				Direction = ParameterDirection.Input,
 				Size = val == null ? 0 : val.ToString().Length,
 				Value = val
 			};
-		}
-
-		return new SqlParameter(ColumnVar(kvp), SqlDbType.NVarChar)
-		{
-			Direction = ParameterDirection.Input,
-			Size = val == null ? 0 : val.ToString().Length,
-			Value = val
-		};
 	}
 
 	#endregion Private Methods

@@ -32,12 +32,7 @@ public class SqlHandler
 		var table = new DataTable();
 		table.Load(ExecuteReader(procedure, parameters));
 
-		if (table.Rows.Count > 0)
-		{
-			return table.Rows[0];
-		}
-
-		return null;
+		return table.Rows.Count > 0 ? table.Rows[0] : null;
 	}
 
 	protected static object ExecuteQuery(string querry)
@@ -70,12 +65,7 @@ public class SqlHandler
 		var table = new DataTable();
 		table.Load(ExecuteReader(connection, procedure, parameters));
 
-		if (table.Rows.Count > 0)
-		{
-			return table.Rows[0];
-		}
-
-		return null;
+		return table.Rows.Count > 0 ? table.Rows[0] : null;
 	}
 
 	internal static Transaction CreateTransaction()

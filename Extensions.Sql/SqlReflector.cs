@@ -10,7 +10,7 @@ namespace Extensions.Sql;
 
 public static class SqlReflector
 {
-	private static readonly DateTime MinimumDate = new DateTime(1900, 1, 1);
+	private static readonly DateTime MinimumDate = new(1900, 1, 1);
 
 	public static TEntity ReflectObject<TEntity>(this IDataReader dr, TEntity @base = default) where TEntity : new()
 	{
@@ -220,17 +220,11 @@ public static class SqlReflector
 			{
 				dbValue = DateTime.FromOADate(days);
 			}
-			else if (dbValue is string dbStr && DateTime.TryParseExact(dbStr, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var edt))
-			{
-				dbValue = edt;
-			}
-			else if (dbValue is string dbStr2 && DateTime.TryParse(dbStr2, out var cdt))
-			{
-				dbValue = cdt;
-			}
 			else
 			{
-				dbValue = MinimumDate;
+				dbValue = dbValue is string dbStr && DateTime.TryParseExact(dbStr, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var edt)
+					? edt
+					: dbValue is string dbStr2 && DateTime.TryParse(dbStr2, out var cdt) ? cdt : (object)MinimumDate;
 			}
 		}
 

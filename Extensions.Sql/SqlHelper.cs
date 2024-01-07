@@ -75,6 +75,7 @@ public sealed class SqlHelper
 					{
 						p.Value = DBNull.Value;
 					}
+
 					command.Parameters.Add(p);
 				}
 			}
@@ -140,14 +141,7 @@ public sealed class SqlHelper
 			{
 				if (parameterValues[i] is IDbDataParameter paramInstance)
 				{
-					if (paramInstance.Value == null)
-					{
-						val = DBNull.Value;
-					}
-					else
-					{
-						val = paramInstance.Value;
-					}
+					val = paramInstance.Value == null ? DBNull.Value : paramInstance.Value;
 				}
 				else if (parameterValues[i] != null)
 				{
@@ -226,6 +220,7 @@ public sealed class SqlHelper
 		{
 			AttachParameters(command, commandParameters);
 		}
+
 		return;
 	}
 
@@ -906,17 +901,11 @@ public sealed class SqlHelper
 			PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
 			// Create a reader
-			SqlDataReader dataReader;
+			var dataReader = connectionOwnership == SqlConnectionOwnership.External
+				? cmd.ExecuteReader()
+				: cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
 			// Call ExecuteReader with the appropriate CommandBehavior
-			if (connectionOwnership == SqlConnectionOwnership.External)
-			{
-				dataReader = cmd.ExecuteReader();
-			}
-			else
-			{
-				dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-			}
 
 			// Detach the SqlParameters from the command object, so they can be used again.
 			// HACK: There is a problem here, the output parameter values are fletched 
@@ -1000,10 +989,7 @@ public sealed class SqlHelper
 		catch
 		{
 			// If we fail to return the SqlDatReader, we need to close the connection ourselves
-			if (connection != null)
-			{
-				connection.Close();
-			}
+			connection?.Close();
 
 			throw;
 		}
@@ -1537,12 +1523,9 @@ public sealed class SqlHelper
 
 	public static object ExecuteScalarDynamic(SqlTransaction transaction, string defaultConnection, string spName, params object[] parameterValues)
 	{
-		if (transaction != null)
-		{
-			return ExecuteScalar(transaction, spName, parameterValues);
-		}
-
-		return ExecuteScalar(defaultConnection, spName, parameterValues);
+		return transaction != null
+			? ExecuteScalar(transaction, spName, parameterValues)
+			: ExecuteScalar(defaultConnection, spName, parameterValues);
 	}
 
 	#endregion ExecuteScalar
@@ -2172,21 +2155,6 @@ public sealed class SqlHelper
 	/// <param name="tableName">The DataTable used to update the data source.</param>
 	public static void UpdateDataset(SqlCommand insertCommand, SqlCommand deleteCommand, SqlCommand updateCommand, DataSet dataSet, string tableName)
 	{
-		if (insertCommand == null)
-		{
-			throw new ArgumentNullException("insertCommand");
-		}
-
-		if (deleteCommand == null)
-		{
-			throw new ArgumentNullException("deleteCommand");
-		}
-
-		if (updateCommand == null)
-		{
-			throw new ArgumentNullException("updateCommand");
-		}
-
 		if (tableName == null || tableName.Length == 0)
 		{
 			throw new ArgumentNullException("tableName");
@@ -2195,9 +2163,9 @@ public sealed class SqlHelper
 		// Create a SqlDataAdapter, and dispose of it after we are done
 		using var dataAdapter = new SqlDataAdapter();
 		// Set the data adapter commands
-		dataAdapter.UpdateCommand = updateCommand;
-		dataAdapter.InsertCommand = insertCommand;
-		dataAdapter.DeleteCommand = deleteCommand;
+		dataAdapter.UpdateCommand = updateCommand ?? throw new ArgumentNullException("updateCommand");
+		dataAdapter.InsertCommand = insertCommand ?? throw new ArgumentNullException("insertCommand");
+		dataAdapter.DeleteCommand = deleteCommand ?? throw new ArgumentNullException("deleteCommand");
 
 		// Update the dataset changes in the data source
 		dataAdapter.Update(dataSet, tableName);
@@ -2856,7 +2824,7 @@ public sealed class SqlHelperParameterCache
 	//instances from being created with "new SqlHelperParameterCache()"
 	private SqlHelperParameterCache() { }
 
-	private static readonly Hashtable paramCache = Hashtable.Synchronized(new Hashtable());
+	private static readonly Hashtable paramCache = Hashtable.Synchronized([]);
 
 	/// <summary>
 	/// Resolve at run time the appropriate set of SqlParameters for a stored procedure
@@ -2901,6 +2869,7 @@ public sealed class SqlHelperParameterCache
 		{
 			discoveredParameter.Value = DBNull.Value;
 		}
+
 		return discoveredParameters;
 	}
 
@@ -2968,14 +2937,7 @@ public sealed class SqlHelperParameterCache
 
 		var hashKey = connectionString + ":" + commandText;
 
-		if (paramCache[hashKey] is not SqlParameter[] cachedParameters)
-		{
-			return null;
-		}
-		else
-		{
-			return CloneParameters(cachedParameters);
-		}
+		return paramCache[hashKey] is not SqlParameter[] cachedParameters ? null : CloneParameters(cachedParameters);
 	}
 
 	#endregion caching functions
