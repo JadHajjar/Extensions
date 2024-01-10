@@ -237,6 +237,8 @@ namespace Extensions
 
 			if (months > 0)
 			{
+				if (shorter)
+				return LocaleHelper.GetGlobalText(past ? "{0} month ago" : "in {0} month").FormatPlural(months);
 				return LocaleHelper.GetGlobalText(past ? "{0} month ago on {1}" : "in {0} month on {1}").FormatPlural(months, dt.ToReadableString(false, DateFormat.MDY));
 			}
 
