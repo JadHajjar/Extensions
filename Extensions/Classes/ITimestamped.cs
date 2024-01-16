@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Extensions
+namespace Extensions;
+
+public interface ITimestamped
 {
-	public interface ITimestamped
-	{
-		DateTime Timestamp { get; }
-	}
+	DateTime Timestamp { get; }
 }

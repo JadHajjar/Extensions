@@ -2,90 +2,50 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Extensions
+namespace Extensions;
+
+public sealed class KeyboardHook : IDisposable
 {
-	public sealed class KeyboardHook : IDisposable
+	// Registers a hot key with Windows.
+	[DllImport("user32.dll")]
+	private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+	// Unregisters the hot key with Windows.
+	[DllImport("user32.dll")]
+	private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+	/// <summary>
+	/// Represents the window that is used internally to get the messages.
+	/// </summary>
+	private class Window : NativeWindow, IDisposable
 	{
-		// Registers a hot key with Windows.
-		[DllImport("user32.dll")]
-		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+		private static readonly int WM_HOTKEY = 0x0312;
 
-		// Unregisters the hot key with Windows.
-		[DllImport("user32.dll")]
-		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+		public Window()
+		{
+			// create the handle for the window.
+			CreateHandle(new CreateParams());
+		}
 
 		/// <summary>
-		/// Represents the window that is used internally to get the messages.
+		/// Overridden to get the notifications.
 		/// </summary>
-		private class Window : NativeWindow, IDisposable
+		/// <param name="m"></param>
+		protected override void WndProc(ref Message m)
 		{
-			private static readonly int WM_HOTKEY = 0x0312;
+			base.WndProc(ref m);
 
-			public Window() =>
-				// create the handle for the window.
-				CreateHandle(new CreateParams());
-
-			/// <summary>
-			/// Overridden to get the notifications.
-			/// </summary>
-			/// <param name="m"></param>
-			protected override void WndProc(ref Message m)
+			// check if we got a hot key pressed.
+			if (m.Msg == WM_HOTKEY)
 			{
-				base.WndProc(ref m);
+				// get the keys.
+				var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
+				var modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
 
-				// check if we got a hot key pressed.
-				if (m.Msg == WM_HOTKEY)
-				{
-					// get the keys.
-					var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
-					var modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
-
-					// invoke the event to notify the parent.
-					KeyPressed?.Invoke(this, new KeyPressedEventArgs(modifier, key));
-				}
+				// invoke the event to notify the parent.
+				KeyPressed?.Invoke(this, new KeyPressedEventArgs(modifier, key));
 			}
-
-#if NET47
-			public event EventHandler<KeyPressedEventArgs> KeyPressed;
-#else
-			public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
-#endif
-
-			#region IDisposable Members
-
-			public void Dispose() => DestroyHandle();
-
-			#endregion IDisposable Members
 		}
-
-		private readonly Window _window = new Window();
-		private int _currentId;
-
-		public KeyboardHook() =>
-			// register the event of the inner native window.
-			_window.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
-			{
-				KeyPressed?.Invoke(this, args);
-			};
-
-		/// <summary>
-		/// Registers a hot key in the system.
-		/// </summary>
-		/// <param name="modifier">The modifiers that are associated with the hot key.</param>
-		/// <param name="key">The key itself that is associated with the hot key.</param>
-		public void RegisterHotKey(ModifierKeys modifier, Keys key)
-		{
-			// increment the counter.
-			_currentId = _currentId + 1;
-
-			// register the hot key.
-			if (!RegisterHotKey(_window.Handle, _currentId, (uint)modifier, (uint)key))
-				throw new InvalidOperationException("Couldn’t register the hot key.");
-		}
-
-		/// <summary>
-		/// A hot key has been pressed.
-		/// </summary>
 
 #if NET47
 		public event EventHandler<KeyPressedEventArgs> KeyPressed;
@@ -97,47 +57,92 @@ namespace Extensions
 
 		public void Dispose()
 		{
-			// unregister all the registered hot keys.
-			for (var i = _currentId; i > 0; i--)
-			{
-				UnregisterHotKey(_window.Handle, i);
-			}
-
-			// dispose the inner native window.
-			_window.Dispose();
+			DestroyHandle();
 		}
 
 		#endregion IDisposable Members
 	}
 
-	/// <summary>
-	/// Event Args for the event that is fired after the hot key has been pressed.
-	/// </summary>
-	public class KeyPressedEventArgs : EventArgs
-	{
-		private readonly ModifierKeys _modifier;
-		private readonly Keys _key;
+	private readonly Window _window = new();
+	private int _currentId;
 
-		internal KeyPressedEventArgs(ModifierKeys modifier, Keys key)
+	public KeyboardHook()
+	{
+		// register the event of the inner native window.
+		_window.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
 		{
-			_modifier = modifier;
-			_key = key;
+			KeyPressed?.Invoke(this, args);
+		};
+	}
+
+	/// <summary>
+	/// Registers a hot key in the system.
+	/// </summary>
+	/// <param name="modifier">The modifiers that are associated with the hot key.</param>
+	/// <param name="key">The key itself that is associated with the hot key.</param>
+	public void RegisterHotKey(ModifierKeys modifier, Keys key)
+	{
+		// increment the counter.
+		_currentId++;
+
+		// register the hot key.
+		if (!RegisterHotKey(_window.Handle, _currentId, (uint)modifier, (uint)key))
+		{
+			throw new InvalidOperationException("Couldn’t register the hot key.");
+		}
+	}
+
+	/// <summary>
+	/// A hot key has been pressed.
+	/// </summary>
+
+#if NET47
+	public event EventHandler<KeyPressedEventArgs> KeyPressed;
+#else
+	public event Extensions.EventHandler<KeyPressedEventArgs> KeyPressed;
+#endif
+
+	#region IDisposable Members
+
+	public void Dispose()
+	{
+		// unregister all the registered hot keys.
+		for (var i = _currentId; i > 0; i--)
+		{
+			UnregisterHotKey(_window.Handle, i);
 		}
 
-		public ModifierKeys Modifier => _modifier;
-
-		public Keys Key => _key;
+		// dispose the inner native window.
+		_window.Dispose();
 	}
 
-	/// <summary>
-	/// The enumeration of possible modifiers.
-	/// </summary>
-	[Flags]
-	public enum ModifierKeys : uint
+	#endregion IDisposable Members
+}
+
+/// <summary>
+/// Event Args for the event that is fired after the hot key has been pressed.
+/// </summary>
+public class KeyPressedEventArgs : EventArgs
+{
+	internal KeyPressedEventArgs(ModifierKeys modifier, Keys key)
 	{
-		Alt = 1,
-		Control = 2,
-		Shift = 4,
-		Win = 8
+		Modifier = modifier;
+		Key = key;
 	}
+
+	public ModifierKeys Modifier { get; }
+
+	public Keys Key { get; }
+}
+
+/// <summary>
+/// The enumeration of possible modifiers.
+/// </summary>
+[Flags]
+public enum ModifierKeys : uint
+{
+	Alt = 1,
+	Control = 2,
+	Shift = 4,
+	Win = 8
 }

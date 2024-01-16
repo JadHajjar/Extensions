@@ -1,34 +1,44 @@
-﻿using System;
+﻿namespace Extensions;
 
-namespace Extensions
+public class DisableIdentifier
 {
-	public class DisableIdentifier
+	private static ulong IdList = 0;
+
+	public DisableIdentifier()
 	{
-		private static ulong IdList = 0;
+		ID = IdList++;
+	}
 
-		public DisableIdentifier() => ID = IdList++;
+	public DisableIdentifier(bool enabled)
+	{
+		Disabled = !enabled;
+		ID = IdList++;
+	}
 
-		public DisableIdentifier(bool enabled)
+	public bool Disabled { get; private set; } = false;
+	public bool Enabled => !Disabled;
+	public ulong ID { get; protected set; }
+
+	public virtual void Disable()
+	{
+		Disabled = true;
+	}
+
+	public bool Disable(int milliseconds)
+	{
+		if (Disabled)
 		{
-			Disabled = !enabled; ID = IdList++;
+			return true;
 		}
 
-		public bool Disabled { get; private set; } = false;
-		public bool Enabled => !Disabled;
-		public ulong ID { get; protected set; }
+		Disabled = true;
 
-		public virtual void Disable() => Disabled = true;
+		new BackgroundAction(Enable).RunIn(milliseconds);
+		return false;
+	}
 
-		public bool Disable(int milliseconds)
-		{
-			if (Disabled)
-				return true;
-			Disabled = true;
-
-			new BackgroundAction(Enable).RunIn(milliseconds);
-			return false;
-		}
-
-		public virtual void Enable() => Disabled = false;
+	public virtual void Enable()
+	{
+		Disabled = false;
 	}
 }

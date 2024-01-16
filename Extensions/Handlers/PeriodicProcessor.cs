@@ -8,259 +8,258 @@ using System.Timers;
 
 using Timer = System.Timers.Timer;
 
-namespace Extensions
+namespace Extensions;
+
+public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimestamped
 {
-	public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimestamped
+	private readonly Timer _timer;
+	private readonly HashSet<TEntity> _entities;
+	private readonly Dictionary<TEntity, TResult> _results;
+	private int failedAttempts;
+	private DateTime lastFailedAttempt;
+
+	public TimeSpan MaxCacheTime { get; set; } = TimeSpan.FromMinutes(15);
+	public int ProcessingPower { get; }
+
+	public event Action ItemsLoaded;
+
+	public PeriodicProcessor(int processingPower, int interval, Dictionary<TEntity, TResult> cache)
 	{
-		private readonly Timer _timer;
-		private readonly HashSet<TEntity> _entities;
-		private readonly Dictionary<TEntity, TResult> _results;
-		private int failedAttempts;
-		private DateTime lastFailedAttempt;
+		ProcessingPower = processingPower;
 
-		public TimeSpan MaxCacheTime { get; set; } = TimeSpan.FromMinutes(15);
-		public int ProcessingPower { get; }
+		_results = cache ?? [];
+		_entities = [];
+		_timer = new Timer(interval) { AutoReset = false };
+		_timer.Elapsed += _timer_Elapsed;
+		_timer.Start();
+	}
 
-		public event Action ItemsLoaded;
+	private async void _timer_Elapsed(object sender, ElapsedEventArgs e)
+	{
+		await Process();
+	}
 
-		public PeriodicProcessor(int processingPower, int interval, Dictionary<TEntity, TResult> cache)
+	public async Task Process()
+	{
+		if (!CanProcess())
 		{
-			ProcessingPower = processingPower;
-
-			_results = cache ?? new Dictionary<TEntity, TResult>();
-			_entities = new HashSet<TEntity>();
-			_timer = new Timer(interval) { AutoReset = false };
-			_timer.Elapsed += _timer_Elapsed;
 			_timer.Start();
+			return;
 		}
 
-		private async void _timer_Elapsed(object sender, ElapsedEventArgs e)
-		{
-			await Process();
-		}
+		var entities = new List<TEntity>();
 
-		public async Task Process()
-		{
-			if (!CanProcess())
-			{
-				_timer.Start();
-				return;
-			}
-
-			var entities = new List<TEntity>();
-
-			try
-			{
-				lock (this)
-				{
-					foreach (var entity in _entities)
-					{
-						if (!_results.TryGetValue(entity, out var result) || DateTime.Now - result.Timestamp > MaxCacheTime)
-						{
-							entities.Add(entity);
-						}
-					}
-
-					_entities.Clear();
-				}
-
-				if (entities.Count > 0)
-				{
-					await ProcessInChunks(entities);
-				}
-			}
-			catch { }
-
-			_timer.Start();
-		}
-
-		protected virtual bool CanProcess()
-		{
-			return true;
-		}
-
-		protected abstract void CacheItems(Dictionary<TEntity, TResult> results);
-
-		protected abstract Task<(Dictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
-
-		public void CacheItems()
-		{
-			CacheItems(_results);
-		}
-
-		public void Add(TEntity entity)
+		try
 		{
 			lock (this)
 			{
-				_entities.Add(entity);
-			}
-		}
-
-		public void AddRange(IEnumerable<TEntity> entities)
-		{
-			foreach (var item in entities)
-			{
-				lock (this)
+				foreach (var entity in _entities)
 				{
-					_entities.Add(item);
-				}
-			}
-		}
-
-		//public void Run()
-		//{
-		//	if (processing)
-		//	{
-		//		return;
-		//	}
-
-		//	_timer.Stop();
-
-		//	new BackgroundAction(Process).Run();
-		//}
-
-		public async Task<TResult> Get(TEntity entity, bool wait = false)
-		{
-			//lock (this)
-			{
-				try
-				{
-					if (_results.TryGetValue(entity, out var result))
+					if (!_results.TryGetValue(entity, out var result) || DateTime.Now - result.Timestamp > MaxCacheTime)
 					{
-						if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
-						{
-							_entities.Add(entity);
-						}
-
-						return result;
+						entities.Add(entity);
 					}
+				}
 
-					if (!wait)
+				_entities.Clear();
+			}
+
+			if (entities.Count > 0)
+			{
+				await ProcessInChunks(entities);
+			}
+		}
+		catch { }
+
+		_timer.Start();
+	}
+
+	protected virtual bool CanProcess()
+	{
+		return true;
+	}
+
+	protected abstract void CacheItems(Dictionary<TEntity, TResult> results);
+
+	protected abstract Task<(Dictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
+
+	public void CacheItems()
+	{
+		CacheItems(_results);
+	}
+
+	public void Add(TEntity entity)
+	{
+		lock (this)
+		{
+			_entities.Add(entity);
+		}
+	}
+
+	public void AddRange(IEnumerable<TEntity> entities)
+	{
+		foreach (var item in entities)
+		{
+			lock (this)
+			{
+				_entities.Add(item);
+			}
+		}
+	}
+
+	//public void Run()
+	//{
+	//	if (processing)
+	//	{
+	//		return;
+	//	}
+
+	//	_timer.Stop();
+
+	//	new BackgroundAction(Process).Run();
+	//}
+
+	public async Task<TResult> Get(TEntity entity, bool wait = false)
+	{
+		//lock (this)
+		{
+			try
+			{
+				if (_results.TryGetValue(entity, out var result))
+				{
+					if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
 					{
 						_entities.Add(entity);
 					}
+
+					return result;
 				}
-				catch { } // catch useless potential IndexOutOfRangeException errors
 
 				if (!wait)
 				{
-					return default;
+					_entities.Add(entity);
 				}
 			}
+			catch { } // catch useless potential IndexOutOfRangeException errors
 
-			var results = await ProcessItems(new List<TEntity> { entity });
-
-			if (!results.failed)
+			if (!wait)
 			{
-				foreach (var item in results.results)
-				{
-					lock (this)
-					{
-						return _results[item.Key] = item.Value;
-					}
-				}
+				return default;
 			}
-
-			return default;
 		}
 
-		private async Task ProcessInChunks(IEnumerable<TEntity> mainList)
+		var results = await ProcessItems([entity]);
+
+		if (!results.failed)
 		{
-			var chunks = mainList.Chunk(ProcessingPower);
-			var tasks = new List<Task<Dictionary<TEntity, TResult>>>();
-
-			foreach (var chunk in chunks)
-			{
-				tasks.Add(ProcessItemsWrapper(chunk.ToList()));
-			}
-
-			await Task.WhenAll(tasks);
-		}
-
-		protected async Task<Dictionary<TEntity, TResult>> ProcessItemsWrapper(List<TEntity> entities)
-		{
-			Dictionary<TEntity, TResult> results;
-
-			try
-			{
-				if (failedAttempts > 3 && DateTime.Now - lastFailedAttempt < TimeSpan.FromMinutes(5))
-				{
-					results = new Dictionary<TEntity, TResult>();
-				}
-				else
-				{
-					if (failedAttempts > 3)
-					{
-						failedAttempts = 0;
-					}
-
-					var result = await ProcessItems(entities);
-
-					results = result.results;
-
-					if (result.failed)
-					{
-						failedAttempts++;
-						lastFailedAttempt = DateTime.Now;
-					}
-				}
-			}
-			catch
-			{
-				failedAttempts++;
-				lastFailedAttempt = DateTime.Now;
-				throw;
-			}
-
-			if (results.Count == 0)
-			{
-				return results;
-			}
-
-			foreach (var entity in results)
+			foreach (var item in results.results)
 			{
 				lock (this)
 				{
-					_results[entity.Key] = entity.Value;
+					return _results[item.Key] = item.Value;
 				}
 			}
+		}
 
-			lock (this)
+		return default;
+	}
+
+	private async Task ProcessInChunks(IEnumerable<TEntity> mainList)
+	{
+		var chunks = mainList.Chunk(ProcessingPower);
+		var tasks = new List<Task<Dictionary<TEntity, TResult>>>();
+
+		foreach (var chunk in chunks)
+		{
+			tasks.Add(ProcessItemsWrapper(chunk.ToList()));
+		}
+
+		await Task.WhenAll(tasks);
+	}
+
+	protected async Task<Dictionary<TEntity, TResult>> ProcessItemsWrapper(List<TEntity> entities)
+	{
+		Dictionary<TEntity, TResult> results;
+
+		try
+		{
+			if (failedAttempts > 3 && DateTime.Now - lastFailedAttempt < TimeSpan.FromMinutes(5))
 			{
-				CacheItems(_results);
+				results = [];
 			}
+			else
+			{
+				if (failedAttempts > 3)
+				{
+					failedAttempts = 0;
+				}
 
-			ItemsLoaded?.Invoke();
+				var result = await ProcessItems(entities);
 
+				results = result.results;
+
+				if (result.failed)
+				{
+					failedAttempts++;
+					lastFailedAttempt = DateTime.Now;
+				}
+			}
+		}
+		catch
+		{
+			failedAttempts++;
+			lastFailedAttempt = DateTime.Now;
+			throw;
+		}
+
+		if (results.Count == 0)
+		{
 			return results;
 		}
 
-		public void AddToCache(Dictionary<TEntity, TResult> results)
+		foreach (var entity in results)
 		{
-			foreach (var entity in results)
-			{
-				lock (this)
-				{
-					_results[entity.Key] = entity.Value;
-				}
-			}
-
 			lock (this)
 			{
-				CacheItems(_results);
+				_results[entity.Key] = entity.Value;
 			}
 		}
 
-		public void Clear()
+		lock (this)
 		{
-			_results.Clear();
-
 			CacheItems(_results);
 		}
 
-		public Dictionary<TEntity, TResult> GetCache()
+		ItemsLoaded?.Invoke();
+
+		return results;
+	}
+
+	public void AddToCache(Dictionary<TEntity, TResult> results)
+	{
+		foreach (var entity in results)
 		{
-			return _results;
+			lock (this)
+			{
+				_results[entity.Key] = entity.Value;
+			}
 		}
+
+		lock (this)
+		{
+			CacheItems(_results);
+		}
+	}
+
+	public void Clear()
+	{
+		_results.Clear();
+
+		CacheItems(_results);
+	}
+
+	public Dictionary<TEntity, TResult> GetCache()
+	{
+		return _results;
 	}
 }

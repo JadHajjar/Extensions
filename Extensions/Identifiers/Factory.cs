@@ -1,217 +1,210 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Extensions
+namespace Extensions;
+
+public class Factory : DisableIdentifier
 {
-	public class Factory : DisableIdentifier
+	public event EventHandler ActionsFinished;
+
+	public int ProcessingPower
 	{
-		public event EventHandler ActionsFinished;
+		get => processingPower;
+		set => processingPower = Math.Max(1, value);
+	}
 
-		public int ProcessingPower
-		{
-			get => processingPower;
-			set => processingPower = Math.Max(1, value);
-		}
+	public Factory()
+	{
+	}
 
-		public Factory()
-		{
-		}
+	public Factory(int processingPower)
+	{
+		ProcessingPower = processingPower;
+	}
 
-		public Factory(int processingPower)
+	public void Run()
+	{
+		for (; ; )
 		{
-			ProcessingPower = processingPower;
-		}
-
-		public void Run()
-		{
-			for (; ; )
-			{
-				object obj = lockObj;
-				lock (obj)
-				{
-					bool flag2 = runningThreads.Count < ProcessingPower && actions.Count > 0;
-					if (!flag2)
-					{
-						break;
-					}
-					start(actions[0]);
-				}
-			}
-		}
-
-		public void Run(ExtensionClass.action action)
-		{
-			object obj = lockObj;
+			var obj = lockObj;
 			lock (obj)
 			{
-				bool flag2 = runningThreads.Count < ProcessingPower;
-				if (flag2)
+				var flag2 = runningThreads.Count < ProcessingPower && actions.Count > 0;
+				if (!flag2)
 				{
-					start(action);
+					break;
 				}
-				else
-				{
-					actions.Add(action);
-				}
+
+				start(actions[0]);
 			}
 		}
+	}
 
-		public void Run(IEnumerable<ExtensionClass.action> action)
+	public void Run(ExtensionClass.action action)
+	{
+		var obj = lockObj;
+		lock (obj)
 		{
-			foreach (ExtensionClass.action action2 in action)
+			var flag2 = runningThreads.Count < ProcessingPower;
+			if (flag2)
 			{
-				Run(action2);
+				start(action);
 			}
-		}
-
-		public void Add(ExtensionClass.action action)
-		{
-			object obj = lockObj;
-			lock (obj)
+			else
 			{
 				actions.Add(action);
 			}
 		}
+	}
 
-		public void Add(IEnumerable<ExtensionClass.action> action)
+	public void Run(IEnumerable<ExtensionClass.action> action)
+	{
+		foreach (var action2 in action)
 		{
-			object obj = lockObj;
-			lock (obj)
+			Run(action2);
+		}
+	}
+
+	public void Add(ExtensionClass.action action)
+	{
+		var obj = lockObj;
+		lock (obj)
+		{
+			actions.Add(action);
+		}
+	}
+
+	public void Add(IEnumerable<ExtensionClass.action> action)
+	{
+		var obj = lockObj;
+		lock (obj)
+		{
+			actions.AddRange(action);
+		}
+	}
+
+#if NET47
+	public async Task<bool> Wait()
+#else
+	public bool Wait()
+#endif
+	{
+		var obj = lockObj;
+		lock (obj)
+		{
+			var flag2 = actions.Count == 0 && runningThreads.Count == 0;
+			if (flag2)
 			{
-				actions.AddRange(action);
+				return true;
 			}
 		}
 
-#if NET47
-		public async Task<bool> Wait()
-#else
-		public bool Wait()
-#endif
+		var finished = false;
+		ActionsFinished += delegate (object s, EventArgs e)
 		{
-			object obj = lockObj;
-			lock (obj)
+			finished = true;
+		};
+#if NET47
+		return await this.WaitUntil((Factory x) => finished);
+#else
+		return this.WaitUntil((Factory x) => finished);
+#endif
+	}
+
+	public void Clear()
+	{
+		var obj = lockObj;
+		lock (obj)
+		{
+			foreach (var thread in runningThreads)
 			{
-				bool flag2 = actions.Count == 0 && runningThreads.Count == 0;
-				if (flag2)
+				try
 				{
-					return true;
+					thread?.Interrupt();
+					thread?.Abort();
+				}
+				catch
+				{
 				}
 			}
-			bool finished = false;
-			ActionsFinished += delegate (object s, EventArgs e)
-			{
-				finished = true;
-			};
-#if NET47
-			return await this.WaitUntil((Factory x) => finished);
-#else
-			return this.WaitUntil((Factory x) => finished);
-#endif
-		}
 
-		public void Clear()
+			actions.Clear();
+			runningThreads.Clear();
+		}
+	}
+
+	public override void Enable()
+	{
+		base.Enable();
+		Run();
+	}
+
+	private void start(ExtensionClass.action action)
+	{
+		var flag = base.Disabled || action == null;
+		if (!flag)
 		{
-			object obj = lockObj;
-			lock (obj)
+			var flag2 = actions.Count > 0;
+			if (flag2)
 			{
-				foreach (Thread thread in runningThreads)
+				actions.Remove(action);
+			}
+
+			Thread thread = null;
+			thread = new Thread(delegate ()
+			{
+				try
 				{
 					try
 					{
-						if (thread != null)
-						{
-							thread.Interrupt();
-						}
-						if (thread != null)
-						{
-							thread.Abort();
-						}
+						action();
 					}
 					catch
 					{
 					}
+
+					var obj = lockObj;
+					lock (obj)
+					{
+						runningThreads.Remove(thread);
+						var flag4 = actions.Count > 0;
+						if (flag4)
+						{
+							start(actions[0]);
+						}
+						else
+						{
+							var flag5 = runningThreads.Count == 0;
+							if (flag5)
+							{
+								ActionsFinished?.Invoke(this, EventArgs.Empty);
+							}
+						}
+					}
 				}
-				actions.Clear();
-				runningThreads.Clear();
-			}
-		}
-
-		public override void Enable()
-		{
-			base.Enable();
-			Run();
-		}
-
-		private void start(ExtensionClass.action action)
-		{
-			bool flag = base.Disabled || action == null;
-			if (!flag)
+				catch (ThreadInterruptedException)
+				{
+				}
+				catch (ThreadAbortException)
+				{
+				}
+			})
 			{
-				bool flag2 = actions.Count > 0;
-				if (flag2)
-				{
-					actions.Remove(action);
-				}
-				Thread thread = null;
-				thread = new Thread(delegate ()
-				{
-					try
-					{
-						try
-						{
-							action();
-						}
-						catch
-						{
-						}
-						object obj = lockObj;
-						lock (obj)
-						{
-							runningThreads.Remove(thread);
-							bool flag4 = actions.Count > 0;
-							if (flag4)
-							{
-								start(actions[0]);
-							}
-							else
-							{
-								bool flag5 = runningThreads.Count == 0;
-								if (flag5)
-								{
-									EventHandler actionsFinished = ActionsFinished;
-									if (actionsFinished != null)
-									{
-										actionsFinished(this, EventArgs.Empty);
-									}
-								}
-							}
-						}
-					}
-					catch (ThreadInterruptedException)
-					{
-					}
-					catch (ThreadAbortException)
-					{
-					}
-				})
-				{
-					IsBackground = true,
-					Name = string.Format("Factory #{0} Thread", base.ID)
-				};
-				runningThreads.Add(thread);
-				thread.Start();
-			}
+				IsBackground = true,
+				Name = string.Format("Factory #{0} Thread", base.ID)
+			};
+			runningThreads.Add(thread);
+			thread.Start();
 		}
-
-		private readonly List<ExtensionClass.action> actions = new List<ExtensionClass.action>();
-
-		private readonly List<Thread> runningThreads = new List<Thread>();
-
-		private int processingPower = 1;
-
-		private readonly object lockObj = new object();
 	}
+
+	private readonly List<ExtensionClass.action> actions = [];
+
+	private readonly List<Thread> runningThreads = [];
+
+	private int processingPower = 1;
+
+	private readonly object lockObj = new();
 }

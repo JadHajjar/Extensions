@@ -1,11 +1,10 @@
-﻿namespace Extensions
+﻿namespace Extensions;
+
+public enum ImageSizeMode
 {
-	public enum ImageSizeMode
-	{
-		Fill,
-		Stretch,
-		Center,
-		CenterScaled,
-		FillForced,
-	}
+	Fill,
+	Stretch,
+	Center,
+	CenterScaled,
+	FillForced,
 }

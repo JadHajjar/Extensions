@@ -1,78 +1,47 @@
 ﻿using System.Drawing;
 
-namespace Extensions
+namespace Extensions;
+
+public enum ColorStyle
 {
-	public enum ColorStyle
+	Active,
+	Icon,
+	Green,
+	Red,
+	Orange,
+	Yellow,
+	Text
+}
+
+public static class ColorStyleExtensions
+{
+	public static Color GetColor(this ColorStyle style)
 	{
-		Active,
-		Icon,
-		Green,
-		Red,
-		Orange,
-		Yellow,
-		Text
+		return style switch
+		{
+			ColorStyle.Active => FormDesign.Design.ActiveColor,
+			ColorStyle.Text => FormDesign.Design.ForeColor,
+			ColorStyle.Icon => FormDesign.Design.IconColor,
+			ColorStyle.Green => FormDesign.Design.GreenColor,
+			ColorStyle.Red => FormDesign.Design.RedColor,
+			ColorStyle.Orange => FormDesign.Design.RedColor.MergeColor(FormDesign.Design.YellowColor),
+			ColorStyle.Yellow => FormDesign.Design.YellowColor,
+			_ => FormDesign.Design.ActiveColor,
+		};
 	}
 
-	public static class ColorStyleExtensions
+	public static Color GetBackColor(this ColorStyle style)
 	{
-		public static Color GetColor(this ColorStyle style)
+		return style switch
 		{
-			switch (style)
-			{
-				case ColorStyle.Active:
-					return FormDesign.Design.ActiveColor;
-
-				case ColorStyle.Text:
-					return FormDesign.Design.ForeColor;
-
-				case ColorStyle.Icon:
-					return FormDesign.Design.IconColor;
-
-				case ColorStyle.Green:
-					return FormDesign.Design.GreenColor;
-
-				case ColorStyle.Red:
-					return FormDesign.Design.RedColor;
-
-				case ColorStyle.Orange:
-					return FormDesign.Design.RedColor.MergeColor(FormDesign.Design.YellowColor);
-
-				case ColorStyle.Yellow:
-					return FormDesign.Design.YellowColor;
-
-				default:
-					return FormDesign.Design.ActiveColor;
-			}
-		}
-
-		public static Color GetBackColor(this ColorStyle style)
-		{
-			switch (style)
-			{
-				case ColorStyle.Active:
-					return FormDesign.Design.ActiveForeColor;
-
-				case ColorStyle.Text:
-					return FormDesign.Design.BackColor;
-
-				case ColorStyle.Icon:
-					return FormDesign.Design.BackColor;
-
-				case ColorStyle.Green:
-					return FormDesign.Design.MenuColor;
-
-				case ColorStyle.Red:
-					return FormDesign.Design.BackColor;
-
-				case ColorStyle.Orange:
-					return FormDesign.Design.BackColor;
-
-				case ColorStyle.Yellow:
-					return FormDesign.Design.MenuColor;
-
-				default:
-					return FormDesign.Design.ActiveForeColor;
-			}
-		}
+			ColorStyle.Active => FormDesign.Design.ActiveForeColor,
+			ColorStyle.Text => FormDesign.Design.BackColor,
+			ColorStyle.Icon => FormDesign.Design.BackColor,
+			ColorStyle.Green => FormDesign.Design.MenuColor,
+			ColorStyle.Red => FormDesign.Design.BackColor,
+			ColorStyle.Orange => FormDesign.Design.BackColor,
+			ColorStyle.Yellow => FormDesign.Design.MenuColor,
+			_ => FormDesign.Design.ActiveForeColor,
+		};
 	}
 }

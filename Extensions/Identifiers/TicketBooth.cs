@@ -1,31 +1,51 @@
-﻿namespace Extensions
+﻿namespace Extensions;
+
+public class TicketBooth
 {
-	public class TicketBooth
+	private static ulong id = 0;
+
+	private ulong lastTicketID = 0;
+
+	public ulong ID { get; private set; }
+
+	public TicketBooth()
 	{
-		private static ulong id = 0;
+		ID = id++;
+	}
 
-		private ulong lastTicketID = 0;
+	public Ticket GetTicket()
+	{
+		return new Ticket(++lastTicketID);
+	}
 
-		public ulong ID { get; private set; }
+	public bool IsLast(Ticket ticket)
+	{
+		return lastTicketID == ticket.ID;
+	}
 
-		public TicketBooth() => ID = id++;
+	public override string ToString()
+	{
+		return $"Ticket[{ID}]";
+	}
 
-		public Ticket GetTicket() => new Ticket(++lastTicketID);
+	public override bool Equals(object obj)
+	{
+		return obj is TicketBooth ticket &&
+					ID == ticket.ID;
+	}
 
-		public bool IsLast(Ticket ticket) => lastTicketID == ticket.ID;
+	public override int GetHashCode()
+	{
+		return 1213502048 + ID.GetHashCode();
+	}
 
-		public override string ToString() => $"Ticket[{ID}]";
+	public class Ticket
+	{
+		internal ulong ID;
 
-		public override bool Equals(object obj) => obj is TicketBooth ticket &&
-						ID == ticket.ID;
-
-		public override int GetHashCode() => 1213502048 + ID.GetHashCode();
-
-		public class Ticket
+		internal Ticket(ulong id)
 		{
-			internal ulong ID;
-
-			internal Ticket(ulong id) => ID = id;
+			ID = id;
 		}
 	}
 }
