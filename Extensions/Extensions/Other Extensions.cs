@@ -349,7 +349,7 @@ public static partial class ExtensionClass
 
 	public static bool IsLetter(this Keys keys)
 	{
-		return keys & ~Keys.Shift is >= Keys.A and <= Keys.Z;
+		return (keys & ~Keys.Shift) is >= Keys.A and <= Keys.Z;
 	}
 
 	public static bool IsDigitOrLetter(this Keys keys)
