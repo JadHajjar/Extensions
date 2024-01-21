@@ -1,8 +1,9 @@
-﻿namespace Extensions;
-
-public enum Platform
+﻿namespace Extensions
 {
-	Windows,
-	MacOSX,
-	Linux
+	public enum Platform
+	{
+		Windows,
+		MacOSX,
+		Linux
+	}
 }
