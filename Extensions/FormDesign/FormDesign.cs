@@ -19,16 +19,14 @@ public partial class FormDesign
 
 	public static bool WindowsButtons { get; set; } = true;
 	public static bool NightModeEnabled { get; set; }
-	public static bool NightMode { get; private set; } = !DateTime.Now.Hour.IsWithin(7, 20);
+	public static bool NightMode { get; private set; } = !DateTime.Now.Hour.IsWithin(7, 18);
 
 	public static bool UseSystemTheme { get; set; } = true;
 	public static bool IsDarkMode { get; set; } = IsSystemDark();
 
-	public FormDesign(string name, int id, FormDesignType t, bool temp = false)
+	public FormDesign(string name, bool temp = false)
 	{
 		Name = name;
-		ID = id;
-		Type = t;
 		Temporary = temp;
 	}
 
@@ -59,12 +57,12 @@ public partial class FormDesign
 				ForceRefresh();
 			}
 
-			if (NightModeEnabled && NightMode && design.Type != FormDesignType.Dark)
+			if (NightModeEnabled && NightMode && !design.IsDarkTheme)
 			{
 				return design.DarkMode;
 			}
 
-			if (UseSystemTheme && IsDarkMode && design.Type != FormDesignType.Dark)
+			if (UseSystemTheme && IsDarkMode && !design.IsDarkTheme)
 			{
 				return design.DarkMode;
 			}
@@ -148,7 +146,7 @@ public partial class FormDesign
 
 	public static bool IsCustomEligible()
 	{
-		return Custom.ID != -1 && Custom.BackColor.A != 0;
+		return Custom.BackColor.A != 0 && Custom.ForeColor.A != 0;
 	}
 
 	public static void StartListener(Form form)
@@ -199,36 +197,16 @@ public partial class FormDesign
 	public static void Load()
 	{
 		loadIdentifier.Disable();
+
 		try
 		{
-			var obj = ISave.LoadRaw("DesignMode.tf", "SlickUI");
+			var obj = ISave.Load<DesignSettings>("DesignMode.tf", "SlickUI");
 
-			if (obj != null)
-			{
-				Custom = new FormDesign((string)obj.Custom.Name, (int)obj.Custom.ID, (FormDesignType)obj.Custom.Type)
-				{
-					BackColor = obj.Custom.BackColor,
-					ButtonForeColor = obj.Custom.ButtonForeColor,
-					MenuForeColor = obj.Custom.MenuForeColor,
-					ForeColor = obj.Custom.ForeColor,
-					ButtonColor = obj.Custom.ButtonColor,
-					AccentColor = obj.Custom.AccentColor,
-					MenuColor = obj.Custom.MenuColor,
-					LabelColor = obj.Custom.LabelColor,
-					InfoColor = obj.Custom.InfoColor,
-					ActiveColor = obj.Custom.ActiveColor,
-					ActiveForeColor = obj.Custom.ActiveForeColor,
-					RedColor = obj.Custom.RedColor,
-					GreenColor = obj.Custom.GreenColor,
-					YellowColor = obj.Custom.YellowColor,
-					IconColor = obj.Custom.IconColor
-				};
-
-				WindowsButtons = (bool?)obj.WindowsButtons ?? true;
-				NightModeEnabled = (bool?)obj.NightModeEnabled ?? true;
-				UseSystemTheme = (bool?)obj.UseSystemTheme ?? true;
-				Design = List[(string)obj.Design];
-			}
+			Custom = obj.Custom;
+			WindowsButtons = obj.WindowsButtons;
+			NightModeEnabled = obj.NightModeEnabled;
+			UseSystemTheme = obj.UseSystemTheme;
+			Design = List[obj.Design];
 		}
 		catch { }
 
@@ -249,36 +227,16 @@ public partial class FormDesign
 
 	public static void ResetCustomTheme()
 	{
-		Custom = new FormDesign("Custom", -1, FormDesignType.None);
+		Custom = new FormDesign("Custom", true);
 	}
 
 	public static void SetCustomBaseDesign(FormDesign design)
 	{
-		if (IsCustomEligible())
+		if (!IsCustomEligible())
 		{
-			Custom.Type = design.Type;
-			Custom.ID = design.ID;
-		}
-		else
-		{
-			Custom = new FormDesign("Custom", design.ID, design.Type, true)
-			{
-				BackColor = design.BackColor,
-				ForeColor = design.ForeColor,
-				ButtonColor = design.ButtonColor,
-				ButtonForeColor = design.ButtonForeColor,
-				AccentColor = design.AccentColor,
-				MenuColor = design.MenuColor,
-				MenuForeColor = design.MenuForeColor,
-				LabelColor = design.LabelColor,
-				InfoColor = design.InfoColor,
-				ActiveColor = design.ActiveColor,
-				ActiveForeColor = design.ActiveForeColor,
-				RedColor = design.RedColor,
-				GreenColor = design.GreenColor,
-				YellowColor = design.YellowColor,
-				IconColor = design.IconColor
-			};
+			Custom = design.CloneTo<IFormDesign, FormDesign>();
+			Custom.Name = "Custom";
+			Custom.Temporary = true;
 		}
 	}
 
@@ -316,8 +274,7 @@ public partial class FormDesign
 	public override bool Equals(object obj)
 	{
 		return obj is FormDesign design &&
-				 ID == design.ID &&
-				 Type == design.Type &&
+				 IsDarkTheme == design.IsDarkTheme &&
 				 Name == design.Name &&
 				 EqualityComparer<Color>.Default.Equals(BackColor, design.BackColor) &&
 				 EqualityComparer<Color>.Default.Equals(ForeColor, design.ForeColor) &&

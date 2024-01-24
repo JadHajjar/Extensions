@@ -34,7 +34,7 @@ public static class FormStateExt
 			FormState.Working => FormDesign.Design.YellowColor,
 			FormState.Running => FormDesign.Design.GreenColor,
 			FormState.Active => FormDesign.Design.ActiveColor,
-			_ => FormDesign.Design.BackColor.Tint(Lum: FormDesign.Design.Type == FormDesignType.Dark ? 3 : -3),
+			_ => FormDesign.Design.BackColor.Tint(Lum: FormDesign.Design.IsDarkTheme ? 3 : -3),
 		};
 	}
 }

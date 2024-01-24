@@ -834,7 +834,7 @@ public static partial class ExtensionClass
 
 		var dark = (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186;
 
-		if (dark == (FormDesign.Design.Type == FormDesignType.Light))
+		if (dark == (!FormDesign.Design.IsDarkTheme))
 		{
 			return FormDesign.Design.ForeColor;
 		}

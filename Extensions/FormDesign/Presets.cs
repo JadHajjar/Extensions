@@ -29,7 +29,7 @@ public partial class FormDesign
 		}
 	}
 
-	public static FormDesign Modern = new("Modern", 0, FormDesignType.Light)
+	public static FormDesign Modern { get; } = new("Modern")
 	{
 		BackColor = Color.FromArgb(239, 243, 248),
 		ForeColor = Color.FromArgb(50, 58, 69),
@@ -48,7 +48,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(77, 87, 102)
 	};
 
-	public static readonly FormDesign Midnight = new("Midnight", 1, FormDesignType.Dark)
+	public static FormDesign Midnight { get; } = new("Midnight")
 	{
 		BackColor = Color.FromArgb(24, 26, 33),
 		ForeColor = Color.FromArgb(255, 255, 255),
@@ -67,7 +67,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(222, 230, 250)
 	};
 
-	public static FormDesign BerryBlues = new("Berry Blues", 2, FormDesignType.Dark)
+	public static FormDesign BerryBlues { get; } = new("Berry Blues")
 	{
 		BackColor = Color.FromArgb(35, 37, 50),
 		ForeColor = Color.FromArgb(227, 231, 235),
@@ -86,7 +86,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(227, 231, 235)
 	};
 
-	public static FormDesign Ice = new("Ice", 3, FormDesignType.Light)
+	public static FormDesign Ice { get; } = new("Ice")
 	{
 		BackColor = Color.FromArgb(241, 241, 242),
 		ForeColor = Color.FromArgb(27, 41, 51),
@@ -105,7 +105,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(83, 125, 151)
 	};
 
-	public static FormDesign Chic = new("Chic", 4, FormDesignType.Light)
+	public static FormDesign Chic { get; } = new("Chic")
 	{
 		BackColor = Color.FromArgb(251, 248, 237),
 		ButtonForeColor = Color.FromArgb(116, 106, 97),
@@ -124,7 +124,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(173, 147, 120)
 	};
 
-	public static FormDesign Strawberries = new("Strawberries", 5, FormDesignType.Light)
+	public static FormDesign Strawberries { get; } = new("Strawberries")
 	{
 		BackColor = Color.FromArgb(250, 245, 248),
 		ForeColor = Color.FromArgb(102, 18, 45),
@@ -143,7 +143,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(218, 129, 156)
 	};
 
-	public static FormDesign Dark = new("Dark", 6, FormDesignType.Dark)
+	public static FormDesign Dark { get; } = new("Dark")
 	{
 		BackColor = Color.FromArgb(18, 20, 23),
 		ForeColor = Color.FromArgb(215, 218, 224),
@@ -162,7 +162,7 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(175, 178, 183)
 	};
 
-	public static FormDesign GoldForest = new("Golden Forest", 7, FormDesignType.Dark)
+	public static FormDesign GoldForest { get; } = new("Golden Forest")
 	{
 		BackColor = Color.FromArgb(6, 30, 30),
 		ForeColor = Color.FromArgb(236, 247, 244),
@@ -181,5 +181,5 @@ public partial class FormDesign
 		IconColor = Color.FromArgb(208, 159, 97)
 	};
 
-	public static FormDesign Custom = new("Custom", -1, FormDesignType.None);
+	public static FormDesign Custom = new("Custom", true);
 }
