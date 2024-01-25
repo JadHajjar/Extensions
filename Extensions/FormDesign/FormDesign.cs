@@ -57,17 +57,14 @@ public partial class FormDesign
 				ForceRefresh();
 			}
 
-			if (design.Name != "Custom")
+			if (NightModeEnabled && design.Name != "Custom")
 			{
-				if (NightModeEnabled && NightMode && !design.IsDarkTheme)
-				{
-					return design.DarkMode;
-				}
+				return NightMode ? design.DarkMode : design.LightMode;
+			}
 
-				if (UseSystemTheme && IsDarkMode && !design.IsDarkTheme)
-				{
-					return design.DarkMode;
-				}
+			if (UseSystemTheme && design.Name != "Custom")
+			{
+				return IsDarkMode ? design.DarkMode : design.LightMode;
 			}
 
 			return design;

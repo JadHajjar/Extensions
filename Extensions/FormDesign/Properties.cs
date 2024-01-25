@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 
-using System;
 using System.Drawing;
 
 namespace Extensions;
@@ -39,6 +38,11 @@ public partial class FormDesign : IFormDesign
 	{
 		get
 		{
+			if (IsDarkTheme)
+			{
+				return this;
+			}
+
 			if (darkMode != null)
 			{
 				return darkMode;
@@ -46,31 +50,70 @@ public partial class FormDesign : IFormDesign
 
 			return darkMode = new FormDesign(Name, true)
 			{
-				BackColor = Midnight.BackColor.Tint(MenuColor, -2.5F, -10),
+				BackColor = Midnight.BackColor.Tint(BackColor, -2.5F, -10),
 				MenuColor = Midnight.MenuColor.Tint(MenuColor, -5F, -12),
 				ActiveColor = ActiveColor.Tint(null, 0, -25),
 				GreenColor = GreenColor.Tint(null, 0, -15),
 				YellowColor = YellowColor.Tint(null, 0, -15),
 				RedColor = RedColor.Tint(null, 0, -15),
 
-				ActiveForeColor = Midnight.ActiveForeColor.Tint(Sat: -100),
-				ForeColor = Midnight.ForeColor.Tint(Sat: -100),
-				ButtonColor = Midnight.ButtonColor.Tint(MenuColor, -2F, -10),
-				ButtonForeColor = Midnight.ButtonForeColor.Tint(Sat: -100),
+				ActiveForeColor = Midnight.ActiveForeColor.Tint(ActiveForeColor, Sat: -20),
+				ForeColor = Midnight.ForeColor.Tint(ForeColor, Sat: -20),
+				ButtonColor = Midnight.ButtonColor.Tint(ButtonColor, -2F, -10),
+				ButtonForeColor = Midnight.ButtonForeColor.Tint(ButtonForeColor, Sat: -20),
 				AccentColor = Midnight.AccentColor.Tint(MenuColor, -25F, Sat: -70),
 				MenuForeColor = Midnight.MenuForeColor.Tint(Sat: -100),
-				LabelColor = Midnight.LabelColor.Tint(ActiveColor, Sat: -40),
-				InfoColor = Midnight.InfoColor.Tint(ActiveColor, Sat: -30),
-				IconColor = Midnight.IconColor.Tint(ActiveColor, Sat: -20)
+				LabelColor = Midnight.LabelColor.Tint(LabelColor, Sat: -20),
+				InfoColor = Midnight.InfoColor.Tint(InfoColor, Sat: -15),
+				IconColor = Midnight.IconColor.Tint(IconColor, Sat: -10)
 			};
 		}
 		set => darkMode = value;
 	}
 
-	private FormDesign darkMode;
+	[JsonIgnore]
+	public FormDesign LightMode
+	{
+		get
+		{
+			if (!IsDarkTheme)
+			{
+				return this;
+			}
 
-    public FormDesign()
-    {
-        
-    }
+			if (lightMode != null)
+			{
+				return lightMode;
+			}
+
+			return lightMode = new FormDesign(Name, true)
+			{
+				BackColor = Modern.BackColor.Tint(BackColor, 0, -5),
+				MenuColor = Modern.MenuColor.Tint(MenuColor, 0, -6),
+				ActiveColor = ActiveColor.Tint(null, 4, -2),
+				GreenColor = GreenColor.Tint(null, -2, -3),
+				YellowColor = YellowColor.Tint(null, -2, -5),
+				RedColor = RedColor.Tint(null, -2, -3),
+
+				ActiveForeColor = Modern.ActiveForeColor.Tint(ActiveForeColor),
+				ForeColor = Modern.ForeColor.Tint(ActiveColor),
+				ButtonColor = Modern.ButtonColor.Tint(ButtonColor, 2F, 5),
+				ButtonForeColor = Modern.ButtonForeColor.Tint(ButtonForeColor, Sat: -10),
+				AccentColor = Modern.AccentColor.Tint(AccentColor, -5F, Sat: 5),
+				MenuForeColor = Modern.MenuForeColor.Tint(MenuForeColor),
+				LabelColor = Modern.LabelColor.Tint(LabelColor, Sat: -10),
+				InfoColor = Modern.InfoColor.Tint(InfoColor, Sat: -5),
+				IconColor = Modern.IconColor.Tint(IconColor, Sat: 0)
+			};
+		}
+		set => lightMode = value;
+	}
+
+	private FormDesign darkMode;
+	private FormDesign lightMode;
+
+	public FormDesign()
+	{
+
+	}
 }
