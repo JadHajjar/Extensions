@@ -123,7 +123,7 @@ public class LocaleHelper
 
 	public static Translation GetGlobalText(string key)
 	{
-		if (string.IsNullOrEmpty(key))
+		if (string.IsNullOrWhiteSpace(key))
 		{
 			return string.Empty;
 		}
