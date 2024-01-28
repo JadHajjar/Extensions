@@ -68,7 +68,7 @@ public class SqlHandler
 		return table.Rows.Count > 0 ? table.Rows[0] : null;
 	}
 
-	internal static Transaction CreateTransaction()
+	public static Transaction CreateTransaction()
 	{
 		return new();
 	}
@@ -99,7 +99,7 @@ public class SqlHandler
 			_transaction?.Dispose();
 		}
 
-		internal void Commit()
+		public void Commit()
 		{
 			_transaction.Commit();
 
