@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 using Timer = System.Timers.Timer;
 
@@ -126,12 +128,28 @@ public static class ConnectionHandler
 		if (State == ConnectionState.Connected)
 		{
 			action();
+
+			return true;
 		}
-		else
+
+		Connected += (s) => action();
+
+		return false;
+	}
+
+#if NET47
+	public static async Task<bool> WhenConnected(Func<Task> task)
+	{
+		if (State == ConnectionState.Connected)
 		{
-			Connected += (s) => action();
+			await task();
+
+			return true;
 		}
+
+		Connected += (s) => task().RunSynchronously();
 
 		return State == ConnectionState.Connected;
 	}
+#endif
 }
