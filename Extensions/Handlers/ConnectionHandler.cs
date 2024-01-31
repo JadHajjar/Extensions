@@ -66,12 +66,12 @@ public static class ConnectionHandler
 
 		checkTimer = new Timer(timer) { AutoReset = false };
 
-		checkTimer.Elapsed += (s, e) => getConnectionState();
+		checkTimer.Elapsed += (s, e) => GetConnectionState();
 
-		new BackgroundAction("Checking Internet connection", getConnectionState) { CanNotBeStopped = true }.Run();
+		new BackgroundAction("Checking Internet connection", GetConnectionState) { CanNotBeStopped = true }.Run();
 	}
 
-	private static void getConnectionState()
+	private static void GetConnectionState()
 	{
 		if (AssumeInternetConnectivity || CrossIO.CurrentPlatform == Platform.MacOSX)
 		{
@@ -118,7 +118,7 @@ public static class ConnectionHandler
 	{
 		checkTimer.Stop();
 
-		getConnectionState();
+		GetConnectionState();
 
 		return IsConnected;
 	}
