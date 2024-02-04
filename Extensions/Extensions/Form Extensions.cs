@@ -697,12 +697,12 @@ public static partial class ExtensionClass
 		return System.Drawing.Color.FromArgb(r, g, b);
 	}
 
-	public static Image Blur(this Image image, int? radius = null, bool doNotDispose = false)
+	public static Image Blur(this Image image, int? radius = null, bool doNotDispose = false, Size? preferredSize = null)
 	{
-		return (image as Bitmap).Blur(radius, doNotDispose);
+		return (image as Bitmap).Blur(radius, doNotDispose, preferredSize);
 	}
 
-	public static Bitmap Blur(this Bitmap img, int? radius = null, bool doNotDispose = false)
+	public static Bitmap Blur(this Bitmap img, int? radius = null, bool doNotDispose = false, Size? preferredSize = null)
 	{
 		if (img == null)
 		{
@@ -714,6 +714,18 @@ public static partial class ExtensionClass
 			return img;
 		}
 
+		if (preferredSize != null)
+		{
+			using var img2 = new Bitmap(img, CalculateNewSize(img.Size, preferredSize.Value));
+			
+			if (!doNotDispose)
+			{
+				img.Dispose();
+			}
+
+			return Blur(img2, radius, true);
+		}
+
 		if (doNotDispose)
 		{
 			return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
@@ -722,6 +734,19 @@ public static partial class ExtensionClass
 		using (img)
 		{
 			return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
+		}
+
+		static Size CalculateNewSize(Size imageSize, Size preferredSize)
+		{
+			var widthRatio = (double)preferredSize.Width / imageSize.Width;
+			var heightRatio = (double)preferredSize.Height / imageSize.Height;
+
+			var minRatio = Math.Min(widthRatio, heightRatio);
+
+			var newWidth = (int)(imageSize.Width * minRatio);
+			var newHeight = (int)(imageSize.Height * minRatio);
+
+			return new Size(newWidth, newHeight);
 		}
 
 		#region OldBlur

@@ -316,7 +316,7 @@ public static partial class ExtensionClass
 	{
 		try
 		{
-			if (enumerable != null && enumerable.Count() > index)
+			if (enumerable != null && index >= 0 && enumerable.Count() > index)
 			{
 				return enumerable.ElementAtOrDefault(index);
 			}
