@@ -443,4 +443,21 @@ public static partial class ExtensionClass
 			buffer[j] = buffer[i];
 		}
 	}
+
+	public static List<T> DistinctList<T>(this List<T> list)
+	{
+		for (var i = 0; i < list.Count; i++)
+		{
+			for (var j = 0; j < i; j++)
+			{
+				if (list[j].Equals(list[i]))
+				{
+					list.RemoveAt(i--);
+					break;
+				}
+			}
+		}
+
+		return list;
+	}
 }
