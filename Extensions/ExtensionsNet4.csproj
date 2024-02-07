@@ -72,6 +72,8 @@
     <Compile Include="Extensions\Dictionary Extensions.cs" />
     <Compile Include="Extensions\Enumerable Extensions.cs" />
     <Compile Include="Enums\ColorStyle.cs" />
+    <Compile Include="FormDesign\DesignSettings.cs" />
+    <Compile Include="FormDesign\IFormDesign.cs" />
     <Compile Include="Handlers\CrossIO.cs" />
     <Compile Include="Handlers\GaussianBlur.cs" />
     <Compile Include="Handlers\ConnectionHandler.cs" />
