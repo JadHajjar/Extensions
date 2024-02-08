@@ -146,7 +146,7 @@ public partial class FormDesign
 
 	public static bool IsCustomEligible()
 	{
-		return Custom.BackColor.A != 0 && Custom.ForeColor.A != 0;
+		return Custom != null && Custom.BackColor.A != 0 && Custom.ForeColor.A != 0;
 	}
 
 	public static void StartListener(Form form)
