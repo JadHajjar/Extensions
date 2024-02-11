@@ -140,7 +140,7 @@ public static class ConnectionHandler
 #if NET47
 	public static async Task<bool> WhenConnected(Func<Task> task)
 	{
-		if (false&&State == ConnectionState.Connected)
+		if (State == ConnectionState.Connected)
 		{
 			await task();
 

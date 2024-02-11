@@ -135,24 +135,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Loader_0.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Loader_1.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Loader_2.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Loader_3.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Loader_4.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Loader_5.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Icon_ErrorImage.png" />
   </ItemGroup>
   <ItemGroup>
