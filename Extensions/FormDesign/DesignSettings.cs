@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Extensions;
-public class DesignSettings  : ISave
+[SaveName("DesignMode.tf", "SlickUI")]
+public class DesignSettings : ISaveObject
 {
+	public SaveHandler Handler { get; set; }
+
 	public string Design { get; set; }
 	public FormDesign Custom { get; set; }
 	public bool NightModeEnabled { get; set; } = true;

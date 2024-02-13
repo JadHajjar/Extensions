@@ -37,7 +37,7 @@ public class LocaleHelper
 				Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlickUI"));
 			}
 
-			ISave.Load<string>(out var culture, "Language.tf", "SlickUI");
+			SaveHandler.Instance.Load(out string culture, "Language.tf", "SlickUI");
 
 			if (!string.IsNullOrWhiteSpace(culture))
 			{
@@ -57,7 +57,7 @@ public class LocaleHelper
 	{
 		SetCultureAndCalendar(cultureInfo);
 
-		ISave.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "SlickUI");
+		SaveHandler.Instance.Save(cultureInfo.IetfLanguageTag, "Language.tf", true, "SlickUI");
 
 		LanguageChanged?.Invoke();
 	}

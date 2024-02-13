@@ -200,7 +200,7 @@ public partial class FormDesign
 
 		try
 		{
-			var obj = ISave.Load<DesignSettings>("DesignMode.tf", "SlickUI");
+			var obj = SaveHandler.Instance.Load<DesignSettings>();
 
 			Custom = obj.Custom;
 			WindowsButtons = obj.WindowsButtons;
@@ -216,9 +216,17 @@ public partial class FormDesign
 	public static void Save()
 	{
 		loadIdentifier.Disable();
+
 		try
 		{
-			ISave.Save(new { Design = design.ToString(), Custom, NightModeEnabled, UseSystemTheme, WindowsButtons }, "DesignMode.tf", appName: "SlickUI");
+			SaveHandler.Instance.Save(new DesignSettings
+			{
+				Design = design.ToString(),
+				Custom = Custom,
+				NightModeEnabled = NightModeEnabled,
+				UseSystemTheme = UseSystemTheme,
+				WindowsButtons = WindowsButtons
+			});
 		}
 		catch { }
 
