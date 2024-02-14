@@ -45,7 +45,7 @@ public class SaveHandler
 
 		if (obj is IExtendedSaveObject extendedSaveObject)
 		{
-			extendedSaveObject.OnLoad();
+			extendedSaveObject.OnLoad(filePath);
 		}
 
 		return obj;
@@ -75,7 +75,7 @@ public class SaveHandler
 
 		if (obj is IExtendedSaveObject extendedSaveObject)
 		{
-			extendedSaveObject.OnLoad();
+			extendedSaveObject.OnLoad(filePath);
 		}
 
 		return obj;
@@ -102,7 +102,7 @@ public class SaveHandler
 
 		if (obj is IExtendedSaveObject extendedSaveObject)
 		{
-			extendedSaveObject.OnLoad();
+			extendedSaveObject.OnLoad(filePath);
 		}
 
 		return obj;
@@ -130,10 +130,15 @@ public class SaveHandler
 	{
 		var saveName = typeof(T).GetCustomAttribute<SaveNameAttribute>(false);
 		var filePath = GetPath(saveName.FileName, saveName.AppName, saveName.Local);
+		var extendedSaveObject = saveObject as IExtendedSaveObject;
+
+		extendedSaveObject?.OnPreSave(filePath);
 
 		Write(filePath
 			, JsonConvert.SerializeObject(saveObject, Formatting.Indented, saveName.SuppressErrors ? _jsonSettings : _jsonSettingsAllowErrors)
 			, saveName.NoBackup);
+
+		extendedSaveObject?.OnPostSave(filePath);
 	}
 
 	public void Save(object saveObject, string fileName, bool suppressErrors = false, string appName = null, bool local = false, bool noBackup = false)
@@ -144,10 +149,15 @@ public class SaveHandler
 		}
 
 		var filePath = GetPath(fileName, appName, local);
-		
+		var extendedSaveObject = saveObject as IExtendedSaveObject;
+
+		extendedSaveObject?.OnPreSave(filePath);
+
 		Write(filePath
 			, JsonConvert.SerializeObject(saveObject, Formatting.Indented, suppressErrors ? _jsonSettings : _jsonSettingsAllowErrors)
 			, noBackup);
+
+		extendedSaveObject?.OnPostSave(filePath);
 	}
 
 	public void Save(object saveObject, Type[] specificType, string fileName, bool suppressErrors = false, string appName = null, bool local = false, bool noBackup = false)
@@ -158,6 +168,7 @@ public class SaveHandler
 		}
 
 		var filePath = GetPath(fileName, appName, local);
+		var extendedSaveObject = saveObject as IExtendedSaveObject;
 		var settings = new JsonSerializerSettings
 		{
 			ContractResolver = new InterfaceContractResolver(specificType)
@@ -168,9 +179,13 @@ public class SaveHandler
 			settings.Error += (o, args) => args.ErrorContext.Handled = true;
 		}
 
+		extendedSaveObject?.OnPreSave(filePath);
+
 		Write(filePath
 			, JsonConvert.SerializeObject(saveObject, Formatting.Indented, settings)
 			, noBackup);
+
+		extendedSaveObject?.OnPostSave(filePath);
 	}
 	#endregion
 
@@ -312,9 +327,9 @@ public interface ISaveObject
 
 public interface IExtendedSaveObject : ISaveObject
 {
-	void OnPreSave();
-	void OnPostSave();
-	void OnLoad();
+	void OnPreSave(string filePath);
+	void OnPostSave(string filePath);
+	void OnLoad(string filePath);
 }
 
 public class SaveNameAttribute(string fileName, string appName = null, bool noBackup = false, bool local = false, bool suppressErrors = false) : Attribute
