@@ -736,19 +736,6 @@ public static partial class ExtensionClass
 			return new GaussianBlur(img).Process(Math.Max(img.Width, img.Height) / (101 - (radius ?? 40)).Between(1, 100));
 		}
 
-		static Size CalculateNewSize(Size imageSize, Size preferredSize)
-		{
-			var widthRatio = (double)preferredSize.Width / imageSize.Width;
-			var heightRatio = (double)preferredSize.Height / imageSize.Height;
-
-			var minRatio = Math.Min(widthRatio, heightRatio);
-
-			var newWidth = (int)(imageSize.Width * minRatio);
-			var newHeight = (int)(imageSize.Height * minRatio);
-
-			return new Size(newWidth, newHeight);
-		}
-
 		#region OldBlur
 
 		//var kSize = radius ?? Math.Max(img.Width, img.Height) / 20;
@@ -848,6 +835,19 @@ public static partial class ExtensionClass
 		//return total;
 
 		#endregion OldBlur
+	}
+
+	public static Size CalculateNewSize(Size imageSize, Size preferredSize)
+	{
+		var widthRatio = (double)preferredSize.Width / imageSize.Width;
+		var heightRatio = (double)preferredSize.Height / imageSize.Height;
+
+		var minRatio = Math.Max(widthRatio, heightRatio);
+
+		var newWidth = (int)(imageSize.Width * minRatio);
+		var newHeight = (int)(imageSize.Height * minRatio);
+
+		return new Size(newWidth, newHeight);
 	}
 
 	public static Color GetTextColor(this Color color)
@@ -986,7 +986,7 @@ public static partial class ExtensionClass
 			return;
 		}
 
-		var newImage = new Bitmap(bounds.Width, bounds.Height);
+		var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size));
 
 		using var imageGraphics = Graphics.FromImage(newImage);
 		if (background != null)
@@ -995,7 +995,7 @@ public static partial class ExtensionClass
 		}
 
 		imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
+		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
 
 		using var finalImage = blur ? Blur(newImage) : newImage;
 		using var textureBrush = new TextureBrush(finalImage);
@@ -1011,7 +1011,7 @@ public static partial class ExtensionClass
 			return;
 		}
 
-		using var newImage = new Bitmap(bounds.Width, bounds.Height);
+		var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size));
 		using var imageGraphics = Graphics.FromImage(newImage);
 		if (background != null)
 		{
@@ -1019,7 +1019,7 @@ public static partial class ExtensionClass
 		}
 
 		imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size));
+		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
 
 		using var textureBrush = new TextureBrush(newImage);
 		graphics.TranslateTransform(bounds.X, bounds.Y);
