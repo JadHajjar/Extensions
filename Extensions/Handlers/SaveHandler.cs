@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -35,7 +36,11 @@ public class SaveHandler
 	#region Loading
 	public T Load<T>() where T : ISaveObject, new()
 	{
+#if NET47
 		var saveName = typeof(T).GetCustomAttribute<SaveNameAttribute>(false);
+#else
+		var saveName = typeof(T).GetCustomAttributes(typeof(SaveNameAttribute), false).FirstOrDefault() as SaveNameAttribute;
+#endif
 		var filePath = GetPath(saveName.FileName, saveName.AppName, saveName.Local);
 		var fileContents = Read(filePath);
 
@@ -128,7 +133,11 @@ public class SaveHandler
 	#region Saving
 	public void Save<T>(T saveObject) where T : ISaveObject
 	{
+#if NET47
 		var saveName = typeof(T).GetCustomAttribute<SaveNameAttribute>(false);
+#else
+		var saveName = typeof(T).GetCustomAttributes(typeof(SaveNameAttribute), false).FirstOrDefault() as SaveNameAttribute;
+#endif
 		var filePath = GetPath(saveName.FileName, saveName.AppName, saveName.Local);
 		var extendedSaveObject = saveObject as IExtendedSaveObject;
 
@@ -187,7 +196,7 @@ public class SaveHandler
 
 		extendedSaveObject?.OnPostSave(filePath);
 	}
-	#endregion
+#endregion
 
 	#region Other
 	public void Delete(string fileName, string appName = null, bool local = false)

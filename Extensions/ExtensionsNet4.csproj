@@ -81,8 +81,8 @@
     <Compile Include="Handlers\FileOperationAPIWrapper.cs" />
     <Compile Include="FormDesign\Presets.cs" />
     <Compile Include="FormDesign\Properties.cs" />
-    <Compile Include="Handlers\ISave.cs" />
     <Compile Include="Classes\HslColor.cs" />
+    <Compile Include="Handlers\SaveHandler.cs" />
     <Compile Include="Identifiers\Dispenser.cs" />
     <Compile Include="Identifiers\Factory.cs" />
     <Compile Include="Interfaces\IFirstFocus.cs" />
