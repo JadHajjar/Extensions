@@ -42,9 +42,9 @@ public partial class FormDesign
 		InfoColor = Color.FromArgb(132, 146, 165),
 		ActiveColor = Color.FromArgb(232, 157, 22),
 		ActiveForeColor = Color.FromArgb(250, 250, 250),
-		RedColor = Color.FromArgb(180, 59, 34),
+		RedColor = Color.FromArgb(176, 51, 26),
 		GreenColor = Color.FromArgb(141, 191, 88),
-		YellowColor = Color.FromArgb(229, 193, 52),
+		YellowColor = Color.FromArgb(212, 173, 17),
 		IconColor = Color.FromArgb(77, 87, 102)
 	};
 
@@ -54,16 +54,16 @@ public partial class FormDesign
 		ForeColor = Color.FromArgb(255, 255, 255),
 		ButtonColor = Color.FromArgb(56, 67, 82),
 		ButtonForeColor = Color.FromArgb(255, 255, 255),
-		AccentColor = Color.FromArgb(159, 202, 245),
+		AccentColor = Color.FromArgb(158, 173, 186),
 		MenuColor = Color.FromArgb(39, 47, 59),
 		MenuForeColor = Color.FromArgb(223, 227, 245),
 		LabelColor = Color.FromArgb(202, 211, 222),
 		InfoColor = Color.FromArgb(196, 197, 204),
 		ActiveColor = Color.FromArgb(44, 114, 245),
 		ActiveForeColor = Color.FromArgb(233, 237, 247),
-		RedColor = Color.FromArgb(204, 53, 63),
-		GreenColor = Color.FromArgb(68, 184, 105),
-		YellowColor = Color.FromArgb(219, 180, 88),
+		RedColor = Color.FromArgb(135, 31, 38),
+		GreenColor = Color.FromArgb(45, 138, 74),
+		YellowColor = Color.FromArgb(181, 141, 47),
 		IconColor = Color.FromArgb(222, 230, 250)
 	};
 
@@ -127,7 +127,7 @@ public partial class FormDesign
 	public static FormDesign Strawberries { get; } = new("Strawberries")
 	{
 		BackColor = Color.FromArgb(250, 245, 248),
-		ForeColor = Color.FromArgb(102, 18, 45),
+		ForeColor = Color.FromArgb(66, 27, 39),
 		ButtonColor = Color.FromArgb(245, 203, 214),
 		ButtonForeColor = Color.FromArgb(93, 0, 29),
 		AccentColor = Color.FromArgb(235, 194, 204),
