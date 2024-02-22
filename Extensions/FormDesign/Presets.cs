@@ -43,7 +43,7 @@ public partial class FormDesign
 		ActiveColor = Color.FromArgb(232, 157, 22),
 		ActiveForeColor = Color.FromArgb(250, 250, 250),
 		RedColor = Color.FromArgb(180, 59, 34),
-		GreenColor = Color.FromArgb(170, 224, 113),
+		GreenColor = Color.FromArgb(141, 191, 88),
 		YellowColor = Color.FromArgb(229, 193, 52),
 		IconColor = Color.FromArgb(77, 87, 102)
 	};
