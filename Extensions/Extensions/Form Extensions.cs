@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Extensions;
 
-public static partial class ExtensionClass
+public static partial class WinExtensionClass
 {
 	private const int WM_SETREDRAW = 11;
 	private static bool? isadministrator;
@@ -388,7 +388,7 @@ public static partial class ExtensionClass
 		return l.AsEnumerable();
 	}
 
-	public static bool TryInvoke(this Control control, action action)
+	public static bool TryInvoke(this Control control, ExtensionClass.action action)
 	{
 		try
 		{
@@ -409,7 +409,7 @@ public static partial class ExtensionClass
 		return true;
 	}
 
-	public static bool TryBeginInvoke(this Control control, action action)
+	public static bool TryBeginInvoke(this Control control, ExtensionClass.action action)
 	{
 		try
 		{
@@ -1493,5 +1493,30 @@ public static partial class ExtensionClass
 		var color2 = color.Tint(hue - (caliber * 3F), -caliber * 3F, -caliber * 2.5F);
 
 		return new LinearGradientBrush(rect, color1, color2, 45);
+	}
+
+	public static IEnumerable<T> ThatAre<T>(this Control.ControlCollection list) where T : Control
+	{
+		return list.OfType<T>();
+	}
+
+	public static string YesNo(this bool b)
+	{
+		return b ? "Yes" : "No";
+	}
+
+	public static bool IsDigit(this Keys keys)
+	{
+		return keys is (>= Keys.D0 and <= Keys.D9) or (>= Keys.NumPad0 and <= Keys.NumPad9);
+	}
+
+	public static bool IsLetter(this Keys keys)
+	{
+		return (keys & ~Keys.Shift) is >= Keys.A and <= Keys.Z;
+	}
+
+	public static bool IsDigitOrLetter(this Keys keys)
+	{
+		return keys.IsDigit() || keys.IsLetter();
 	}
 }

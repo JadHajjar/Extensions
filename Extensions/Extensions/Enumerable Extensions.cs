@@ -7,6 +7,8 @@ namespace Extensions;
 
 public static partial class ExtensionClass
 {
+	public static Random RNG { get; } = new Random(Guid.NewGuid().GetHashCode());
+
 	public delegate void action();
 
 	public delegate void DynamicAction<T>(T t);
@@ -459,5 +461,21 @@ public static partial class ExtensionClass
 		}
 
 		return list;
+	}
+
+	/// <summary>
+	/// Returns a random item in the <see cref="List{T}"/>
+	/// </summary>
+	public static T Random<T>(this List<T> L)
+	{
+		return L[RNG.Next(L.Count)];
+	}
+
+	/// <summary>
+	/// Returns a random item in the <see cref="Array"/>
+	/// </summary>
+	public static T Random<T>(this T[] A)
+	{
+		return A[RNG.Next(A.Length)];
 	}
 }

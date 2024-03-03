@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace Extensions;
 
 public static partial class ExtensionClass
 {
-	public static Random RNG { get; } = new Random(Guid.NewGuid().GetHashCode());
-
 	public enum SizeLength { GB, MB, KB, B, bits }
 
 	public static void AddIfNotExist<T>(this List<T> list, T item)
@@ -230,22 +227,6 @@ public static partial class ExtensionClass
 	}
 
 	/// <summary>
-	/// Returns a random item in the <see cref="List{T}"/>
-	/// </summary>
-	public static T Random<T>(this List<T> L)
-	{
-		return L[RNG.Next(L.Count)];
-	}
-
-	/// <summary>
-	/// Returns a random item in the <see cref="Array"/>
-	/// </summary>
-	public static T Random<T>(this T[] A)
-	{
-		return A[RNG.Next(A.Length)];
-	}
-
-	/// <summary>
 	/// Gets the Data Size in the <see cref="SizeLength"/> format, base size must be in Bytes
 	/// </summary>
 	public static double Size(this long size, SizeLength sizeLength, int rounding = 2)
@@ -330,31 +311,6 @@ public static partial class ExtensionClass
 	public static IEnumerable<T2> ThatAre<T2, T>(this IEnumerable<T> list) where T2 : T
 	{
 		return list.OfType<T2>();
-	}
-
-	public static IEnumerable<T> ThatAre<T>(this Control.ControlCollection list) where T : Control
-	{
-		return list.OfType<T>();
-	}
-
-	public static string YesNo(this bool b)
-	{
-		return b ? "Yes" : "No";
-	}
-
-	public static bool IsDigit(this Keys keys)
-	{
-		return keys is (>= Keys.D0 and <= Keys.D9) or (>= Keys.NumPad0 and <= Keys.NumPad9);
-	}
-
-	public static bool IsLetter(this Keys keys)
-	{
-		return (keys & ~Keys.Shift) is >= Keys.A and <= Keys.Z;
-	}
-
-	public static bool IsDigitOrLetter(this Keys keys)
-	{
-		return keys.IsDigit() || keys.IsLetter();
 	}
 
 	public static T Switch<T, T2>(this T2 item, T2 comp1, T val1, T2 comp2, T val2, T valElse)

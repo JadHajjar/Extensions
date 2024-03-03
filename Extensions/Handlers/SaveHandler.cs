@@ -196,9 +196,29 @@ public class SaveHandler
 
 		extendedSaveObject?.OnPostSave(filePath);
 	}
-#endregion
+	#endregion
 
 	#region Other
+	public void Delete<T>() where T : ISaveObject
+	{
+#if NET47
+		var saveName = typeof(T).GetCustomAttribute<SaveNameAttribute>(false);
+#else
+		var saveName = typeof(T).GetCustomAttributes(typeof(SaveNameAttribute), false).FirstOrDefault() as SaveNameAttribute;
+#endif
+		var filePath = GetPath(saveName.FileName, saveName.AppName, saveName.Local);
+
+		if (CrossIO.FileExists(filePath))
+		{
+			CrossIO.DeleteFile(filePath);
+		}
+
+		if (CrossIO.FileExists(filePath + ".bak"))
+		{
+			CrossIO.DeleteFile(filePath + ".bak");
+		}
+	}
+
 	public void Delete(string fileName, string appName = null, bool local = false)
 	{
 		var filePath = GetPath(fileName, appName, local);
