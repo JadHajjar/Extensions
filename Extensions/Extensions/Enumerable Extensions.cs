@@ -478,4 +478,20 @@ public static partial class ExtensionClass
 	{
 		return A[RNG.Next(A.Length)];
 	}
+
+	public static int IndexOf<T>(this IEnumerable<T> enumerable, T item)
+	{
+		var ind = 0;
+		foreach (var obj in enumerable)
+		{
+			if (item.Equals(obj))
+			{
+				return ind;
+			}
+
+			ind++;
+		}
+
+		return -1;
+	}
 }
