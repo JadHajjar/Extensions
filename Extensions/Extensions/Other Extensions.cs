@@ -382,4 +382,62 @@ public static partial class ExtensionClass
 	{
 		return Enum.GetValues(type).Cast<Enum>().FirstOrDefault(x => x.GetDescription() == value);
 	}
+
+	public static bool IsPatternMatch(string input, string pattern)
+	{
+		// If both input and pattern are empty, return true
+		if (string.IsNullOrEmpty(input) && string.IsNullOrEmpty(pattern))
+			return true;
+
+		// If pattern is empty and input is not, return false
+		if (string.IsNullOrEmpty(pattern))
+			return false;
+
+		// If input is empty, check if pattern contains only '*'
+		if (string.IsNullOrEmpty(input))
+		{
+			foreach (char c in pattern)
+			{
+				if (c != '*')
+					return false;
+			}
+			return true;
+		}
+
+		int inputIndex = 0;
+		int patternIndex = 0;
+		int inputSnapshot = -1;
+		int patternSnapshot = -1;
+
+		while (inputIndex < input.Length)
+		{
+			if (patternIndex < pattern.Length && (pattern[patternIndex] == '?' || pattern[patternIndex] == input[inputIndex]))
+			{
+				inputIndex++;
+				patternIndex++;
+			}
+			else if (patternIndex < pattern.Length && pattern[patternIndex] == '*')
+			{
+				patternSnapshot = patternIndex;
+				inputSnapshot = inputIndex;
+				patternIndex++;
+			}
+			else if (patternSnapshot != -1)
+			{
+				patternIndex = patternSnapshot + 1;
+				inputIndex = ++inputSnapshot;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		while (patternIndex < pattern.Length && pattern[patternIndex] == '*')
+		{
+			patternIndex++;
+		}
+
+		return patternIndex == pattern.Length;
+	}
 }
