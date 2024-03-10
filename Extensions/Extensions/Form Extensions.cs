@@ -658,6 +658,13 @@ public static partial class WinExtensionClass
 		}
 	}
 
+	public static Color GetThemedAverageColor(this Bitmap bmp, Rectangle? rectangle = null)
+	{
+		var color = GetAverageColor(bmp, rectangle);
+
+		return FormDesign.Design.BackColor.MergeColor(color, 50);
+	}
+
 	public static Color GetAverageColor(this Image bmp, Rectangle? rectangle = null)
 	{
 		return (bmp as Bitmap).GetAverageColor(rectangle);
@@ -674,10 +681,12 @@ public static partial class WinExtensionClass
 		//	rect = new Rectangle(Math.Max(0, rect.X), Math.Max(0, rect.Y), Math.Max(bmp.Width, rect.Width), Math.Max(bmp.Height, rect.Height));
 
 		var total = 0;
+		var xStep = Math.Max(1, rect.Width / 128);
+		var yStep = Math.Max(1, rect.Height / 128);
 
-		for (var x = rect.X; x < rect.X + rect.Width; x++)
+		for (var x = rect.X; x < rect.X + rect.Width; x+= xStep)
 		{
-			for (var y = rect.Y; y < rect.Y + rect.Height; y++)
+			for (var y = rect.Y; y < rect.Y + rect.Height; y+= yStep)
 			{
 				var clr = bmp.GetPixel(x, y);
 
@@ -1243,6 +1252,11 @@ public static partial class WinExtensionClass
 	public static Color GetAccentColor(this Color color)
 	{
 		return (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) > 186 ? System.Drawing.Color.Black : System.Drawing.Color.White;
+	}
+
+	public static bool IsDark(this Color color)
+	{
+		return (color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114) <= 186;
 	}
 
 	private static float HuetoRGB(float p, float q, float t)

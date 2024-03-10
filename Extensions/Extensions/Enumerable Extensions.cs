@@ -463,6 +463,26 @@ public static partial class ExtensionClass
 		return list;
 	}
 
+	public static List<T> DistinctList<T, T2>(this List<T> list, Func<T, T2> convert)
+	{
+		var items = new List<T2>();
+
+		for (var i = 0; i < list.Count; i++)
+		{
+			var c = convert(list[i]);
+			if (!items.Contains(c))
+			{
+				items.Add(c);
+			}
+			else
+			{
+				list.RemoveAt(i--);
+			}
+		}
+
+		return list;
+	}
+
 	/// <summary>
 	/// Returns a random item in the <see cref="List{T}"/>
 	/// </summary>
