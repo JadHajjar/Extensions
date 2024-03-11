@@ -684,9 +684,9 @@ public static partial class WinExtensionClass
 		var xStep = Math.Max(1, rect.Width / 128);
 		var yStep = Math.Max(1, rect.Height / 128);
 
-		for (var x = rect.X; x < rect.X + rect.Width; x+= xStep)
+		for (var x = rect.X; x < rect.X + rect.Width; x += xStep)
 		{
-			for (var y = rect.Y; y < rect.Y + rect.Height; y+= yStep)
+			for (var y = rect.Y; y < rect.Y + rect.Height; y += yStep)
 			{
 				var clr = bmp.GetPixel(x, y);
 
@@ -726,7 +726,7 @@ public static partial class WinExtensionClass
 		if (preferredSize != null)
 		{
 			using var img2 = new Bitmap(img, CalculateNewSize(img.Size, preferredSize.Value));
-			
+
 			if (!doNotDispose)
 			{
 				img.Dispose();
@@ -988,6 +988,8 @@ public static partial class WinExtensionClass
 		graphics.FillPath(brush, path);
 	}
 
+	private static readonly Dictionary<int, TextureBrush> _imageBrushCache = [];
+
 	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
 	{
 		if (image == null)
@@ -995,19 +997,25 @@ public static partial class WinExtensionClass
 			return;
 		}
 
-		var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size));
+		var hash = image.GetHashCode() + bounds.GetHashCode();
 
-		using var imageGraphics = Graphics.FromImage(newImage);
-		if (background != null)
+		if (!_imageBrushCache.TryGetValue(hash, out var textureBrush))
 		{
-			imageGraphics.Clear(background.Value);
+			var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size));
+
+			using var imageGraphics = Graphics.FromImage(newImage);
+			if (background != null)
+			{
+				imageGraphics.Clear(background.Value);
+			}
+
+			imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
+
+			using var finalImage = blur ? Blur(newImage) : newImage;
+			_imageBrushCache[hash] = textureBrush = new TextureBrush(finalImage);
 		}
 
-		imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
-
-		using var finalImage = blur ? Blur(newImage) : newImage;
-		using var textureBrush = new TextureBrush(finalImage);
 		graphics.TranslateTransform(bounds.X, bounds.Y);
 		graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
 		graphics.TranslateTransform(-bounds.X, -bounds.Y);
