@@ -202,7 +202,7 @@ public partial class FormDesign
 		{
 			var obj = SaveHandler.Instance.Load<DesignSettings>();
 
-			Custom = obj.Custom;
+			Custom = obj.Custom ?? new("Custom", true);
 			WindowsButtons = obj.WindowsButtons;
 			NightModeEnabled = obj.NightModeEnabled;
 			UseSystemTheme = obj.UseSystemTheme;
@@ -222,7 +222,7 @@ public partial class FormDesign
 			SaveHandler.Instance.Save(new DesignSettings
 			{
 				Design = design.ToString(),
-				Custom = Custom,
+				Custom = Custom ?? new("Custom", true),
 				NightModeEnabled = NightModeEnabled,
 				UseSystemTheme = UseSystemTheme,
 				WindowsButtons = WindowsButtons

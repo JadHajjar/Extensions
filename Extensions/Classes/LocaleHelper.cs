@@ -50,7 +50,7 @@ public class LocaleHelper
 		}
 		catch { }
 
-		SetCultureAndCalendar(CultureInfo.CurrentCulture);
+		SetCultureAndCalendar(new CultureInfo("en-US"));
 	}
 
 	public static void SetLanguage(CultureInfo cultureInfo)

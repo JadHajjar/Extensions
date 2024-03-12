@@ -204,4 +204,9 @@ public static class CrossIO
 
 		return path1.Remove(index, normalizedPath2.Length).Insert(index, path);
 	}
+
+	public static string GetTempFileName()
+	{
+		return Path.Combine(Path.GetTempPath(), $"tmp_{Guid.NewGuid()}.tmp");
+	}
 }
