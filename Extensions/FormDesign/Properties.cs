@@ -31,6 +31,9 @@ public partial class FormDesign : IFormDesign
 	public Color AccentBackColor => BackColor.Tint(Lum: IsDarkTheme ? 3 : -3);
 
 	[JsonIgnore]
+	public Color OrangeColor => RedColor.MergeColor(YellowColor);
+
+	[JsonIgnore]
 	public bool Temporary { get; set; }
 
 	[JsonIgnore]

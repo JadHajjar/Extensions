@@ -162,9 +162,12 @@ public class LocaleHelper
 
 	public struct Translation
 	{
-		public string Zero { get; set; }
+		private string _plural;
+		private string _zero;
+
 		public string One { get; set; }
-		public string Plural { get; set; }
+		public string Zero { readonly get => _zero ?? One; set => _zero = value; }
+		public string Plural { readonly get => _plural ?? One; set => _plural = value; }
 
 		public static implicit operator Translation(string text)
 		{
@@ -176,17 +179,17 @@ public class LocaleHelper
 			return translation.One;
 		}
 
-		public string Format(params object[] values)
+		public readonly string Format(params object[] values)
 		{
 			return string.Format(One, values);
 		}
 
-		public string FormatPlural(params object[] values)
+		public readonly string FormatPlural(params object[] values)
 		{
 			return string.Format(Plural is null || values[0].Equals(1) ? One : Plural, values);
 		}
 
-		public override string ToString()
+		public override readonly string ToString()
 		{
 			return One;
 		}
