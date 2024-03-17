@@ -40,7 +40,7 @@ public partial class FormDesign
 		MenuForeColor = Color.FromArgb(191, 202, 218),
 		LabelColor = Color.FromArgb(99, 114, 135),
 		InfoColor = Color.FromArgb(132, 146, 165),
-		ActiveColor = Color.FromArgb(232, 157, 22),
+		ActiveColor = Color.FromArgb(217, 148, 20),
 		ActiveForeColor = Color.FromArgb(250, 250, 250),
 		RedColor = Color.FromArgb(176, 51, 26),
 		GreenColor = Color.FromArgb(141, 191, 88),
