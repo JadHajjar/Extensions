@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -989,7 +988,7 @@ public static partial class WinExtensionClass
 		graphics.FillPath(brush, path);
 	}
 
-	public static void FillRoundedRectangleWithShadow(this Graphics graphics, Rectangle rectangle, int cornerRadius, int shadowLayers, Color? backColor = null, Color? shadow = null)
+	public static void FillRoundedRectangleWithShadow(this Graphics graphics, Rectangle rectangle, int cornerRadius, int shadowLayers, Color? backColor = null, Color? shadow = null, bool addOutline = false)
 	{
 		var shadowColor = shadow ?? (FormDesign.Design.IsDarkTheme ? System.Drawing.Color.FromArgb(1, 255, 255, 255) : System.Drawing.Color.FromArgb(10, FormDesign.Design.AccentColor));
 		using var brush = new SolidBrush(shadowColor);
@@ -1001,6 +1000,12 @@ public static partial class WinExtensionClass
 
 		using var brushBack = new SolidBrush(backColor ?? FormDesign.Design.BackColor);
 		graphics.FillRoundedRectangle(brushBack, rectangle, cornerRadius);
+
+		if (addOutline)
+		{
+			using var pen = new Pen(System.Drawing.Color.FromArgb(255, shadow ?? FormDesign.Design.AccentColor), 1.5f) { Alignment = PenAlignment.Inset };
+			graphics.DrawRoundedRectangle(pen, rectangle, cornerRadius);
+		}
 	}
 
 
@@ -1017,7 +1022,7 @@ public static partial class WinExtensionClass
 
 		if (!_imageBrushCache.TryGetValue(hash, out var textureBrush))
 		{
-			var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size)+new Size(2,2));
+			var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size) + new Size(2, 2));
 
 			using var imageGraphics = Graphics.FromImage(newImage);
 			if (background != null)
