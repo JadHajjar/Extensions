@@ -1009,13 +1009,22 @@ public static partial class WinExtensionClass
 	}
 
 
-	private static readonly Dictionary<int, TextureBrush> _imageBrushCache = [];
+	private static readonly Dictionary<int, (DateTime DateCreated, TextureBrush Brush)> _imageBrushCache = [];
 
 	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
 	{
 		if (image == null)
 		{
 			return;
+		}
+
+		foreach (var key in _imageBrushCache.Keys.ToList())
+		{
+			if (_imageBrushCache[key].DateCreated.AddMinutes(15) < DateTime.Now)
+			{
+				_imageBrushCache[key].Brush.Dispose();
+				_imageBrushCache.Remove(key);
+			}
 		}
 
 		var hash = image.GetHashCode() + bounds.GetHashCode();
@@ -1034,11 +1043,11 @@ public static partial class WinExtensionClass
 			imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
 
 			using var finalImage = blur ? Blur(newImage) : newImage;
-			_imageBrushCache[hash] = textureBrush = new TextureBrush(finalImage);
+			_imageBrushCache[hash] = textureBrush = (DateTime.Now, new TextureBrush(finalImage));
 		}
 
 		graphics.TranslateTransform(bounds.X, bounds.Y);
-		graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
+		graphics.FillRoundedRectangle(textureBrush.Brush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
 		graphics.TranslateTransform(-bounds.X, -bounds.Y);
 	}
 
