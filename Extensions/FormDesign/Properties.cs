@@ -54,7 +54,7 @@ public partial class FormDesign : IFormDesign
 			return darkMode = new FormDesign(Name, true)
 			{
 				BackColor = Midnight.BackColor.Tint(BackColor, -2.5F, -10),
-				MenuColor = Midnight.MenuColor.Tint(MenuColor, -5F, -12),
+				MenuColor = Midnight.MenuColor.Tint(MenuColor, -4F, -14),
 				ActiveColor = ActiveColor.Tint(null, 0, -25),
 				GreenColor = GreenColor.Tint(null, 0, -15),
 				YellowColor = YellowColor.Tint(null, 0, -15),
