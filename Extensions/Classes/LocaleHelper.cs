@@ -118,6 +118,11 @@ public class LocaleHelper
 			return dic[key];
 		}
 
+		if (_locale[string.Empty].ContainsKey(key))
+		{
+			return _locale[string.Empty][key];
+		}
+
 		return key.Contains(' ') ? key : key.FormatWords();
 	}
 
