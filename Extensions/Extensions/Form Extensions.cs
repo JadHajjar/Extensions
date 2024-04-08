@@ -1008,7 +1008,7 @@ public static partial class WinExtensionClass
 		}
 	}
 
-
+#if NET47
 	private static readonly Dictionary<int, (DateTime DateCreated, TextureBrush Brush)> _imageBrushCache = [];
 
 	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
@@ -1050,6 +1050,35 @@ public static partial class WinExtensionClass
 		graphics.FillRoundedRectangle(textureBrush.Brush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
 		graphics.TranslateTransform(-bounds.X, -bounds.Y);
 	}
+#else
+	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
+	{
+		if (image == null)
+		{
+			return;
+		}
+
+		var hash = image.GetHashCode() + bounds.GetHashCode();
+
+		var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size) + new Size(2, 2));
+
+		using var imageGraphics = Graphics.FromImage(newImage);
+		if (background != null)
+		{
+			imageGraphics.Clear(background.Value);
+		}
+
+		imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+		imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
+
+		using var finalImage = blur ? Blur(newImage) : newImage;
+		using var textureBrush = new TextureBrush(finalImage);
+
+		graphics.TranslateTransform(bounds.X, bounds.Y);
+		graphics.FillRoundedRectangle(textureBrush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
+		graphics.TranslateTransform(-bounds.X, -bounds.Y);
+	}
+#endif
 
 	public static void DrawRoundImage(this Graphics graphics, Image image, Rectangle bounds, Color? background = null)
 	{
