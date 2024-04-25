@@ -387,27 +387,39 @@ public static partial class ExtensionClass
 	{
 		// If both input and pattern are empty, return true
 		if (string.IsNullOrEmpty(input) && string.IsNullOrEmpty(pattern))
+		{
 			return true;
+		}
 
 		// If pattern is empty and input is not, return false
 		if (string.IsNullOrEmpty(pattern))
+		{
 			return false;
+		}
 
 		// If input is empty, check if pattern contains only '*'
 		if (string.IsNullOrEmpty(input))
 		{
-			foreach (char c in pattern)
+			foreach (var c in pattern)
 			{
 				if (c != '*')
+				{
 					return false;
+				}
 			}
+
 			return true;
 		}
 
-		int inputIndex = 0;
-		int patternIndex = 0;
-		int inputSnapshot = -1;
-		int patternSnapshot = -1;
+		if (!pattern.Any('*'))
+		{
+			return IsVersionEqualOrHigher(input, pattern);
+		}
+
+		var inputIndex = 0;
+		var patternIndex = 0;
+		var inputSnapshot = -1;
+		var patternSnapshot = -1;
 
 		while (inputIndex < input.Length)
 		{
@@ -439,5 +451,55 @@ public static partial class ExtensionClass
 		}
 
 		return patternIndex == pattern.Length;
+	}
+
+	public static bool IsVersionEqualOrHigher(string version1, string version2)
+	{
+		if (version1 == version2)
+		{
+			return true;
+		}
+
+		var v1Components = version1.Split('.', 'f');
+		var v2Components = version2.Split('.', 'f');
+
+		for (var i = 0; i < Math.Max(v1Components.Length, v2Components.Length); i++)
+		{
+			if (i >= v1Components.Length) // Version 1 has fewer components
+			{
+				return true;
+			}
+
+			if (i >= v2Components.Length) // Version 2 has fewer components
+			{
+				return false;
+			}
+
+			if (v1Components[i] != v2Components[i])
+			{
+				if (char.IsLetter(v1Components[i][0]) && char.IsLetter(v2Components[i][0]))
+				{
+					var v1LetterValue = (int)char.ToUpper(v1Components[i][0]);
+					var v2LetterValue = (int)char.ToUpper(v2Components[i][0]);
+					return v2LetterValue >= v1LetterValue;
+				}
+				else if (char.IsLetter(v1Components[i][0]))
+				{
+					return true; // Letter in v1 is considered higher
+				}
+				else if (char.IsLetter(v2Components[i][0]))
+				{
+					return false; // Letter in v2 is considered higher
+				}
+				else
+				{
+					var v1Number = int.Parse(v1Components[i]);
+					var v2Number = int.Parse(v2Components[i]);
+					return v2Number >= v1Number;
+				}
+			}
+		}
+
+		return true; // Both versions are equal
 	}
 }

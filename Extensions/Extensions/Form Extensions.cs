@@ -342,36 +342,101 @@ public static partial class WinExtensionClass
 	/// <summary>
 	/// Creates a <see cref="System.Drawing.Color"/> from a Hue, Saturation and Luminance combination
 	/// </summary>
-	public static Color ColorFromHSL(double h, double s, double l)
+	public static Color ColorFromHSL(float hue, float saturation, float lightness)
 	{
-		double r = 0, g = 0, b = 0;
-		if (l != 0)
+		var chroma = (1 - Math.Abs((2 * lightness) - 1)) * saturation;
+		var huePrime = hue / 60.0f;
+		var x = chroma * (1 - Math.Abs((huePrime % 2) - 1));
+
+		float r1, g1, b1;
+		if (huePrime >= 0 && huePrime < 1)
 		{
-			if (s == 0)
-			{
-				r = g = b = l;
-			}
-			else
-			{
-				double temp2;
-				if (l < 0.5)
-				{
-					temp2 = l * (1.0 + s);
-				}
-				else
-				{
-					temp2 = l + s - (l * s);
-				}
-
-				var temp1 = (2.0 * l) - temp2;
-
-				r = GetColorComponent(temp1, temp2, h + (1.0 / 3.0));
-				g = GetColorComponent(temp1, temp2, h);
-				b = GetColorComponent(temp1, temp2, h - (1.0 / 3.0));
-			}
+			r1 = chroma;
+			g1 = x;
+			b1 = 0;
+		}
+		else if (huePrime >= 1 && huePrime < 2)
+		{
+			r1 = x;
+			g1 = chroma;
+			b1 = 0;
+		}
+		else if (huePrime >= 2 && huePrime < 3)
+		{
+			r1 = 0;
+			g1 = chroma;
+			b1 = x;
+		}
+		else if (huePrime >= 3 && huePrime < 4)
+		{
+			r1 = 0;
+			g1 = x;
+			b1 = chroma;
+		}
+		else if (huePrime >= 4 && huePrime < 5)
+		{
+			r1 = x;
+			g1 = 0;
+			b1 = chroma;
+		}
+		else // if (huePrime >= 5 && huePrime < 6)
+		{
+			r1 = chroma;
+			g1 = 0;
+			b1 = x;
 		}
 
-		return System.Drawing.Color.FromArgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
+		var m = lightness - (chroma / 2.0);
+		var r = (byte)((r1 + m) * 255);
+		var g = (byte)((g1 + m) * 255);
+		var b = (byte)((b1 + m) * 255);
+
+		return System.Drawing.Color.FromArgb(r, g, b);
+	}
+
+	public static void RgbToHsl(this Color rgbColor, out float hue, out float saturation, out float lightness)
+	{
+		var r = rgbColor.R / 255.0f;
+		var g = rgbColor.G / 255.0f;
+		var b = rgbColor.B / 255.0f;
+
+		var cMax = Math.Max(r, Math.Max(g, b));
+		var cMin = Math.Min(r, Math.Min(g, b));
+		var delta = cMax - cMin;
+
+		// Calculate hue
+		if (delta == 0)
+		{
+			hue = 0; // Undefined (monochromatic)
+		}
+		else if (cMax == r)
+		{
+			hue = 60 * ((g - b) / delta % 6);
+		}
+		else if (cMax == g)
+		{
+			hue = 60 * (((b - r) / delta) + 2);
+		}
+		else // cMax == b
+		{
+			hue = 60 * (((r - g) / delta) + 4);
+		}
+
+		// Calculate lightness
+		lightness = (cMax + cMin) / 2;
+
+		// Calculate saturation
+		if (delta == 0)
+		{
+			saturation = 0;
+		}
+		else
+		{
+			saturation = delta / (1 - Math.Abs((2 * lightness) - 1));
+		}
+
+		// Ensure hue is non-negative
+		hue = hue < 0 ? hue + 360 : hue;
 	}
 
 	/// <summary>
@@ -873,9 +938,9 @@ public static partial class WinExtensionClass
 			return FormDesign.Design.ForeColor;
 		}
 
-		var b = dark ? 0.05 : 0.95;
+		var b = dark ? 0.05f : 0.95f;
 
-		return ColorFromHSL(color.GetHue(), 0.2, b);
+		return ColorFromHSL(color.GetHue(), 0.2f, b);
 	}
 
 	/// <summary>
@@ -1204,16 +1269,18 @@ public static partial class WinExtensionClass
 
 		var W = bitmap.Width;
 		var H = bitmap.Height;
-		double nH, nS, nL;
+		float nH, nS, nL;
 
 		for (var i = 0; i < H; i++)
 		{
 			for (var j = 0; j < W; j++)
 			{
 				var color = bitmap.GetPixel(j, i);
-				nH = ((Hue ?? color.GetHue()) / 360d).Between(0, 1);
-				nS = (Sat ?? color.GetSaturation()).Between(0, 1);
-				nL = (Lum ?? color.GetBrightness()).Between(0, 1);
+				color.RgbToHsl(out var cHue, out var cSat, out var cLum);
+
+				nH = (Hue ?? cHue).Between(0, 360);
+				nS = (Sat ?? cSat).Between(0, 1);
+				nL = (Lum ?? cLum).Between(0, 1);
 
 				bitmap.SetPixel(j, i, System.Drawing.Color.FromArgb(bitmap.GetPixel(j, i).A,
 					ColorFromHSL(nH, nS, nL)));
@@ -1241,7 +1308,9 @@ public static partial class WinExtensionClass
 	/// <param name="Hue">Added Hue, ranges from -360 to 360</param>
 	public static Color Tint(this Color color, float? Hue = null, float Lum = 0, float Sat = 0)
 	{
-		return System.Drawing.Color.FromArgb(color.A, ColorFromHSL((double)(Hue ?? color.GetHue()) / 360, (color.GetSaturation() + (Sat / 100d)).Between(0, 1), (color.GetBrightness() + (Lum / 100d)).Between(0, 1)));
+		color.RgbToHsl(out var cHue, out var cSat, out var cLum);
+
+		return System.Drawing.Color.FromArgb(color.A, ColorFromHSL((Hue ?? cHue).Between(0, 360), (cSat + (Sat / 100f)).Between(0, 1), (cLum + (Lum / 100f)).Between(0, 1)));
 	}
 
 	/// <summary>
