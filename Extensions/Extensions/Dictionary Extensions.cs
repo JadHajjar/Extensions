@@ -44,7 +44,29 @@ public static partial class ExtensionClass
 	public static Dictionary<TK, TV> ConvertDictionary<T, TK, TV>(this IEnumerable<T> list, Func<T, KeyValuePair<TK, TV>> func)
 	{
 		var dic = new Dictionary<TK, TV>();
-		dic.AddRange(list.Convert(func));
+
+		foreach (var item in list)
+		{
+			var kvp = func(item);
+
+			dic[kvp.Key] = kvp.Value;
+		}
+
+		return dic;
+	}
+
+	/// <summary>
+	/// Converts this <see cref="IEnumerable{T}"/> to a <see cref="Dictionary{TK, TV}"/> using the conversion <paramref name="func"/>
+	/// </summary>
+	public static Dictionary<TK, TV> ConvertDictionary<TK, TV>(this IEnumerable<TV> list, Func<TV, TK> func)
+	{
+		var dic = new Dictionary<TK, TV>();
+
+		foreach (var item in list)
+		{
+			dic[func(item)] = item;
+		}
+
 		return dic;
 	}
 
