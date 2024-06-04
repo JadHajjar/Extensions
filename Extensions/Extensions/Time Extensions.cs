@@ -205,7 +205,11 @@ public static partial class ExtensionClass
 		var past = dt < (utc ? DateTime.UtcNow : DateTime.Now);
 		var today = (utc ? DateTime.UtcNow : DateTime.Now).Date;
 
-		if (ts.TotalHours < 5)
+        if ( ts.TotalSeconds < 15)
+        {
+			return LocaleHelper.GetGlobalText("JustNow");
+        }
+        else if (ts.TotalHours < 5)
 		{
 			if (past)
 			{
