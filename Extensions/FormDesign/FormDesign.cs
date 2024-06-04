@@ -35,6 +35,8 @@ public partial class FormDesign
 	private static FormDesign design = Modern;
 	private static bool Initialized;
 	private static Form _form;
+	private static DateTime lastSysCheck;
+	private static bool cachedIsSystemDark;
 
 	public static FormDesign Design
 	{
@@ -180,18 +182,25 @@ public partial class FormDesign
 		const string keyName = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize";
 		const string valueName = "AppsUseLightTheme";
 
+		if (lastSysCheck > DateTime.Now.AddMinutes(-5))
+		{
+			return cachedIsSystemDark;
+		}
+
+		lastSysCheck = DateTime.Now;
+
 		try
 		{
 			var value = Registry.GetValue(keyName, valueName, null);
 
 			if (value != null)
 			{
-				return (int)value == 0;
+				return cachedIsSystemDark = (int)value == 0;
 			}
 		}
 		catch { }
 
-		return false;
+		return cachedIsSystemDark = false;
 	}
 
 	public static void Load()
