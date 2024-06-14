@@ -1073,6 +1073,28 @@ public static partial class WinExtensionClass
 		}
 	}
 
+	public static void FillRoundShadow(this Graphics graphics, Rectangle rectangle, Color? shadow = null)
+	{
+		var shadowColor = shadow ?? (FormDesign.Design.IsDarkTheme ? System.Drawing.Color.FromArgb(50, 255, 255, 255) : System.Drawing.Color.FromArgb(75, FormDesign.Design.AccentColor));
+
+		using var ellipsePath = new GraphicsPath();
+		ellipsePath.AddEllipse(rectangle);
+
+		using var brush = new PathGradientBrush(ellipsePath);
+
+		brush.CenterPoint = new PointF(rectangle.X+rectangle.Width / 2f, rectangle.Y+ rectangle.Height / 2f);
+		brush.CenterColor = shadowColor;
+		brush.SurroundColors = [shadowColor, default];
+		brush.FocusScales = new PointF(0, 0);
+		brush.InterpolationColors = new ColorBlend(3)
+		{
+			Colors = [shadowColor, shadowColor, default],
+			Positions = [0, 0.85f, 1]
+		};
+
+		graphics.FillRectangle(brush, rectangle);
+	}
+
 #if NET47
 	private static readonly Dictionary<int, (DateTime DateCreated, TextureBrush Brush)> _imageBrushCache = [];
 
