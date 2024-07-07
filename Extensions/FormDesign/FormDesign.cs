@@ -11,10 +11,10 @@ namespace Extensions;
 
 public enum FormDesignType { None, Dark, Light }
 
+public delegate void DesignEventHandler(FormDesign design);
+
 public partial class FormDesign
 {
-	public delegate void DesignEventHandler(FormDesign design);
-
 	public static event DesignEventHandler DesignChanged;
 
 	public static bool WindowsButtons { get; set; } = true;

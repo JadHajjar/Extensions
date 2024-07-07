@@ -198,5 +198,15 @@ public class LocaleHelper
 		{
 			return One;
 		}
+
+		public readonly string ToUpper()
+		{
+			return One.ToUpper();
+		}
+
+		public readonly string ToLower()
+		{
+			return One.ToLower();
+		}
 	}
 }
