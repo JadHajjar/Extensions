@@ -194,7 +194,31 @@ public static class DynamicSql
 			 , props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray());
 	}
 
-	public static List<T> SqlGet<T>(string condition = null, SqlTransaction tr = null) where T : IDynamicSql, new()
+	public static int SqlCount<T>(string condition = null, SqlTransaction tr = null) where T : IDynamicSql, new()
+	{
+		var type = typeof(T);
+		var classInf = getDynamicClass(type);
+		var props = getDynamicProperties(type);
+		var sb = new StringBuilder();
+
+		sb.AppendLine("SELECT COUNT(*)");
+		sb.AppendLine(string.Format(" FROM [{0}] WITH (NOLOCK)", classInf.TableName));
+
+		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
+		{
+			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
+		}
+
+		return int.Parse((tr == null
+			? SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+			 , CommandType.Text
+			 , sb.ToString())
+			: SqlHelper.ExecuteReader(tr
+		 , CommandType.Text
+		 , sb.ToString()))?.ToString() ?? "0");
+	}
+
+	public static List<T> SqlGet<T>(string condition = null, SqlTransaction tr = null, Pagination? pagination = null) where T : IDynamicSql, new()
 	{
 		var type = typeof(T);
 		var classInf = getDynamicClass(type);
@@ -208,6 +232,13 @@ public static class DynamicSql
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
 			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
+		}
+
+		if (pagination.HasValue)
+		{
+			sb.AppendLine(string.Format(" ORDER BY {0}", pagination.Value.OrderBy));
+			sb.AppendLine(string.Format(" OFFSET {0} * ({1} - 1) ROWS", pagination.Value.PageSize, pagination.Value.PageNumber));
+			sb.AppendLine(string.Format(" FETCH NEXT {0} ROWS ONLY", pagination.Value.PageSize));
 		}
 
 		return tr == null

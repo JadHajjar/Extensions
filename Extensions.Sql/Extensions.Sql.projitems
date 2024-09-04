@@ -16,4 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SqlHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SqlReflector.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Pagination.cs" />
+  </ItemGroup>
 </Project>
