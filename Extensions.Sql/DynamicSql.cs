@@ -210,10 +210,10 @@ public static class DynamicSql
 		}
 
 		return int.Parse((tr == null
-			? SqlHelper.ExecuteReader(SqlHandler.ConnectionString
+			? SqlHelper.ExecuteScalar(SqlHandler.ConnectionString
 			 , CommandType.Text
 			 , sb.ToString())
-			: SqlHelper.ExecuteReader(tr
+			: SqlHelper.ExecuteScalar(tr
 		 , CommandType.Text
 		 , sb.ToString()))?.ToString() ?? "0");
 	}
