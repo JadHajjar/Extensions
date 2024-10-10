@@ -17,7 +17,7 @@ public static class DynamicSql
 		var classInf = getDynamicClass(type);
 		var props = getDynamicProperties(type);
 		var sb = new StringBuilder();
-		var check = classInf.SingleRecord || props.Any(x => x.Value.PrimaryKey);
+		var check = !classInf.NoChecks && (classInf.SingleRecord || props.Any(x => x.Value.PrimaryKey));
 		autoUpdate = autoUpdate || classInf.SingleRecord;
 
 		if (check)

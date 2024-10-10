@@ -7,6 +7,7 @@ public class DynamicSqlClassAttribute : Attribute
 {
 	public string TableName { get; set; }
 	public bool SingleRecord { get; set; }
+	public bool NoChecks { get; set; }
 	public string GetCondition { get; set; }
 	public bool AlwaysReturn { get; set; }
 
