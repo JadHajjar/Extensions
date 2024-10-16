@@ -75,7 +75,7 @@ public class DelayedAction
 	{
 		if (_timer != null)
 		{
-			_ = _timer.Change(_delayMilliseconds, Timeout.Infinite);
+			_timer.Change(_delayMilliseconds, Timeout.Infinite);
 		}
 		else
 		{

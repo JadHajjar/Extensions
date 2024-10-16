@@ -1126,7 +1126,7 @@ public static partial class WinExtensionClass
 		graphics.SetClip(path);
 
 		// Draw the image within the clipped area
-		graphics.DrawImage(image, bounds);
+		graphics.DrawImage(image, bounds.CenterR(CalculateNewSize(image.Size,bounds.Size)));
 
 		// Reset the clipping region
 		graphics.SetClip(currentClip);
