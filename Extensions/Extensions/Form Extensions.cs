@@ -14,6 +14,7 @@ public static partial class WinExtensionClass
 {
 	private const int WM_SETREDRAW = 11;
 	private static bool? isadministrator;
+	private static readonly DateTime? _lastCacheCleanup;
 
 	/// <summary>
 	/// Checks if the App currently has Administrator Privileges
@@ -1082,7 +1083,7 @@ public static partial class WinExtensionClass
 
 		using var brush = new PathGradientBrush(ellipsePath);
 
-		brush.CenterPoint = new PointF(rectangle.X+rectangle.Width / 2f, rectangle.Y+ rectangle.Height / 2f);
+		brush.CenterPoint = new PointF(rectangle.X + rectangle.Width / 2f, rectangle.Y + rectangle.Height / 2f);
 		brush.CenterColor = shadowColor;
 		brush.SurroundColors = [shadowColor, default];
 		brush.FocusScales = new PointF(0, 0);
@@ -1098,45 +1099,39 @@ public static partial class WinExtensionClass
 #if NET47
 	private static readonly Dictionary<int, (DateTime DateCreated, TextureBrush Brush)> _imageBrushCache = [];
 
-	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
+	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true)
 	{
 		if (image == null)
 		{
 			return;
 		}
 
-		foreach (var key in _imageBrushCache.Keys.ToList())
+		// Clamp the corner radius to prevent overflow
+		var effectiveRadius = Math.Min(cornerRadius, Math.Min(bounds.Width, bounds.Height) / 2);
+
+		// Create a rounded rectangle path with the clamped radius
+		using var path = RoundedRect(bounds, effectiveRadius, topLeft, topRight, botRight, botLeft);
+
+		// Optional background color fill
+		if (background.HasValue)
 		{
-			if (_imageBrushCache[key].DateCreated.AddMinutes(15) < DateTime.Now)
-			{
-				_imageBrushCache[key].Brush.Dispose();
-				_imageBrushCache.Remove(key);
-			}
+			using var brush = new SolidBrush(background.Value);
+			graphics.FillPath(brush, path);
 		}
 
-		var hash = image.GetHashCode() + bounds.GetHashCode();
+		// Save clipping region
+		var currentClip = graphics.ClipBounds;
 
-		if (!_imageBrushCache.TryGetValue(hash, out var textureBrush))
-		{
-			var newImage = new Bitmap(image, CalculateNewSize(image.Size, bounds.Size) + new Size(2, 2));
+		// Clip the graphics to the rounded rectangle path
+		graphics.SetClip(path);
 
-			using var imageGraphics = Graphics.FromImage(newImage);
-			if (background != null)
-			{
-				imageGraphics.Clear(background.Value);
-			}
+		// Draw the image within the clipped area
+		graphics.DrawImage(image, bounds);
 
-			imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-			imageGraphics.DrawImage(image, new Rectangle(Point.Empty, bounds.Size).CenterR(newImage.Size));
-
-			using var finalImage = blur ? Blur(newImage) : newImage;
-			_imageBrushCache[hash] = textureBrush = (DateTime.Now, new TextureBrush(finalImage));
-		}
-
-		graphics.TranslateTransform(bounds.X, bounds.Y);
-		graphics.FillRoundedRectangle(textureBrush.Brush, new Rectangle(Point.Empty, bounds.Size), cornerRadius, topLeft, topRight, botRight, botLeft);
-		graphics.TranslateTransform(-bounds.X, -bounds.Y);
+		// Reset the clipping region
+		graphics.SetClip(currentClip);
 	}
+
 #else
 	public static void DrawRoundedImage(this Graphics graphics, Image image, Rectangle bounds, int cornerRadius, Color? background = null, bool topLeft = true, bool topRight = true, bool botRight = true, bool botLeft = true, bool blur = false)
 	{
