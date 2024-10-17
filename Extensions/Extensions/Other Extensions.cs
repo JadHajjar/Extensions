@@ -248,7 +248,7 @@ public static partial class ExtensionClass
 	{
 		if (size > Math.Pow(1000, 3))
 		{
-			return $"{size.Size(SizeLength.GB, rounding)} GB";
+			return $"{size.Size(SizeLength.GB, Math.Max(2, rounding))} GB";
 		}
 		else if (size > Math.Pow(1000, 2))
 		{
@@ -257,6 +257,10 @@ public static partial class ExtensionClass
 		else if (size > Math.Pow(1000, 1))
 		{
 			return $"{size.Size(SizeLength.KB, rounding)} KB";
+		}
+		else if (size > 200)
+		{
+			return $"{size.Size(SizeLength.KB, Math.Max(2, rounding))} KB";
 		}
 
 		return $"{size.Size(SizeLength.B, rounding)} Bytes";
