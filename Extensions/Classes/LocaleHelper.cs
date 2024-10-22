@@ -128,9 +128,17 @@ public class LocaleHelper
 
 	public static Translation GetGlobalText(string key)
 	{
+		GetGlobalText(key, out var translation);
+
+		return translation;
+	}
+
+	public static bool GetGlobalText(string key, out Translation translation)
+	{
 		if (string.IsNullOrWhiteSpace(key))
 		{
-			return string.Empty;
+			translation = string.Empty;
+			return false;
 		}
 
 		foreach (var item in _locales)
@@ -143,15 +151,18 @@ public class LocaleHelper
 
 			if (dic.ContainsKey(key))
 			{
-				return dic[key];
+				translation = dic[key];
+				return true;
 			}
 			else if (nonDefault && locale[string.Empty].ContainsKey(key))
 			{
-				return locale[string.Empty][key];
+				translation = locale[string.Empty][key];
+				return true;
 			}
 		}
 
-		return key;
+		translation = key;
+		return false;
 	}
 
 	public static IEnumerable<string> GetAvailableLanguages()
