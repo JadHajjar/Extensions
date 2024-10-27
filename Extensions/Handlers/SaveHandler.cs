@@ -359,6 +359,8 @@ public interface IExtendedSaveObject : ISaveObject
 	void OnPreSave(string filePath);
 	void OnPostSave(string filePath);
 	void OnLoad(string filePath);
+	void Reset();
+	void Reload();
 }
 
 public class SaveNameAttribute(string fileName, string appName = null, bool noBackup = false, bool local = false, bool suppressErrors = false) : Attribute
