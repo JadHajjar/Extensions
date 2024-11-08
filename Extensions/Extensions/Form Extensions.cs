@@ -1088,6 +1088,12 @@ public static partial class WinExtensionClass
 
 		// Reset the clipping region
 		graphics.SetClip(currentClip);
+
+		if (background.HasValue)
+		{
+			using var pen = new Pen(background.Value, 1.5f) { Alignment = PenAlignment.Center };
+			graphics.DrawPath(pen, path);
+		}
 	}
 
 #else
