@@ -26,7 +26,7 @@ public static class DynamicSql
 			sb.AppendLine(string.Format("IF (0 = (SELECT COUNT(*) FROM [{0}]", classInf.TableName));
 			if (props.Any(x => x.Value.PrimaryKey || x.Value.Timestamp))
 			{
-				sb.AppendLine(string.Format("WHERE {0}", string.Join(" AND ", props.Where(x => x.Value.PrimaryKey || x.Value.Timestamp).Select(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar())).ToArray())));
+				sb.AppendLine(string.Format("WHERE ({0})", string.Join(" AND ", props.Where(x => x.Value.PrimaryKey || x.Value.Timestamp).Select(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar())).ToArray())));
 			}
 
 			sb.AppendLine("))");
@@ -60,7 +60,7 @@ public static class DynamicSql
 				sb.AppendLine(string.Join(", ", props.Where(x => !x.Value.Identity && !x.Value.Timestamp).Select(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar())).ToArray()));
 				if (props.Any(x => x.Value.PrimaryKey))
 				{
-					sb.AppendLine(string.Format("WHERE {0}", string.Join(" AND ", props.Where(x => x.Value.PrimaryKey).Select(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar())).ToArray())));
+					sb.AppendLine(string.Format("WHERE ({0})", string.Join(" AND ", props.Where(x => x.Value.PrimaryKey).Select(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar())).ToArray())));
 				}
 
 				if (props.Any(x => x.Value.Identity))
@@ -100,7 +100,7 @@ public static class DynamicSql
 		sb.AppendLine(string.Format("IF (1 = (SELECT COUNT(*) FROM [{0}]", classInf.TableName));
 		if (props.Any(x => x.Value.PrimaryKey))
 		{
-			sb.AppendLine(string.Format("WHERE {0}))", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+			sb.AppendLine(string.Format("WHERE ({0})))", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		}
 
 		sb.AppendLine("BEGIN");
@@ -108,7 +108,7 @@ public static class DynamicSql
 		sb.AppendLine(props.Where(x => !x.Value.Identity).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), ", "));
 		if (props.Any(x => x.Value.PrimaryKey))
 		{
-			sb.AppendLine(string.Format(" WHERE {0}", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+			sb.AppendLine(string.Format(" WHERE ({0})", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		}
 
 		sb.AppendLine("END");
@@ -153,7 +153,7 @@ public static class DynamicSql
 		sb.AppendLine(string.Format("DELETE FROM [{0}]", classInf.TableName));
 		if (!string.IsNullOrEmpty(condition))
 		{
-			sb.AppendLine(string.Format(" WHERE {0}", condition));
+			sb.AppendLine(string.Format(" WHERE ({0})", condition));
 		}
 
 		var commandText = sb.ToString();
@@ -174,15 +174,15 @@ public static class DynamicSql
 		var sb = new StringBuilder();
 
 		sb.AppendLine(string.Format("DELETE FROM [{0}]", classInf.TableName));
-		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.Indexer).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+		sb.AppendLine(string.Format("WHERE ({0})", props.Where(x => x.Value.Indexer).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", classInf.GetCondition));
+			sb.AppendLine(string.Format(" AND ({0})", classInf.GetCondition));
 		}
 
 		if (!string.IsNullOrEmpty(condition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", condition));
+			sb.AppendLine(string.Format(" AND ({0})", condition));
 		}
 
 		var parameters = props.Where(x => x.Value.Indexer).Select(x => x.ColumnValue(item)).ToArray();
@@ -208,7 +208,7 @@ public static class DynamicSql
 
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
+			sb.AppendLine(string.Format(" WHERE ({0} {1} {2})", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
 		}
 
 		var commandText = sb.ToString();
@@ -239,7 +239,7 @@ public static class DynamicSql
 
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
+			sb.AppendLine(string.Format(" WHERE ({0} {1} {2})", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
 		}
 
 		if (pagination.HasValue)
@@ -277,7 +277,7 @@ public static class DynamicSql
 
 		if (!string.IsNullOrEmpty(condition) || !string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" WHERE {0} {1} {2}", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
+			sb.AppendLine(string.Format(" WHERE ({0} {1} {2})", condition, !string.IsNullOrEmpty(condition) && !string.IsNullOrEmpty(classInf.GetCondition) ? "AND" : "", classInf.GetCondition));
 		}
 
 		var commandText = sb.ToString();
@@ -303,10 +303,10 @@ public static class DynamicSql
 		var sb = new StringBuilder();
 
 		sb.AppendLine(string.Format("SELECT * FROM [{0}] WITH (NOLOCK)", classInf.TableName));
-		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+		sb.AppendLine(string.Format("WHERE ({0})", props.Where(x => x.Value.PrimaryKey || (andIndex && x.Value.Indexer)).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", classInf.GetCondition));
+			sb.AppendLine(string.Format(" AND ({0})", classInf.GetCondition));
 		}
 
 		var commandText = sb.ToString();
@@ -339,15 +339,15 @@ public static class DynamicSql
 		var sb = new StringBuilder();
 
 		sb.AppendLine(string.Format("SELECT * FROM [{0}] WITH (NOLOCK)", classInf.TableName));
-		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+		sb.AppendLine(string.Format("WHERE ({0})", props.Where(x => x.Value.PrimaryKey).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", classInf.GetCondition));
+			sb.AppendLine(string.Format(" AND ({0})", classInf.GetCondition));
 		}
 
 		if (!string.IsNullOrEmpty(condition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", condition));
+			sb.AppendLine(string.Format(" AND ({0})", condition));
 		}
 
 		var commandText = sb.ToString();
@@ -378,15 +378,15 @@ public static class DynamicSql
 		var sb = new StringBuilder();
 
 		sb.AppendLine(string.Format("SELECT * FROM [{0}] WITH (NOLOCK)", classInf.TableName));
-		sb.AppendLine(string.Format("WHERE {0}", props.Where(x => x.Value.Indexer).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
+		sb.AppendLine(string.Format("WHERE ({0})", props.Where(x => x.Value.Indexer).ListStrings(x => string.Format("{0} = {1}", x.ColumnName(), x.ColumnVar()), " AND ")));
 		if (!string.IsNullOrEmpty(classInf.GetCondition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", classInf.GetCondition));
+			sb.AppendLine(string.Format(" AND ({0})", classInf.GetCondition));
 		}
 
 		if (!string.IsNullOrEmpty(condition))
 		{
-			sb.AppendLine(string.Format(" AND {0}", condition));
+			sb.AppendLine(string.Format(" AND ({0})", condition));
 		}
 
 		var commandText = sb.ToString();
