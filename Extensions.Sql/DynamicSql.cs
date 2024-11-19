@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -248,6 +249,18 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" OFFSET {0} * ({1} - 1) ROWS", pagination.Value.PageSize, pagination.Value.PageNumber));
 			sb.AppendLine(string.Format(" FETCH NEXT {0} ROWS ONLY", pagination.Value.PageSize));
 		}
+		else if (props.Any(x => x.Value.Order != 0))
+		{
+			sb.Append(" ORDER BY");
+
+			foreach (var column in props.Where(x => x.Value.Order != 0).OrderBy(x => Math.Abs(x.Value.Order)))
+			{
+				sb.AppendFormat(" {0} {1},", column.ColumnName(true), column.Value.Order > 0 ? "ASC" : "DESC");
+			}
+
+			sb.Remove(sb.Length - 1, 1);
+			sb.AppendLine();
+		}
 
 		var commandText = sb.ToString();
 		IDataReader reader;
@@ -350,6 +363,19 @@ public static class DynamicSql
 			sb.AppendLine(string.Format(" AND ({0})", condition));
 		}
 
+		if (props.Any(x => x.Value.Order != 0))
+		{
+			sb.Append(" ORDER BY");
+
+			foreach (var column in props.Where(x => x.Value.Order != 0).OrderBy(x => Math.Abs(x.Value.Order)))
+			{
+				sb.AppendFormat(" {0} {1},", column.ColumnName(true), column.Value.Order > 0 ? "ASC" : "DESC");
+			}
+
+			sb.Remove(sb.Length - 1, 1);
+			sb.AppendLine();
+		}
+
 		var commandText = sb.ToString();
 		var parameters = props
 			.Where(x => x.Value.PrimaryKey)
@@ -387,6 +413,19 @@ public static class DynamicSql
 		if (!string.IsNullOrEmpty(condition))
 		{
 			sb.AppendLine(string.Format(" AND ({0})", condition));
+		}
+
+		if (props.Any(x => x.Value.Order != 0))
+		{
+			sb.Append(" ORDER BY");
+
+			foreach (var column in props.Where(x => x.Value.Order != 0).OrderBy(x => Math.Abs(x.Value.Order)))
+			{
+				sb.AppendFormat(" {0} {1},", column.ColumnName(true), column.Value.Order > 0 ? "ASC" : "DESC");
+			}
+
+			sb.Remove(sb.Length - 1, 1);
+			sb.AppendLine();
 		}
 
 		var commandText = sb.ToString();

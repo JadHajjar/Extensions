@@ -24,5 +24,6 @@ public class DynamicSqlPropertyAttribute : Attribute
 	public bool Identity { get; set; }
 	public bool Indexer { get; set; }
 	public bool Timestamp { get; set; }
+	public int Order { get; set; }
 }
 #nullable enable
