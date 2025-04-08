@@ -29,6 +29,7 @@ using System.Data.SqlClient;
 using System.Xml;
 
 #nullable disable
+#pragma warning disable CS0618 // Type or member is obsolete
 namespace Extensions.Sql;
 
 /// <summary>
@@ -3057,3 +3058,4 @@ public sealed class SqlHelperParameterCache
 
 }
 #nullable enable
+#pragma warning restore CS0618 // Type or member is obsolete

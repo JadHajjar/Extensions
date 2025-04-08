@@ -68,7 +68,11 @@ public static class ConnectionHandler
 
 		checkTimer.Elapsed += (s, e) => GetConnectionState();
 
+#if SIMPLE
+		Task.Run(GetConnectionState);
+#else
 		new BackgroundAction("Checking Internet connection", GetConnectionState) { CanNotBeStopped = true }.Run();
+#endif
 	}
 
 	private static void GetConnectionState()

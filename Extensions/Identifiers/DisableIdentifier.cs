@@ -24,6 +24,7 @@ public class DisableIdentifier
 		Disabled = true;
 	}
 
+#if !SIMPLE
 	public bool Disable(int milliseconds)
 	{
 		if (Disabled)
@@ -36,6 +37,7 @@ public class DisableIdentifier
 		new BackgroundAction(Enable).RunIn(milliseconds);
 		return false;
 	}
+#endif
 
 	public virtual void Enable()
 	{

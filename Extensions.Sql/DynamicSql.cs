@@ -468,9 +468,14 @@ public static class DynamicSql
 		return dynamicProperties;
 	}
 
-	private static DynamicSqlClassAttribute GetDynamicClass(Type type)
+	public static DynamicSqlClassAttribute GetDynamicClass(Type type)
 	{
 		return (DynamicSqlClassAttribute)type.GetCustomAttributes(typeof(DynamicSqlClassAttribute), false).FirstOrDefault();
+	}
+
+	public static DynamicSqlPropertyAttribute GetDynamicProperty(PropertyInfo property)
+	{
+		return (DynamicSqlPropertyAttribute)property.GetCustomAttributes(typeof(DynamicSqlPropertyAttribute), inherit: false).FirstOrDefault();
 	}
 
 	private static string ColumnName(this KeyValuePair<PropertyInfo, DynamicSqlPropertyAttribute> kvp, bool asSelect = false)

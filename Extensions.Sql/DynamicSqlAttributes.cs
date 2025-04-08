@@ -25,5 +25,6 @@ public class DynamicSqlPropertyAttribute : Attribute
 	public bool Indexer { get; set; }
 	public bool Timestamp { get; set; }
 	public int Order { get; set; }
+	public bool AutoIncrement { get; set; }
 }
 #nullable enable

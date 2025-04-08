@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
 
 using static System.Environment;
 
@@ -18,7 +17,11 @@ public class SaveHandler
 	private readonly JsonSerializerSettings _jsonSettingsAllowErrors;
 
 	public static SaveHandler Instance { get; set; } = new();
-	public static string AppName { get; set; } = Application.ProductName;
+#if SIMPLE
+	public static string AppName { get; set; }
+#else
+	public static string AppName { get; set; } = System.Windows.Forms.Application.ProductName;
+#endif
 	public string SaveDirectory { get; }
 
 	public SaveHandler(string saveDirectory = null)
@@ -334,11 +337,15 @@ public class SaveHandler
 
 	public string GetPath(string name, string appName = null, bool local = false)
 	{
-		var basePath = local ? Path.GetDirectoryName(Application.ExecutablePath) : SaveDirectory;
+#if SIMPLE
+		var basePath =  SaveDirectory;
+#else
+		var basePath = local ? Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) : SaveDirectory;
+#endif
 
 		return CrossIO.Combine(basePath, appName ?? AppName, name);
 	}
-	#endregion Other
+#endregion Other
 }
 
 public static class SaveHandlerExtensions
