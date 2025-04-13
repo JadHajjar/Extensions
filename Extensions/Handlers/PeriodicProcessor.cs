@@ -258,8 +258,11 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		CacheItems(_results);
 	}
 
-	public Dictionary<TEntity, TResult> GetCache()
+	public List<TResult> GetCache()
 	{
-		return _results;
+		lock (this)
+		{
+			return _results.Values.ToList();
+		}
 	}
 }
