@@ -202,7 +202,22 @@ public class LocaleHelper
 
 		public readonly string FormatPlural(params object[] values)
 		{
-			return string.Format(Plural is null || values[0].Equals(1) ? One : Plural, values);
+			string format;
+
+			if (Zero is not null && values[0].Equals(0))
+			{
+				format = Zero;
+			}
+			else if (Plural is not null && !values[0].Equals(1))
+			{
+				format = Plural;
+			}
+			else
+			{
+				format = One;
+			}
+
+			return string.Format(format, values);
 		}
 
 		public override readonly string ToString()
