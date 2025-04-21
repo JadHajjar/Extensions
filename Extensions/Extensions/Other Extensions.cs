@@ -72,6 +72,18 @@ public static partial class ExtensionClass
 
 		return true;
 	}
+
+	public static T TryCast<T>(this int value) where T : Enum
+	{
+		try
+		{
+			return (T)(object)value;
+		}
+		catch
+		{
+			return default;
+		}
+	}
 #endif
 
 	/// <summary>
