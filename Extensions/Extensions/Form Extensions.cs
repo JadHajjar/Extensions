@@ -1294,6 +1294,65 @@ public static partial class WinExtensionClass
 		return System.Drawing.Color.FromArgb(color.A, ColorFromHSL((Hue ?? cHue).Between(0, 360), (cSat + (Sat / 100f)).Between(0, 1), (cLum + (Lum / 100f)).Between(0, 1)));
 	}
 
+	public static Bitmap ToGrayscale(this Bitmap source)
+	{
+		int width = source.Width;
+		int height = source.Height;
+
+		// Ensure the source is in 24bppRgb format
+		Bitmap source24bpp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+		using (Graphics g = Graphics.FromImage(source24bpp))
+		{
+			g.DrawImage(source, 0, 0, width, height);
+		}
+
+		BitmapData bmpData = source24bpp.LockBits(
+			new Rectangle(0, 0, width, height),
+			ImageLockMode.ReadOnly,
+			PixelFormat.Format24bppRgb);
+
+		int stride = bmpData.Stride;
+		int bytes = stride * height;
+		byte[] pixelBuffer = new byte[bytes];
+
+		Marshal.Copy(bmpData.Scan0, pixelBuffer, 0, bytes);
+		source24bpp.UnlockBits(bmpData);
+
+		byte[] resultBuffer = new byte[bytes];
+
+		for (int y = 0; y < height; y++)
+		{
+			int row = y * stride;
+
+			for (int x = 0; x < width; x++)
+			{
+				int index = row + x * 3;
+
+				byte b = pixelBuffer[index];
+				byte g = pixelBuffer[index + 1];
+				byte r = pixelBuffer[index + 2];
+
+				// Grayscale using luminosity
+				byte gray = (byte)(0.3 * r + 0.59 * g + 0.11 * b);
+
+				resultBuffer[index] = gray;
+				resultBuffer[index + 1] = gray;
+				resultBuffer[index + 2] = gray;
+			}
+		}
+
+		Bitmap result = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+		BitmapData resultData = result.LockBits(
+			new Rectangle(0, 0, width, height),
+			ImageLockMode.WriteOnly,
+			PixelFormat.Format24bppRgb);
+
+		Marshal.Copy(resultBuffer, 0, resultData.Scan0, bytes);
+		result.UnlockBits(resultData);
+
+		return result;
+	}
+
 	/// <summary>
 	/// Returns a collection of the controls that match the <paramref name="test"/>
 	/// </summary>
