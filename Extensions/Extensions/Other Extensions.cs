@@ -75,13 +75,24 @@ public static partial class ExtensionClass
 
 	public static T TryCast<T>(this int value) where T : Enum
 	{
-		try
+		var enumType = typeof(T);
+
+		if (enumType.IsDefined(typeof(FlagsAttribute), false))
 		{
-			return (T)(object)value;
+			// For [Flags] enums, allow any combination of defined flags.
+			return (T)Enum.ToObject(enumType, value);
 		}
-		catch
+		else
 		{
-			return default;
+			// For regular enums, ensure value is defined.
+			if (Enum.IsDefined(enumType, value))
+			{
+				return (T)Enum.ToObject(enumType, value);
+			}
+			else
+			{
+				return default;
+			}
 		}
 	}
 #endif
