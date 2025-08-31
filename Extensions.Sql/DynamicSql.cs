@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -19,7 +18,7 @@ public static class DynamicSql
 		var props = GetDynamicProperties(type);
 		var sb = new StringBuilder();
 		var check = !classInf.NoChecks && (classInf.SingleRecord || props.Any(x => x.Value.PrimaryKey));
-		
+
 		autoUpdate |= classInf.SingleRecord;
 
 		if (check)

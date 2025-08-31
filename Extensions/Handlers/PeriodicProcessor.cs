@@ -1,6 +1,7 @@
 ﻿using Extensions;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 {
 	private readonly Timer _timer;
 	private readonly HashSet<TEntity> _entities;
-	private readonly Dictionary<TEntity, TResult> _results;
+	private readonly ConcurrentDictionary<TEntity, TResult> _results;
 	private int failedAttempts;
 	private DateTime lastFailedAttempt;
 
@@ -23,7 +24,7 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 
 	public event Action ItemsLoaded;
 
-	public PeriodicProcessor(int processingPower, int interval, Dictionary<TEntity, TResult> cache)
+	public PeriodicProcessor(int processingPower, int interval, ConcurrentDictionary<TEntity, TResult> cache)
 	{
 		ProcessingPower = processingPower;
 
@@ -79,9 +80,9 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		return true;
 	}
 
-	protected abstract void CacheItems(Dictionary<TEntity, TResult> results);
+	protected abstract void CacheItems(ConcurrentDictionary<TEntity, TResult> results);
 
-	protected abstract Task<(Dictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
+	protected abstract Task<(ConcurrentDictionary<TEntity, TResult> results, bool failed)> ProcessItems(List<TEntity> entities);
 
 	public void CacheItems()
 	{
@@ -107,45 +108,30 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		}
 	}
 
-	//public void Run()
-	//{
-	//	if (processing)
-	//	{
-	//		return;
-	//	}
-
-	//	_timer.Stop();
-
-	//	new BackgroundAction(Process).Run();
-	//}
-
 	public async Task<TResult> Get(TEntity entity, bool wait = false)
 	{
-		//lock (this)
+		try
 		{
-			try
+			if (TryGetEntityFromCache(entity, out var result))
 			{
-				if (_results.TryGetValue(entity, out var result))
-				{
-					if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
-					{
-						_entities.Add(entity);
-					}
-
-					return result;
-				}
-
-				if (!wait)
+				if (!_entities.Contains(entity) && DateTime.Now - result.Timestamp > MaxCacheTime)
 				{
 					_entities.Add(entity);
 				}
+
+				return result;
 			}
-			catch { } // catch useless potential IndexOutOfRangeException errors
 
 			if (!wait)
 			{
-				return default;
+				_entities.Add(entity);
 			}
+		}
+		catch { } // catch useless potential IndexOutOfRangeException errors
+
+		if (!wait)
+		{
+			return default;
 		}
 
 		var results = await ProcessItems([entity]);
@@ -164,10 +150,15 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		return default;
 	}
 
+	protected virtual bool TryGetEntityFromCache(TEntity entity, out TResult result)
+	{
+		return _results.TryGetValue(entity, out result);
+	}
+
 	private async Task ProcessInChunks(IEnumerable<TEntity> mainList)
 	{
 		var chunks = mainList.Chunk(ProcessingPower);
-		var tasks = new List<Task<Dictionary<TEntity, TResult>>>();
+		var tasks = new List<Task<ConcurrentDictionary<TEntity, TResult>>>();
 
 		foreach (var chunk in chunks)
 		{
@@ -177,9 +168,9 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		await Task.WhenAll(tasks);
 	}
 
-	protected async Task<Dictionary<TEntity, TResult>> ProcessItemsWrapper(List<TEntity> entities)
+	protected async Task<ConcurrentDictionary<TEntity, TResult>> ProcessItemsWrapper(List<TEntity> entities)
 	{
-		Dictionary<TEntity, TResult> results;
+		ConcurrentDictionary<TEntity, TResult> results;
 
 		try
 		{

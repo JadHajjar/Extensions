@@ -23,7 +23,7 @@ public static class CrossIO
 			return string.Empty;
 		}
 
-		var sb = new StringBuilder(paths[0].TrimEnd('/', '\\'));
+		var sb = new StringBuilder(paths[0]?.TrimEnd('/', '\\'));
 
 		for (var i = 1; i < paths.Length; i++)
 		{
