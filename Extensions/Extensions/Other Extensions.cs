@@ -438,7 +438,7 @@ public static partial class ExtensionClass
 			return true;
 		}
 
-		if (!pattern.Any('*'))
+		if (!pattern.Any('*') && !pattern.Any('+'))
 		{
 			return IsVersionEqualOrHigher(input, pattern);
 		}
@@ -455,7 +455,7 @@ public static partial class ExtensionClass
 				inputIndex++;
 				patternIndex++;
 			}
-			else if (patternIndex < pattern.Length && pattern[patternIndex] == '*')
+			else if (patternIndex < pattern.Length && pattern[patternIndex] is '*' or '+')
 			{
 				patternSnapshot = patternIndex;
 				inputSnapshot = inputIndex;
@@ -472,7 +472,7 @@ public static partial class ExtensionClass
 			}
 		}
 
-		while (patternIndex < pattern.Length && pattern[patternIndex] == '*')
+		while (patternIndex < pattern.Length && pattern[patternIndex] is '*' or '+')
 		{
 			patternIndex++;
 		}
@@ -520,8 +520,8 @@ public static partial class ExtensionClass
 				}
 				else
 				{
-					var v1Number = int.Parse(v1Components[i]);
-					var v2Number = int.Parse(v2Components[i]);
+					var v1Number = v1Components[i].SmartParse();
+					var v2Number = v2Components[i].SmartParse();
 					return v2Number >= v1Number;
 				}
 			}
