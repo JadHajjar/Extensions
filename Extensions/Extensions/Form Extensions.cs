@@ -13,13 +13,12 @@ namespace Extensions;
 public static partial class WinExtensionClass
 {
 	private const int WM_SETREDRAW = 11;
-	private static bool? isadministrator;
-	private static readonly DateTime? _lastCacheCleanup;
+	private static bool? isAdministrator;
 
 	/// <summary>
 	/// Checks if the App currently has Administrator Privileges
 	/// </summary>
-	public static bool IsAdministrator => (bool)(bool?)(isadministrator ??= new WindowsPrincipal(WindowsIdentity.GetCurrent())
+	public static bool IsAdministrator => (bool)(bool?)(isAdministrator ??= new WindowsPrincipal(WindowsIdentity.GetCurrent())
 			.IsInRole(WindowsBuiltInRole.Administrator));
 
 	/// <summary>
@@ -55,6 +54,11 @@ public static partial class WinExtensionClass
 	public static Rectangle ClipTo(this Rectangle rectangle, int height)
 	{
 		return new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, height);
+	}
+
+	public static Rectangle ClipWidthTo(this Rectangle rectangle, int width)
+	{
+		return new Rectangle(rectangle.X, rectangle.Y, width, rectangle.Height);
 	}
 
 	public static Rectangle InvertPad(this Rectangle rect, Padding padding)

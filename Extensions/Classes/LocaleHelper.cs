@@ -62,7 +62,7 @@ public class LocaleHelper
 		LanguageChanged?.Invoke();
 	}
 
-	private static void SetCultureAndCalendar(CultureInfo cultureInfo)
+	public static void SetCultureAndCalendar(CultureInfo cultureInfo)
 	{
 		CurrentCulture = cultureInfo;
 

@@ -487,8 +487,8 @@ public static partial class ExtensionClass
 			return true;
 		}
 
-		var v1Components = version1.Split('.', 'f');
-		var v2Components = version2.Split('.', 'f');
+		var v1Components = version1.Where(x => char.IsDigit(x) || x is 'f' or '.').Split(['.', 'f'], StringSplitOptions.RemoveEmptyEntries);
+		var v2Components = version2.Where(x => char.IsDigit(x) || x is 'f' or '.').Split(['.', 'f'], StringSplitOptions.RemoveEmptyEntries);
 
 		for (var i = 0; i < Math.Max(v1Components.Length, v2Components.Length); i++)
 		{

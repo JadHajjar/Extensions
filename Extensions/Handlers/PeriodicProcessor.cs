@@ -13,21 +13,24 @@ namespace Extensions;
 
 public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimestamped
 {
+	private readonly int[] _usagePerMinute = new int[6];
 	private readonly Timer _timer;
 	private readonly HashSet<TEntity> _entities;
+	private readonly int _ratePerMinute;
 	private readonly ConcurrentDictionary<TEntity, TResult> _results;
 	private int failedAttempts;
 	private DateTime lastFailedAttempt;
+	private int lastMinute;
 
 	public TimeSpan MaxCacheTime { get; set; } = TimeSpan.FromMinutes(15);
 	public int ProcessingPower { get; }
 
 	public event Action ItemsLoaded;
 
-	public PeriodicProcessor(int processingPower, int interval, ConcurrentDictionary<TEntity, TResult> cache)
+	public PeriodicProcessor(int processingPower, int interval, int ratePerMinute, ConcurrentDictionary<TEntity, TResult> cache)
 	{
 		ProcessingPower = processingPower;
-
+		_ratePerMinute = ratePerMinute;
 		_results = cache ?? [];
 		_entities = [];
 		_timer = new Timer(interval) { AutoReset = false };
@@ -45,6 +48,9 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		if (!CanProcess())
 		{
 			_timer.Start();
+
+			AddUsage(0);
+
 			return;
 		}
 
@@ -63,6 +69,8 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 				}
 
 				_entities.Clear();
+
+				AddUsage(entities.Count);
 			}
 
 			if (entities.Count > 0)
@@ -77,7 +85,7 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 
 	protected virtual bool CanProcess()
 	{
-		return true;
+		return _ratePerMinute == 0 || _usagePerMinute.Sum() < _ratePerMinute;
 	}
 
 	protected abstract void CacheItems(ConcurrentDictionary<TEntity, TResult> results);
@@ -138,16 +146,34 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 
 		if (!results.failed)
 		{
-			foreach (var item in results.results)
+			lock (this)
 			{
-				lock (this)
+				foreach (var item in results.results)
 				{
 					return _results[item.Key] = item.Value;
 				}
+
+				AddUsage(results.results.Count);
 			}
 		}
 
 		return default;
+	}
+
+	public async Task Refresh(TEntity entity)
+	{
+		var results = await ProcessItems([entity]);
+
+		if (!results.failed)
+		{
+			foreach (var item in results.results)
+			{
+				lock (this)
+				{
+					_results[item.Key] = item.Value;
+				}
+			}
+		}
 	}
 
 	protected virtual bool TryGetEntityFromCache(TEntity entity, out TResult result)
@@ -219,11 +245,41 @@ public abstract class PeriodicProcessor<TEntity, TResult> where TResult : ITimes
 		lock (this)
 		{
 			CacheItems(_results);
+
+			AddUsage(_results.Count);
 		}
 
 		ItemsLoaded?.Invoke();
 
 		return results;
+	}
+
+	private void AddUsage(int count)
+	{
+		if (_ratePerMinute == 0)
+		{
+			return;
+		}
+
+		var second = DateTime.Now.Second / 10;
+
+		if (lastMinute != second)
+		{
+			lastMinute = second;
+			_usagePerMinute[second] = count;
+		}
+		else
+		{
+			_usagePerMinute[second] += count;
+		}
+	}
+
+	public bool IsQueued(TEntity entity)
+	{
+		lock (this)
+		{
+			return _entities.Contains(entity);
+		}
 	}
 
 	public void AddToCache(Dictionary<TEntity, TResult> results)

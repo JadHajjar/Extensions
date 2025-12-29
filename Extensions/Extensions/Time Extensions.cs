@@ -64,11 +64,11 @@ public static partial class ExtensionClass
 	{
 		if (LocaleHelper.CurrentCulture?.TwoLetterISOLanguageName != "en")
 		{
-			return DT.ToString("d");
+			return DT.ToString("d", LocaleHelper.CurrentCulture);
 		}
 
 		var day = "th";
-		var month = DT.ToString(fullMonth ? "MMMM" : "MMM");
+		var month = DT.ToString(fullMonth ? "MMMM" : "MMM", LocaleHelper.CurrentCulture);
 
 		if (DT.Day is < 4 or > 20)
 		{
@@ -220,15 +220,15 @@ public static partial class ExtensionClass
 		}
 		else if (dt.Date == today)
 		{
-			return LocaleHelper.GetGlobalText("Today at {0}").Format(dt.ToString("t"));
+			return LocaleHelper.GetGlobalText("Today at {0}").Format(dt.ToString("t", LocaleHelper.CurrentCulture));
 		}
 		else if (dt.Date.AnyOf(today.AddDays(1), today.AddDays(-1)))
 		{
-			return LocaleHelper.GetGlobalText(past ? "Yesterday at {0}" : "Tomorrow at {0}").Format(dt.ToString("t"));
+			return LocaleHelper.GetGlobalText(past ? "Yesterday at {0}" : "Tomorrow at {0}").Format(dt.ToString("t", LocaleHelper.CurrentCulture));
 		}
 		else if (ts.TotalDays < 7)
 		{
-			return LocaleHelper.GetGlobalText(past ? "Last {0} at {1}" : "Next {0} at {1}").Format(dt.ToString("dddd"), dt.ToString("t"));
+			return LocaleHelper.GetGlobalText(past ? "Last {0} at {1}" : "Next {0} at {1}").Format(dt.ToString("dddd", LocaleHelper.CurrentCulture), dt.ToString("t", LocaleHelper.CurrentCulture));
 		}
 
 		var days = ts.Days;

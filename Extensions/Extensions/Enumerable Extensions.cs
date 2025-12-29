@@ -21,7 +21,7 @@ public static partial class ExtensionClass
 		}
 	}
 
-	public static T FirstOrAny<T>(this IEnumerable<T> values, Func<T, bool> predicate) where T : class
+	public static T FirstOrAny<T>(this IEnumerable<T> values, Func<T, bool> predicate)
 	{
 		return values == null ? default : values.FirstOrDefault(predicate) ?? values.FirstOrDefault();
 	}
