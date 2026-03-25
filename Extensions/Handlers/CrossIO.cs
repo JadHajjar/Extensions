@@ -133,7 +133,7 @@ public static class CrossIO
 		return res && !Directory.Exists(folderPath);
 	}
 
-	public static void DeleteFile(string file, bool completely = false)
+	public static void DeleteFile(string file, bool completely = true)
 	{
 		if (CurrentPlatform is Platform.MacOSX)
 		{

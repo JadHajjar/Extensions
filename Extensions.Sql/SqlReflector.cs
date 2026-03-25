@@ -230,7 +230,7 @@ public static class SqlReflector
 
 		if (type == typeof(long) && dbValue is byte[] bytes)
 		{
-			dbValue = BitConverter.ToInt64(bytes.Reverse().ToArray(), 0);
+			dbValue = BitConverter.ToInt64((bytes as IEnumerable<byte>).Reverse().ToArray(), 0);
 		}
 
 		if (type != dbValue.GetType())
