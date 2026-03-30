@@ -309,15 +309,15 @@ public static partial class ExtensionClass
 	/// </summary>
 	public static string SizeString(this ulong size, int rounding = 2)
 	{
-		if (size > Math.Pow(1000, 3))
+		if (size > Math.Pow(1024, 3))
 		{
 			return $"{size.Size(SizeLength.GB, rounding)} GB";
 		}
-		else if (size > Math.Pow(1000, 2))
+		else if (size > Math.Pow(1024, 2))
 		{
 			return $"{size.Size(SizeLength.MB, rounding)} MB";
 		}
-		else if (size > Math.Pow(1000, 1))
+		else if (size > Math.Pow(1024, 1))
 		{
 			return $"{size.Size(SizeLength.KB, rounding)} KB";
 		}
