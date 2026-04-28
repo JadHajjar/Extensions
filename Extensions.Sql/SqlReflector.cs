@@ -157,7 +157,11 @@ public static class SqlReflector
 			{
 				pi.Key.SetValue(entity, MinimumDate, null);
 			}
-		}
+            else if (Nullable.GetUnderlyingType(pi.Key.PropertyType) == typeof(DateTime))
+            {
+                pi.Key.SetValue(entity, null, null); // DateTime? with no value → null, not 1900
+            }
+        }
 
 		return entity;
 	}
@@ -193,60 +197,81 @@ public static class SqlReflector
 			{
 				pi.Key.SetValue(entity, MinimumDate, null);
 			}
-		}
+            else if (Nullable.GetUnderlyingType(pi.Key.PropertyType) == typeof(DateTime))
+            {
+                pi.Key.SetValue(entity, null, null); // DateTime? with no value → null, not 1900
+            }
+        }
 
 		return entity;
 	}
 
-	public static void ConvertDataValue(ref object dbValue, Type type)
-	{
-		if (type.IsEnum)
-		{
-			dbValue = Enum.ToObject(type, dbValue);
-		}
+    public static void ConvertDataValue(ref object dbValue, Type type)
+    {
+        // Unwrap nullable once — all branches work against the real underlying type
+        var underlyingType = Nullable.GetUnderlyingType(type);
+        var isNullable = underlyingType != null;
+        var targetType = underlyingType ?? type;
 
-		if (type == typeof(bool) && dbValue is not bool)
-		{
-			var valStr = dbValue.ToString();
+        // Empty string into a nullable field → null, we're done
+        if (isNullable && dbValue is string s && string.IsNullOrWhiteSpace(s))
+        {
+            dbValue = null;
+            return;
+        }
 
-			dbValue = valStr.Equals("1", StringComparison.CurrentCultureIgnoreCase)
-				|| valStr.Equals("true", StringComparison.CurrentCultureIgnoreCase)
-				|| valStr.Equals("yes", StringComparison.CurrentCultureIgnoreCase);
-		}
+        if (targetType.IsEnum)
+        {
+            dbValue = Enum.ToObject(targetType, dbValue);
+            return;
+        }
 
-		if (type == typeof(DateTime) && (dbValue is not DateTime time || time < MinimumDate))
-		{
-			if (int.TryParse(dbValue.ToString(), out var days))
-			{
-				dbValue = DateTime.FromOADate(days);
-			}
-			else
-			{
-				dbValue = dbValue is string dbStr && DateTime.TryParseExact(dbStr, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var edt)
-					? edt
-					: dbValue is string dbStr2 && DateTime.TryParse(dbStr2, out var cdt) ? cdt : (object)MinimumDate;
-			}
-		}
+        if (targetType == typeof(bool) && dbValue is not bool)
+        {
+            var valStr = dbValue.ToString();
+            dbValue = valStr.Equals("1", StringComparison.CurrentCultureIgnoreCase)
+                   || valStr.Equals("true", StringComparison.CurrentCultureIgnoreCase)
+                   || valStr.Equals("yes", StringComparison.CurrentCultureIgnoreCase);
+            return;
+        }
 
-		if (type == typeof(long) && dbValue is byte[] bytes)
-		{
-			dbValue = BitConverter.ToInt64((bytes as IEnumerable<byte>).Reverse().ToArray(), 0);
-		}
+        if (targetType == typeof(DateTime) && (dbValue is not DateTime time || time < MinimumDate))
+        {
+            if (int.TryParse(dbValue.ToString(), out var days))
+            {
+                dbValue = DateTime.FromOADate(days);
+            }
+            else
+            {
+                dbValue = dbValue is string dbStr && DateTime.TryParseExact(dbStr, "d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var edt) ? edt
+                        : dbValue is string dbStr2 && DateTime.TryParseExact(dbStr2, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var edt2) ? edt2
+                        : dbValue is string dbStr3 && DateTime.TryParse(dbStr3, out var cdt) ? cdt
+                        : isNullable ? null : (object)MinimumDate;
+            }
+            return;
+        }
 
-		if (type != dbValue.GetType())
-		{
-			if (dbValue is string str && string.IsNullOrEmpty(str))
-			{
-				dbValue = Activator.CreateInstance(type);
-			}
-			else if (Nullable.GetUnderlyingType(type) != dbValue.GetType())
-			{
-				dbValue = Convert.ChangeType(dbValue, type, CultureInfo.InvariantCulture);
-			}
-		}
-	}
+        if (targetType == typeof(long) && dbValue is byte[] bytes)
+        {
+            dbValue = BitConverter.ToInt64((bytes as IEnumerable<byte>).Reverse().ToArray(), 0);
+            return;
+        }
 
-	private static Dictionary<PropertyInfo, DynamicSqlPropertyAttribute> getDynamicProperties(Type type)
+        if (targetType != dbValue.GetType())
+        {
+            if (dbValue is string str && string.IsNullOrEmpty(str))
+            {
+                dbValue = isNullable ? null : Activator.CreateInstance(targetType);
+            }
+            else
+            {
+                // Convert to the unwrapped type — Convert.ChangeType can't handle Nullable<T>
+                dbValue = Convert.ChangeType(dbValue, targetType, CultureInfo.InvariantCulture);
+            }
+        }
+    }
+
+    private static Dictionary<PropertyInfo, DynamicSqlPropertyAttribute> getDynamicProperties(Type type)
 	{
 		return type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanWrite)
 				.ToDictionary(x => x, x => (DynamicSqlPropertyAttribute)x.GetCustomAttributes(typeof(DynamicSqlPropertyAttribute), false).FirstOrDefault());
