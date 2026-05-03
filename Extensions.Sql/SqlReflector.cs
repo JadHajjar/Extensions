@@ -157,6 +157,10 @@ public static class SqlReflector
 			{
 				pi.Key.SetValue(entity, MinimumDate, null);
 			}
+			else if (Nullable.GetUnderlyingType(pi.Key.PropertyType) != pi.Key.PropertyType)
+			{
+				pi.Key.SetValue(entity, null, null);
+			}
 		}
 
 		return entity;
@@ -193,6 +197,10 @@ public static class SqlReflector
 			{
 				pi.Key.SetValue(entity, MinimumDate, null);
 			}
+			else if (Nullable.GetUnderlyingType(pi.Key.PropertyType) != pi.Key.PropertyType)
+			{
+				pi.Key.SetValue(entity, null, null);
+			}
 		}
 
 		return entity;
@@ -200,6 +208,12 @@ public static class SqlReflector
 
 	public static void ConvertDataValue(ref object dbValue, Type type)
 	{
+		if (Nullable.GetUnderlyingType(type) != type && (dbValue == null || dbValue == DBNull.Value))
+		{
+			dbValue = null;
+			return;
+		}
+
 		if (type.IsEnum)
 		{
 			dbValue = Enum.ToObject(type, dbValue);
